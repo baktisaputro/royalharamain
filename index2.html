@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel & Umroh - Bersih & Elegan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Mengatur Variabel Warna Tema Terang */
+        :root {
+            --bg-white: #ffffff;
+            --bg-light: #f8f9fa;        /* Abu-abu sangat terang untuk variasi section */
+            --bg-black: #111111;        /* Hitam pekat untuk aksen dan footer */
+            --gold-soft: #c5a059;       /* Emas kalem / elegan */
+            --gold-hover: #deb873;      
+            --text-dark: #222222;       /* Hitam untuk teks utama */
+            --text-gray: #666666;       /* Abu-abu untuk teks deskripsi */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigasi */
+        header {
+            background-color: rgba(255, 255, 255, 0.98);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Bayangan lembut */
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--gold-soft);
+            text-decoration: none;
+            letter-spacing: 2px;
+            z-index: 1001;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-menu li a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu li a:hover {
+            color: var(--gold-soft);
+        }
+
+        /* Hamburger Menu Icon */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .hamburger .bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px auto;
+            background-color: var(--text-dark);
+            transition: all 0.3s ease-in-out;
+            border-radius: 3px;
+        }
+
+        /* Bagian Hero (Tetap menggunakan overlay gelap agar teks emas & putih menonjol) */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(rgba(17, 17, 17, 0.7), rgba(17, 17, 17, 0.8)), url('https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--gold-soft);
+            font-weight: 300;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #f4f4f4; /* Teks putih khusus di atas gambar hero */
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .btn-utama, .btn-konsultasi {
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .btn-utama {
+            background-color: var(--gold-soft);
+            color: var(--bg-white);
+        }
+
+        .btn-utama:hover {
+            background-color: var(--bg-black);
+            color: var(--gold-soft);
+        }
+
+        .btn-konsultasi {
+            background-color: transparent;
+            color: var(--text-dark);
+            border: 1px solid var(--text-dark);
+        }
+
+        .btn-konsultasi:hover {
+            background-color: var(--gold-soft);
+            color: var(--bg-white);
+            border-color: var(--gold-soft);
+        }
+
+        .nav-btn {
+            margin-left: 10px;
+        }
+
+        /* Struktur Section Global */
+        section {
+            padding: 80px 50px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            color: var(--bg-black);
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-gray);
+            margin-bottom: 50px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Bagian Paket dengan Brosur */
+        .paket {
+            background-color: var(--bg-light);
+        }
+
+        .grid-paket {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .kartu-paket {
+            background-color: var(--bg-white);
+            border: 1px solid #eaeaea;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kartu-paket:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(197, 160, 89, 0.15); /* Shadow sedikit keemasan saat dihover */
+        }
+
+        .brosur-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 3px solid var(--gold-soft);
+        }
+
+        .konten-paket {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .konten-paket h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: var(--bg-black);
+        }
+
+        .harga {
+            font-size: 24px;
+            color: var(--gold-soft);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .fasilitas {
+            list-style: none;
+            margin-bottom: 30px;
+            color: var(--text-gray);
+            flex-grow: 1;
+        }
+
+        .fasilitas li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .fasilitas li::before {
+            content: "\f00c"; 
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--gold-soft);
+            position: absolute;
+            left: 0;
+        }
+
+        /* Dokumentasi / Galeri */
+        .galeri {
+            background-color: var(--bg-white);
+        }
+
+        .grid-galeri {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .item-galeri {
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 1 / 1;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .item-galeri img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .item-galeri:hover img {
+            transform: scale(1.1);
+        }
+
+        .overlay-galeri {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(17, 17, 17, 0.9));
+            padding: 20px;
+            color: var(--bg-white);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-weight: 500;
+        }
+
+        .item-galeri:hover .overlay-galeri {
+            opacity: 1;
+        }
+
+        /* Artikel & Doa */
+        .artikel {
+            background-color: var(--bg-light);
+        }
+
+        .grid-artikel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .kartu-artikel {
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            padding: 30px;
+            border-left: 4px solid var(--gold-soft);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+        }
+        
+        .kartu-artikel:hover {
+            transform: translateX(5px);
+        }
+
+        .kartu-artikel h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: var(--bg-black);
+        }
+        
+        .kartu-artikel p {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .link-artikel {
+            color: var(--gold-soft);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .link-artikel:hover {
+            color: var(--bg-black);
+        }
+
+        /* Embed Sosmed */
+        .sosmed {
+            background-color: var(--bg-white);
+        }
+
+        .grid-sosmed {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .embed-container {
+            background-color: var(--bg-light);
+            border-radius: 12px;
+            padding: 30px 20px;
+            border: 1px dashed var(--gold-soft);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        .embed-container i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--bg-black);
+        }
+
+        .embed-container p {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Footer - Hitam Pekat sebagai anchor/penutup elegan */
+        footer {
+            background-color: var(--bg-black);
+            padding: 40px 20px;
+            text-align: center;
+            color: #888;
+        }
+
+        footer p {
+            font-size: 14px;
+        }
+
+        footer .logo-footer {
+            color: var(--gold-soft);
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* =========================================
+           RESPONSIVE DESIGN (MOBILE FRIENDLY) 
+           ========================================= */
+        @media (max-width: 992px) {
+            header {
+                padding: 15px 30px;
+            }
+            section {
+                padding: 60px 30px;
+            }
+            .hero h1 {
+                font-size: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .navbar {
+                position: absolute;
+                top: 100%;
+                left: -100%;
+                flex-direction: column;
+                background-color: var(--bg-white);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                border-bottom: 1px solid #eaeaea;
+                padding-bottom: 20px;
+                box-shadow: 0 10px 10px rgba(0,0,0,0.05);
+            }
+
+            .navbar.active {
+                left: 0;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                width: 100%;
+                gap: 0;
+            }
+
+            .nav-menu li {
+                margin: 15px 0;
+            }
+
+            .nav-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                display: block;
+                width: 90%;
+                margin: 0 auto;
+            }
+
+            .hamburger.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger.active .bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            .hamburger.active .bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            section {
+                padding: 50px 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .overlay-galeri {
+                opacity: 1; 
+                background: linear-gradient(transparent, rgba(17, 17, 17, 0.8));
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+            
+            .brosur-img {
+                height: 180px;
+            }
+
+            .harga {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigasi -->
+    <header>
+        <a href="#" class="logo">MABRUR</a>
+        <div class="navbar">
+            <ul class="nav-menu">
+                <li><a href="#">Beranda</a></li>
+                <li><a href="#paket">Paket</a></li>
+                <li><a href="#galeri">Dokumentasi</a></li>
+                <li><a href="#artikel">Artikel & Doa</a></li>
+            </ul>
+            <a href="#" class="btn-konsultasi nav-btn">Hubungi Kami</a>
+        </div>
+        <!-- Tombol Hamburger Mobile -->
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </header>
+
+    <!-- Bagian Utama (Hero) -->
+    <section class="hero">
+        <h1>Perjalanan Suci Penuh Makna</h1>
+        <p>Hadirkan ketenangan jiwa dan kekhusyukan ibadah dengan pelayanan eksklusif dan bimbingan terpercaya menuju Baitullah.</p>
+        <a href="#paket" class="btn-utama">Lihat Program Umroh</a>
+    </section>
+
+    <!-- Bagian Paket -->
+    <section id="paket" class="paket">
+        <h2 class="section-title">Pilihan Paket Umroh</h2>
+        <p class="section-subtitle">Sesuaikan rencana ibadah Anda dengan paket yang kami rancang khusus.</p>
+        
+        <div class="grid-paket">
+            <!-- Paket 1 -->
+            <div class="kartu-paket">
+                <img src="https://images.unsplash.com/photo-1590396590212-04e38deec1c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Brosur Umroh Reguler" class="brosur-img">
+                <div class="konten-paket">
+                    <h3>Umroh Reguler</h3>
+                    <div class="harga">Rp 28.500.000</div>
+                    <ul class="fasilitas">
+                        <li>Program 9 Hari</li>
+                        <li>Hotel Bintang 4 (Makkah & Madinah)</li>
+                        <li>Pesawat Garuda Indonesia / Saudia</li>
+                        <li>Muthawwif Berpengalaman</li>
+                        <li>Bus Full AC (Saptco)</li>
+                    </ul>
+                    <a href="#" class="btn-konsultasi" style="width: 100%;">Detail & Daftar</a>
+                </div>
+            </div>
+
+            <!-- Paket 2 (VIP) -->
+            <div class="kartu-paket" style="border: 1px solid var(--gold-soft);">
+                <img src="https://images.unsplash.com/photo-1591146200236-4c4b901fdb70?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Brosur Umroh VIP" class="brosur-img">
+                <div class="konten-paket">
+                    <div style="background:var(--bg-black); color:var(--gold-soft); padding:4px 12px; border-radius:4px; font-size:12px; font-weight:bold; display:inline-block; margin-bottom:12px; align-self: flex-start; letter-spacing: 1px;">PALING DIMINATI</div>
+                    <h3>Umroh VIP Eksekutif</h3>
+                    <div class="harga">Rp 39.000.000</div>
+                    <ul class="fasilitas">
+                        <li>Program 12 Hari</li>
+                        <li>Hotel Bintang 5 (Pelataran Masjid)</li>
+                        <li>Penerbangan Direct (Saudia)</li>
+                        <li>Kereta Cepat Haramain (Makkah-Madinah)</li>
+                        <li>Eksklusif Lounge & Fast Track Bandara</li>
+                    </ul>
+                    <a href="#" class="btn-utama" style="width: 100%;">Detail & Daftar</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galeri Dokumentasi -->
+    <section id="galeri" class="galeri">
+        <h2 class="section-title">Dokumentasi Perjalanan</h2>
+        <p class="section-subtitle">Momen penuh berkah dari jamaah kami sebelumnya.</p>
+        
+        <div class="grid-galeri">
+            <div class="item-galeri">
+                <img src="https://images.unsplash.com/photo-1606132479707-1e66c7a7b8e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Jamaah di Makkah">
+                <div class="overlay-galeri">Keberangkatan Syawal 1445 H</div>
+            </div>
+            <div class="item-galeri">
+                <img src="https://images.unsplash.com/photo-1596484552993-9c88be238712?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Jamaah di Madinah">
+                <div class="overlay-galeri">Ziarah Masjid Nabawi</div>
+            </div>
+            <div class="item-galeri">
+                <img src="https://images.unsplash.com/photo-1582200832860-2646fc0c6f55?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Doa Bersama">
+                <div class="overlay-galeri">Bimbingan Muthawwif</div>
+            </div>
+            <div class="item-galeri">
+                <img src="https://images.unsplash.com/photo-1542042220-47b2c93d25ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="City Tour">
+                <div class="overlay-galeri">City Tour Jabal Rahmah</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Artikel & Doa -->
+    <section id="artikel" class="artikel">
+        <h2 class="section-title">Panduan & Artikel Islami</h2>
+        <p class="section-subtitle">Persiapkan diri Anda dengan ilmu sebelum berangkat ke Baitullah.</p>
+        
+        <div class="grid-artikel">
+            <div class="kartu-artikel">
+                <h4>Niat & Doa Ihram</h4>
+                <p>Kumpulan doa shahih saat memulai ihram dari Miqat hingga memasuki Masjidil Haram.</p>
+                <a href="#" class="link-artikel">Baca Selengkapnya &rarr;</a>
+            </div>
+            <div class="kartu-artikel">
+                <h4>Tata Cara Tawaf</h4>
+                <p>Panduan lengkap melakukan tawaf 7 putaran beserta doa di setiap putarannya.</p>
+                <a href="#" class="link-artikel">Baca Selengkapnya &rarr;</a>
+            </div>
+            <div class="kartu-artikel">
+                <h4>Barang Bawaan Umroh</h4>
+                <p>Daftar perlengkapan penting yang wajib dibawa oleh jamaah laki-laki dan perempuan.</p>
+                <a href="#" class="link-artikel">Baca Selengkapnya &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Embeds -->
+    <section class="sosmed">
+        <h2 class="section-title">Ikuti Perjalanan Kami</h2>
+        <p class="section-subtitle">Update terbaru, jadwal, dan kajian langsung dari media sosial kami.</p>
+        
+        <div class="grid-sosmed">
+            <div class="embed-container">
+                <i class="fa-brands fa-instagram"></i>
+                <p>Ruang untuk Embed Instagram</p>
+                <a href="#" class="btn-utama">Follow Instagram</a>
+            </div>
+            <div class="embed-container">
+                <i class="fa-brands fa-tiktok"></i>
+                <p>Ruang untuk Embed TikTok Video</p>
+                <a href="#" class="btn-utama">Follow TikTok</a>
+            </div>
+            <div class="embed-container">
+                <i class="fa-brands fa-youtube"></i>
+                <p>Ruang untuk Embed Video YouTube</p>
+                <a href="#" class="btn-utama">Subscribe YouTube</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <span class="logo-footer">MABRUR</span>
+        <p>&copy; 2026 Mabrur Travel & Umroh. Desain Eksklusif Terdaftar.</p>
+    </footer>
+
+    <!-- JavaScript untuk fungsi Menu Mobile -->
+    <script>
+        const hamburger = document.querySelector(".hamburger");
+        const navbar = document.querySelector(".navbar");
+
+        hamburger.addEventListener("click", () => {
+            hamburger.classList.toggle("active");
+            navbar.classList.toggle("active");
+        });
+
+        document.querySelectorAll(".nav-menu li a").forEach(n => n.addEventListener("click", () => {
+            hamburger.classList.remove("active");
+            navbar.classList.remove("active");
+        }));
+    </script>
+</body>
+</html>

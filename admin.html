@@ -1,0 +1,793 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Kelola Website | PT Royal Haramain Internasional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Martel:wght@400;700;900&family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <!-- ================= LAYAR LOGIN ================= -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <img src="assets/images/logo.png" alt="Logo" class="login-logo">
+      <h1>Admin Panel</h1>
+      <p>Masuk untuk mengelola website</p>
+      <form id="loginForm">
+        <div class="form-field">
+          <label for="loginPass">Password</label>
+          <input type="password" id="loginPass" placeholder="Masukkan password" required>
+        </div>
+        <button type="submit" class="btn btn-gold btn-full"><i class="fa-solid fa-lock"></i> Masuk</button>
+      </form>
+      <p class="login-error" id="loginError" hidden>Password salah. Coba lagi.</p>
+      <p class="login-hint"><i class="fa-solid fa-circle-info"></i> Password default: <strong>royal123</strong>. Ganti di tab Penyimpanan.</p>
+    </div>
+  </div>
+
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <a href="index.html" class="admin-brand">
+        <img src="assets/images/logo.png" alt="Logo" class="admin-logo">
+        <span>Admin Panel</span>
+      </a>
+      <div class="admin-header-actions">
+        <a href="index.html" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Lihat Website</a>
+        <button class="btn btn-ghost" id="btnLogout" hidden><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="admin-tabs" id="adminTabs">
+    <button class="tab-btn active" data-tab="artikel"><i class="fa-solid fa-newspaper"></i> Artikel</button>
+    <button class="tab-btn" data-tab="paket"><i class="fa-solid fa-box-open"></i> Paket Umroh</button>
+    <button class="tab-btn" data-tab="promo"><i class="fa-solid fa-bullhorn"></i> Popup Promo</button>
+    <button class="tab-btn" data-tab="leads"><i class="fa-solid fa-users"></i> Data Pendaftar</button>
+    <button class="tab-btn" data-tab="storage"><i class="fa-solid fa-database"></i> Penyimpanan</button>
+  </nav>
+
+  <main class="admin-main">
+
+    <!-- ================= TAB: ARTIKEL ================= -->
+    <section id="tab-artikel" class="tab-panel active">
+      <div class="admin-card">
+        <h2 id="formTitle"><i class="fa-solid fa-plus"></i> Tambah Artikel Baru</h2>
+        <form id="articleForm">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="fTitle">Judul Artikel *</label>
+              <input type="text" id="fTitle" placeholder="Contoh: Niat & Doa Ihram" required>
+            </div>
+            <div class="form-field">
+              <label for="fDate">Tanggal</label>
+              <input type="date" id="fDate">
+            </div>
+            <div class="form-field">
+              <label for="fImageUrl">URL Gambar (opsional)</label>
+              <input type="text" id="fImageUrl" placeholder="https://... atau /assets/images/artikel1.jpg">
+            </div>
+            <div class="form-field">
+              <label for="fLink">Link Artikel (opsional)</label>
+              <input type="text" id="fLink" placeholder="https://...">
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="fExcerpt">Ringkasan Artikel *</label>
+            <textarea id="fExcerpt" rows="3" placeholder="Tulis ringkasan singkat artikel..." required></textarea>
+          </div>
+          <div class="form-field">
+            <label>Upload Gambar dari Komputer</label>
+            <input type="file" id="fImageFile" accept="image/*">
+            <p class="form-hint">Pilih salah satu: URL gambar ATAU upload file dari komputer (otomatis tersimpan di browser).</p>
+            <div class="image-manage" id="aImgManage" hidden>
+              <img id="aImgPreview" src="" alt="Pratinjau gambar artikel">
+              <button type="button" class="btn btn-sm btn-delete" id="aImgDelete"><i class="fa-solid fa-trash"></i> Hapus Gambar</button>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-gold" id="btnSubmit"><i class="fa-solid fa-floppy-disk"></i> Simpan Artikel</button>
+            <button type="button" class="btn btn-ghost" id="btnCancel" hidden>Batal</button>
+          </div>
+        </form>
+      </div>
+      <div class="admin-card">
+        <h2><i class="fa-solid fa-list"></i> Daftar Artikel (<span id="articleCount">0</span>)</h2>
+        <p class="admin-note"><i class="fa-solid fa-circle-info"></i> Artikel tersimpan di browser ini dan tampil otomatis di halaman utama.</p>
+        <div id="articleList" class="admin-list"></div>
+        <div id="articleEmpty" class="empty-state" hidden><i class="fa-regular fa-folder-open"></i><p>Belum ada artikel.</p></div>
+      </div>
+    </section>
+
+    <!-- ================= TAB: PAKET UMROH ================= -->
+    <section id="tab-paket" class="tab-panel">
+      <div class="admin-card">
+        <h2 id="paketFormTitle"><i class="fa-solid fa-plus"></i> Tambah Paket Baru</h2>
+        <form id="paketForm">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="pTitle">Nama Paket *</label>
+              <input type="text" id="pTitle" placeholder="Contoh: Paket Umroh Reguler" required>
+            </div>
+            <div class="form-field">
+              <label for="pPrice">Harga *</label>
+              <input type="text" id="pPrice" placeholder="Contoh: Rp 28.500.000" required>
+            </div>
+            <div class="form-field">
+              <label for="pDuration">Durasi</label>
+              <input type="text" id="pDuration" placeholder="Contoh: 9 Hari">
+            </div>
+            <div class="form-field">
+              <label for="pBadge">Badge (opsional)</label>
+              <input type="text" id="pBadge" placeholder="Contoh: PALING DIMINATI">
+            </div>
+            <div class="form-field">
+              <label for="pImageUrl">URL Gambar (opsional)</label>
+              <input type="text" id="pImageUrl" placeholder="https://... atau /assets/images/paket1.jpg">
+            </div>
+            <div class="form-field">
+              <label for="pLink">Link Daftar (opsional)</label>
+              <input type="text" id="pLink" placeholder="https://wa.me/...">
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="pFacilities">Daftar Fasilitas (satu per baris) *</label>
+            <textarea id="pFacilities" rows="6" placeholder="Hotel Bintang 4&#10;Pesawat Garuda / Saudia&#10;Muthawwif Berpengalaman" required></textarea>
+          </div>
+<div class="form-field">
+            <label>Upload Gambar dari Komputer</label>
+            <input type="file" id="pImageFile" accept="image/*">
+            <div class="image-manage" id="pImgManage" hidden>
+              <img id="pImgPreview" src="" alt="Pratinjau gambar paket">
+              <button type="button" class="btn btn-sm btn-delete" id="pImgDelete"><i class="fa-solid fa-trash"></i> Hapus Gambar</button>
+            </div>
+          </div>
+          <div class="form-checkbox">
+            <input type="checkbox" id="pFeatured">
+            <label for="pFeatured">Jadikan paket unggulan (diberi tanda emas)</label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-gold" id="pBtnSubmit"><i class="fa-solid fa-floppy-disk"></i> Simpan Paket</button>
+            <button type="button" class="btn btn-ghost" id="pBtnCancel" hidden>Batal</button>
+          </div>
+        </form>
+      </div>
+      <div class="admin-card">
+        <h2><i class="fa-solid fa-list"></i> Daftar Paket (<span id="paketCount">0</span>)</h2>
+        <p class="admin-note"><i class="fa-solid fa-circle-info"></i> Paket tersimpan di browser ini dan tampil otomatis di halaman utama.</p>
+        <div id="paketList" class="admin-list"></div>
+        <div id="paketEmpty" class="empty-state" hidden><i class="fa-regular fa-folder-open"></i><p>Belum ada paket.</p></div>
+      </div>
+    </section>
+
+    <!-- ================= TAB: POPUP PROMO ================= -->
+    <section id="tab-promo" class="tab-panel">
+      <div class="admin-card">
+        <h2><i class="fa-solid fa-bullhorn"></i> Pengaturan Popup Promo / Diskon</h2>
+        <p class="admin-note"><i class="fa-solid fa-circle-info"></i> Popup muncul otomatis di halaman utama setelah beberapa detik. Seting lalu klik "Simpan & Terapkan".</p>
+        <form id="promoForm">
+          <div class="form-checkbox">
+            <input type="checkbox" id="promoEnabled">
+            <label for="promoEnabled">Aktifkan popup promo</label>
+          </div>
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="promoBadge">Label kecil (opsional)</label>
+              <input type="text" id="promoBadge" placeholder="Contoh: PROMO SPESIAL">
+            </div>
+            <div class="form-field">
+              <label for="promoTitle">Judul / Diskon *</label>
+              <input type="text" id="promoTitle" placeholder="Contoh: Diskon 10% Umroh Reguler" required>
+            </div>
+            <div class="form-field">
+              <label for="promoLink">Link / Tombol (opsional)</label>
+              <input type="text" id="promoLink" placeholder="https://wa.me/...">
+            </div>
+            <div class="form-field">
+              <label for="promoDelay">Muncul setelah (detik)</label>
+              <input type="number" id="promoDelay" min="0" max="60" value="3">
+            </div>
+            <div class="form-field">
+              <label for="promoImageUrl">URL Gambar (opsional)</label>
+              <input type="text" id="promoImageUrl" placeholder="https://... atau /assets/images/promo.jpg">
+            </div>
+<div class="form-field">
+              <label>Upload Gambar dari Komputer</label>
+              <input type="file" id="promoImageFile" accept="image/*">
+              <div class="image-manage" id="prImgManage" hidden>
+                <img id="prImgPreview" src="" alt="Pratinjau gambar promo">
+                <button type="button" class="btn btn-sm btn-delete" id="prImgDelete"><i class="fa-solid fa-trash"></i> Hapus Gambar</button>
+              </div>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="promoMessage">Teks Deskripsi *</label>
+            <textarea id="promoMessage" rows="3" placeholder="Tulis detail promo/diskon..." required></textarea>
+          </div>
+          <div class="form-checkbox">
+            <input type="checkbox" id="promoShowOnce">
+            <label for="promoShowOnce">Tampilkan sekali saja per hari (tidak mengganggu pengunjung)</label>
+          </div>
+<div class="form-actions">
+            <button type="submit" class="btn btn-gold"><i class="fa-solid fa-floppy-disk"></i> Simpan & Terapkan</button>
+            <button type="button" class="btn btn-ghost" id="promoReset"><i class="fa-solid fa-rotate-left"></i> Reset Default</button>
+            <a href="index.html?promo=1" class="btn btn-edit" target="_blank"><i class="fa-solid fa-play"></i> Tes Popup di Website</a>
+          </div>
+        </form>
+      </div>
+      <div class="admin-card">
+        <h2><i class="fa-solid fa-eye"></i> Pratinjau Popup</h2>
+        <div class="promo-preview" id="promoPreview">
+          <img id="previewImg" src="assets/images/logo.png" alt="preview">
+          <div class="preview-body">
+            <span class="preview-badge" id="previewBadge">PROMO</span>
+            <h3 id="previewTitle">Judul Diskon</h3>
+            <p id="previewMessage">Teks deskripsi promo...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB: DATA PENDAFTAR ================= -->
+    <section id="tab-leads" class="tab-panel">
+      <div class="admin-card">
+        <h2><i class="fa-solid fa-users"></i> Data Calon Jamaah / Pendaftar (<span id="leadCount">0</span>)</h2>
+        <p class="admin-note"><i class="fa-solid fa-circle-info"></i> Data dari form pendaftaran di halaman utama, tersimpan di browser ini.</p>
+        <div class="lead-toolbar">
+          <button class="btn btn-ghost" id="exportLeads"><i class="fa-solid fa-file-export"></i> Ekspor CSV</button>
+          <button class="btn btn-delete" id="clearLeads"><i class="fa-solid fa-trash"></i> Hapus Semua</button>
+        </div>
+        <div id="leadList" class="lead-list"></div>
+        <div id="leadEmpty" class="empty-state" hidden><i class="fa-regular fa-folder-open"></i><p>Belum ada pendaftar.</p></div>
+      </div>
+</section>
+
+    <!-- ================= TAB: PENYIMPANAN ================= -->
+    <section id="tab-storage" class="tab-panel">
+      <div class="admin-card">
+        <h2><i class="fa-solid fa-database"></i> Penyimpanan Browser</h2>
+        <p class="admin-note"><i class="fa-solid fa-circle-info"></i> Semua data &amp; gambar tersimpan di localStorage browser (batas umum ±5 MB). Gambar base64 paling banyak memakan ruang — hapus gambar yang tidak dipakai agar tidak penuh.</p>
+        <div class="storage-bar"><div class="storage-fill" id="storageFill"></div></div>
+        <p class="storage-text" id="storageText"></p>
+        <div class="lead-toolbar">
+          <button class="btn btn-ghost" id="storageRefresh"><i class="fa-solid fa-rotate"></i> Hitung Ulang</button>
+          <button class="btn btn-delete" id="storageClear"><i class="fa-solid fa-trash"></i> Kosongkan Semua Data</button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <h2><i class="fa-solid fa-key"></i> Ganti Password Admin</h2>
+        <form id="passwordForm">
+          <div class="form-field">
+            <label for="oldPass">Password Lama</label>
+            <input type="password" id="oldPass" required>
+          </div>
+          <div class="form-field">
+            <label for="newPass">Password Baru (min. 6 karakter)</label>
+            <input type="password" id="newPass" minlength="6" required>
+          </div>
+          <div class="form-field">
+            <label for="confirmPass">Ulangi Password Baru</label>
+            <input type="password" id="confirmPass" minlength="6" required>
+          </div>
+          <button type="submit" class="btn btn-gold"><i class="fa-solid fa-key"></i> Simpan Password Baru</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+<script>
+    /* ================== AUTH (LOGIN) ================== */
+    const AUTH_KEY = "rhi_admin_pass";
+    const AUTH_SESSION = "rhi_admin_logged";
+    const DEFAULT_PASSWORD = "royal123";
+
+    function getPassword() {
+      return localStorage.getItem(AUTH_KEY) || DEFAULT_PASSWORD;
+    }
+
+    function isLoggedIn() {
+      return sessionStorage.getItem(AUTH_SESSION) === "1";
+    }
+
+    function lockScreen() {
+      document.getElementById("loginScreen").style.display = "flex";
+      document.getElementById("btnLogout").hidden = true;
+      document.body.style.overflow = "hidden";
+    }
+
+    function unlockScreen() {
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("btnLogout").hidden = false;
+      document.body.style.overflow = "";
+    }
+
+    if (!isLoggedIn()) {
+      lockScreen();
+    } else {
+      unlockScreen();
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("loginPass").value;
+      if (input === getPassword()) {
+        sessionStorage.setItem(AUTH_SESSION, "1");
+        unlockScreen();
+      } else {
+        document.getElementById("loginError").hidden = false;
+      }
+    });
+
+    document.getElementById("btnLogout").addEventListener("click", () => {
+      sessionStorage.removeItem(AUTH_SESSION);
+      lockScreen();
+    });
+
+    document.getElementById("passwordForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const oldPass = document.getElementById("oldPass").value;
+      const newPass = document.getElementById("newPass").value;
+      const confirmPass = document.getElementById("confirmPass").value;
+      if (oldPass !== getPassword()) {
+        alert("Password lama salah.");
+        return;
+      }
+      if (newPass !== confirmPass) {
+        alert("Konfirmasi password baru tidak cocok.");
+        return;
+      }
+      if (newPass.length < 6) {
+        alert("Password baru minimal 6 karakter.");
+        return;
+      }
+      localStorage.setItem(AUTH_KEY, newPass);
+      alert("Password berhasil diganti!");
+      e.target.reset();
+    });
+
+    /* ================== STORAGE HELPERS ================== */
+    const KEYS = {
+      articles: "rhi_articles",
+      packages: "rhi_packages",
+      promo: "rhi_promo",
+      leads: "rhi_leads",
+    };
+
+    function load(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw !== null) return JSON.parse(raw);
+      } catch (e) {}
+      return fallback;
+    }
+
+    function save(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr);
+      if (isNaN(d)) return dateStr;
+      return d.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+    }
+
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    /* ================== TAB NAVIGATION ================== */
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    /* ================== ARTIKEL ================== */
+    let editingId = null;
+    let removeArticleImage = false;
+    const articleForm = document.getElementById("articleForm");
+
+    function setArticleImageState(src) {
+      const manage = document.getElementById("aImgManage");
+      const preview = document.getElementById("aImgPreview");
+      if (src) {
+        preview.src = src;
+        manage.hidden = false;
+      } else {
+        manage.hidden = true;
+      }
+    }
+
+    document.getElementById("aImgDelete").addEventListener("click", () => {
+      removeArticleImage = true;
+      document.getElementById("fImageUrl").value = "";
+      document.getElementById("fImageFile").value = "";
+      setArticleImageState("");
+    });
+
+    function renderArticles() {
+      const articles = load(KEYS.articles, []);
+      const list = document.getElementById("articleList");
+      document.getElementById("articleCount").textContent = articles.length;
+      document.getElementById("articleEmpty").hidden = articles.length > 0;
+      list.innerHTML = articles
+        .map(
+          (a, i) => `
+        <div class="article-row">
+          <img src="${a.image || "assets/images/logo.png"}" alt="" class="row-thumb">
+          <div class="row-info"><h4>${a.title}</h4><p>${a.excerpt}</p><span class="row-date">${a.date || ""}</span></div>
+          <div class="row-actions">
+            <button class="btn btn-sm btn-edit" data-edit="${i}"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-sm btn-delete" data-del="${i}"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`
+        )
+        .join("");
+      list.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => startEdit(Number(b.dataset.edit))));
+      list.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => deleteItem("articles", Number(b.dataset.del), renderArticles)));
+    }
+
+    function startEdit(index) {
+      const a = load(KEYS.articles, [])[index];
+      if (!a) return;
+      editingId = index;
+      removeArticleImage = false;
+      document.getElementById("fTitle").value = a.title || "";
+      document.getElementById("fExcerpt").value = a.excerpt || "";
+      document.getElementById("fDate").value = a.date ? "" : "";
+      document.getElementById("fImageUrl").value = a.image && a.image.startsWith("data:") ? "" : a.image || "";
+      document.getElementById("fLink").value = a.url || "";
+      setArticleImageState(a.image || "");
+      document.getElementById("formTitle").innerHTML = '<i class="fa-solid fa-pen"></i> Edit Artikel';
+      document.getElementById("btnSubmit").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Perbarui Artikel';
+      document.getElementById("btnCancel").hidden = false;
+      document.getElementById("tab-artikel").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function resetArticleForm() {
+      editingId = null;
+      removeArticleImage = false;
+      articleForm.reset();
+      setArticleImageState("");
+      document.getElementById("formTitle").innerHTML = '<i class="fa-solid fa-plus"></i> Tambah Artikel Baru';
+      document.getElementById("btnSubmit").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Artikel';
+      document.getElementById("btnCancel").hidden = true;
+    }
+
+    articleForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const articles = load(KEYS.articles, []);
+      let image = removeArticleImage ? "" : document.getElementById("fImageUrl").value.trim();
+      const file = document.getElementById("fImageFile").files[0];
+      if (file) {
+        if (file.size > 1.5 * 1024 * 1024) return alert("Ukuran gambar maksimal 1,5 MB.");
+        image = await readFileAsDataURL(file);
+      }
+      const article = {
+        title: document.getElementById("fTitle").value.trim(),
+        excerpt: document.getElementById("fExcerpt").value.trim(),
+        date: formatDate(document.getElementById("fDate").value),
+        image: image || "assets/images/logo.png",
+        url: document.getElementById("fLink").value.trim() || "#",
+      };
+      if (editingId !== null) articles[editingId] = article;
+      else articles.unshift(article);
+      save(KEYS.articles, articles);
+      resetArticleForm();
+      renderArticles();
+    });
+
+    document.getElementById("btnCancel").addEventListener("click", resetArticleForm);
+
+/* ================== PAKET ================== */
+    let editingPaketId = null;
+    let removePaketImage = false;
+    const paketForm = document.getElementById("paketForm");
+
+    function setPaketImageState(src) {
+      const manage = document.getElementById("pImgManage");
+      const preview = document.getElementById("pImgPreview");
+      if (src) {
+        preview.src = src;
+        manage.hidden = false;
+      } else {
+        manage.hidden = true;
+      }
+    }
+
+    document.getElementById("pImgDelete").addEventListener("click", () => {
+      removePaketImage = true;
+      document.getElementById("pImageUrl").value = "";
+      document.getElementById("pImageFile").value = "";
+      setPaketImageState("");
+    });
+
+    function renderPakets() {
+      const packages = load(KEYS.packages, []);
+      const list = document.getElementById("paketList");
+      document.getElementById("paketCount").textContent = packages.length;
+      document.getElementById("paketEmpty").hidden = packages.length > 0;
+      list.innerHTML = packages
+        .map(
+          (p, i) => `
+        <div class="article-row">
+          <img src="${p.image || "assets/images/logo.png"}" alt="" class="row-thumb">
+          <div class="row-info">
+            <h4>${p.title} ${p.featured ? '<span class="badge-featured">UNGGULAN</span>' : ""}</h4>
+            <p><strong style="color:var(--gold)">${p.price}</strong> — ${p.duration || ""}</p>
+            <p>${p.facilities.length} fasilitas</p>
+          </div>
+          <div class="row-actions">
+            <button class="btn btn-sm btn-edit" data-edit="${i}"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-sm btn-delete" data-del="${i}"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`
+        )
+        .join("");
+      list.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => startEditPaket(Number(b.dataset.edit))));
+      list.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => deleteItem("packages", Number(b.dataset.del), renderPakets)));
+    }
+
+function startEditPaket(index) {
+      const p = load(KEYS.packages, [])[index];
+      if (!p) return;
+      editingPaketId = index;
+      removePaketImage = false;
+      document.getElementById("pTitle").value = p.title || "";
+      document.getElementById("pPrice").value = p.price || "";
+      document.getElementById("pDuration").value = p.duration || "";
+      document.getElementById("pBadge").value = p.badge || "";
+      document.getElementById("pFacilities").value = (p.facilities || []).join("\n");
+      document.getElementById("pImageUrl").value = p.image && p.image.startsWith("data:") ? "" : p.image || "";
+      document.getElementById("pLink").value = p.url || "";
+      document.getElementById("pFeatured").checked = !!p.featured;
+      setPaketImageState(p.image || "");
+      document.getElementById("paketFormTitle").innerHTML = '<i class="fa-solid fa-pen"></i> Edit Paket';
+      document.getElementById("pBtnSubmit").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Perbarui Paket';
+      document.getElementById("pBtnCancel").hidden = false;
+      document.getElementById("tab-paket").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function resetPaketForm() {
+      editingPaketId = null;
+      removePaketImage = false;
+      paketForm.reset();
+      setPaketImageState("");
+      document.getElementById("paketFormTitle").innerHTML = '<i class="fa-solid fa-plus"></i> Tambah Paket Baru';
+      document.getElementById("pBtnSubmit").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Paket';
+      document.getElementById("pBtnCancel").hidden = true;
+    }
+
+    paketForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const packages = load(KEYS.packages, []);
+      let image = removePaketImage ? "" : document.getElementById("pImageUrl").value.trim();
+      const file = document.getElementById("pImageFile").files[0];
+      if (file) {
+        if (file.size > 1.5 * 1024 * 1024) return alert("Ukuran gambar maksimal 1,5 MB.");
+        image = await readFileAsDataURL(file);
+      }
+      const paket = {
+        title: document.getElementById("pTitle").value.trim(),
+        price: document.getElementById("pPrice").value.trim(),
+        duration: document.getElementById("pDuration").value.trim(),
+        badge: document.getElementById("pBadge").value.trim(),
+        facilities: document.getElementById("pFacilities").value.split("\n").map((s) => s.trim()).filter(Boolean),
+        image: image || "assets/images/logo.png",
+        url: document.getElementById("pLink").value.trim() || "#",
+        featured: document.getElementById("pFeatured").checked,
+      };
+      if (editingPaketId !== null) packages[editingPaketId] = paket;
+      else packages.unshift(paket);
+      save(KEYS.packages, packages);
+      resetPaketForm();
+      renderPakets();
+    });
+
+    document.getElementById("pBtnCancel").addEventListener("click", resetPaketForm);
+
+/* ================== POPUP PROMO ================== */
+    const DEFAULT_PROMO = {
+      enabled: false,
+      badge: "PROMO SPESIAL",
+      title: "Diskon 10% Umroh Reguler",
+      message: "Daftar sebelum tanggal 30 dan dapatkan diskon spesial. Kuota terbatas!",
+      image: "assets/images/logo.png",
+      link: "#",
+      delay: 3,
+      showOnce: true,
+    };
+    let removePromoImage = false;
+
+    function setPromoImageState(src) {
+      const manage = document.getElementById("prImgManage");
+      const preview = document.getElementById("prImgPreview");
+      if (src) {
+        preview.src = src;
+        manage.hidden = false;
+      } else {
+        manage.hidden = true;
+      }
+    }
+
+    document.getElementById("prImgDelete").addEventListener("click", () => {
+      removePromoImage = true;
+      document.getElementById("promoImageUrl").value = "";
+      document.getElementById("promoImageFile").value = "";
+      setPromoImageState("");
+      renderPromoPreview({ ...load(KEYS.promo, DEFAULT_PROMO), image: "assets/images/logo.png" });
+    });
+
+function renderPromoForm() {
+      const p = load(KEYS.promo, DEFAULT_PROMO);
+      removePromoImage = false;
+      document.getElementById("promoEnabled").checked = !!p.enabled;
+      document.getElementById("promoBadge").value = p.badge || "";
+      document.getElementById("promoTitle").value = p.title || "";
+      document.getElementById("promoMessage").value = p.message || "";
+      document.getElementById("promoImageUrl").value = p.image && p.image.startsWith("data:") ? "" : p.image || "";
+      document.getElementById("promoLink").value = p.link || "";
+      document.getElementById("promoDelay").value = p.delay ?? 3;
+      document.getElementById("promoShowOnce").checked = p.showOnce !== false;
+      setPromoImageState(p.image && !p.image.startsWith("data:") ? p.image : "");
+      renderPromoPreview(p);
+    }
+
+    function renderPromoPreview(p) {
+      document.getElementById("previewImg").src = p.image || "assets/images/logo.png";
+      document.getElementById("previewBadge").textContent = p.badge || "PROMO";
+      document.getElementById("previewTitle").textContent = p.title || "";
+      document.getElementById("previewMessage").textContent = p.message || "";
+    }
+
+document.getElementById("promoForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      let image = removePromoImage ? "" : document.getElementById("promoImageUrl").value.trim();
+      const file = document.getElementById("promoImageFile").files[0];
+      if (file) {
+        if (file.size > 1.5 * 1024 * 1024) return alert("Ukuran gambar maksimal 1,5 MB.");
+        image = await readFileAsDataURL(file);
+      }
+      const promo = {
+        enabled: document.getElementById("promoEnabled").checked,
+        badge: document.getElementById("promoBadge").value.trim(),
+        title: document.getElementById("promoTitle").value.trim(),
+        message: document.getElementById("promoMessage").value.trim(),
+        image: image || "assets/images/logo.png",
+        link: document.getElementById("promoLink").value.trim() || "#",
+        delay: Number(document.getElementById("promoDelay").value) || 3,
+        showOnce: document.getElementById("promoShowOnce").checked,
+      };
+      save(KEYS.promo, promo);
+      removePromoImage = false;
+      renderPromoPreview(promo);
+      alert("Promo disimpan dan diterapkan!");
+    });
+
+    document.getElementById("promoReset").addEventListener("click", () => {
+      if (confirm("Kembalikan pengaturan promo ke default?")) {
+        save(KEYS.promo, DEFAULT_PROMO);
+        renderPromoForm();
+      }
+    });
+
+    document.getElementById("promoForm").addEventListener("input", () => {
+      renderPromoPreview({
+        image: document.getElementById("promoImageUrl").value || document.getElementById("previewImg").src,
+        badge: document.getElementById("promoBadge").value,
+        title: document.getElementById("promoTitle").value,
+        message: document.getElementById("promoMessage").value,
+      });
+    });
+
+    /* ================== DATA PENDAFTAR (LEADS) ================== */
+    function renderLeads() {
+      const leads = load(KEYS.leads, []);
+      const list = document.getElementById("leadList");
+      document.getElementById("leadCount").textContent = leads.length;
+      document.getElementById("leadEmpty").hidden = leads.length > 0;
+      list.innerHTML = leads
+        .map(
+          (l, i) => `
+        <div class="lead-row">
+          <div class="lead-info">
+            <h4>${l.name} <span class="lead-badge">${l.interest || "Konsultasi"}</span></h4>
+            <p><a href="https://wa.me/${(l.phone || "").replace(/[^0-9]/g, "")}" target="_blank">${l.phone}</a> — ${l.date || ""}</p>
+            ${l.message ? `<p>${l.message}</p>` : ""}
+          </div>
+          <div class="row-actions">
+            <button class="btn btn-sm btn-delete" data-del="${i}"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`
+        )
+        .join("");
+      list.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => deleteItem("leads", Number(b.dataset.del), renderLeads)));
+    }
+
+    document.getElementById("exportLeads").addEventListener("click", () => {
+      const leads = load(KEYS.leads, []);
+      if (!leads.length) return alert("Belum ada data.");
+      const rows = [["Nama", "No. HP", "Minat", "Pesan", "Tanggal"]];
+      leads.forEach((l) => rows.push([l.name, l.phone, l.interest, l.message, l.date]));
+      const csv = rows.map((r) => r.map((c) => '"' + String(c).replace(/"/g, '""') + '"').join(",")).join("\n");
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "data-pendaftar.csv";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    document.getElementById("clearLeads").addEventListener("click", () => {
+      if (confirm("Hapus SEMUA data pendaftar?")) {
+        save(KEYS.leads, []);
+        renderLeads();
+      }
+    });
+
+    /* ================== GENERIC DELETE ================== */
+    function deleteItem(key, index, reRender) {
+      const items = load(KEYS[key], []);
+      if (!confirm("Hapus item ini?")) return;
+      items.splice(index, 1);
+      save(KEYS[key], items);
+      if (key === "articles" && editingId === index) resetArticleForm();
+      if (key === "packages" && editingPaketId === index) resetPaketForm();
+      reRender();
+    }
+
+/* ================== PENYIMPANAN ================== */
+    function storageSize() {
+      let total = 0;
+      for (const key of Object.values(KEYS)) {
+        const v = localStorage.getItem(key);
+        if (v) total += new Blob([v]).size;
+      }
+      return total;
+    }
+
+    function renderStorage() {
+      const bytes = storageSize();
+      const mb = bytes / (1024 * 1024);
+      const limit = 5;
+      const pct = Math.min(100, (mb / limit) * 100);
+      document.getElementById("storageFill").style.width = pct + "%";
+      document.getElementById("storageText").textContent =
+        "Terpakai: " + (mb * 1024).toFixed(1) + " KB / ±" + limit + " MB (" + pct.toFixed(1) + "%)";
+    }
+
+    document.getElementById("storageRefresh").addEventListener("click", renderStorage);
+
+    document.getElementById("storageClear").addEventListener("click", () => {
+      if (confirm("Kosongkan SEMUA data (artikel, paket, promo, pendaftar) di browser ini? Tindakan ini tidak bisa dibatalkan.")) {
+        Object.values(KEYS).forEach((k) => localStorage.removeItem(k));
+        renderArticles();
+        renderPakets();
+        renderPromoForm();
+        renderLeads();
+        renderStorage();
+      }
+    });
+
+    /* ================== INIT ================== */
+    renderArticles();
+    renderPakets();
+    renderPromoForm();
+    renderLeads();
+    renderStorage();
+  </script>
+</body>
+</html>

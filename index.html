@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="siteTitle">PT Royal Haramain Internasional — Travel Haji, Umroh & Halal Tours</title>
+  <meta name="description" content="PT Royal Haramain Internasional — travel haji, umroh dan halal tours terpercaya dengan pelayanan prima menuju Tanah Suci.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Martel:wght@400;700;900&family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- ================= NAVBAR ================= -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="#hero" class="brand" id="brand">PT Royal Haramain <em>Internasional</em></a>
+      <nav class="nav-desktop" id="navDesktop"></nav>
+      <a href="#lokasi" class="btn btn-gold nav-cta" id="navCta">Konsultasi Gratis</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Buka menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile" id="navMobile"></nav>
+  </header>
+
+  <main>
+    <!-- Semua section dirender otomatis oleh js/main.js dari js/data.js.
+         Untuk update konten, cukup edit js/data.js. -->
+    <section id="hero" class="hero"></section>
+    <div class="badges-strip" id="badges"></div>
+    <section id="layanan" class="section">
+      <span class="section-label">Berbagai Layanan di Satu Tempat</span>
+      <h2 class="section-title">Layanan Kami</h2>
+      <p class="section-subtitle">Ingin ibadah, jelajah dunia, atau menabung dulu? Semua ada di Royal Haramain.</p>
+      <div class="bento-grid container" id="servicesGrid"></div>
+    </section>
+    <section id="paket" class="section">
+      <div class="container">
+        <span class="section-label">Pilihan Paket</span>
+        <h2 class="section-title">Paket Umroh &amp; Haji</h2>
+        <p class="section-subtitle">Sesuaikan rencana ibadah Anda dengan paket yang kami rancang khusus.</p>
+        <div class="packages-grid" id="packagesGrid"></div>
+      </div>
+    </section>
+    <section id="tentang" class="section">
+      <div class="container about-wrap" id="aboutWrap"></div>
+    </section>
+    <section id="testimoni" class="section">
+      <div class="container">
+        <span class="section-label">Pengalaman Nyata dari Jamaah Kami</span>
+        <h2 class="section-title">Testimoni Jamaah</h2>
+        <p class="section-subtitle">Cerita penuh berkah dari para jamaah yang telah beribadah bersama kami.</p>
+        <div class="testimonials-grid" id="testimonialsGrid"></div>
+      </div>
+    </section>
+    <section id="ustadz" class="section">
+      <div class="container">
+        <span class="section-label">Kenali Pembimbing Kami</span>
+        <h2 class="section-title">Ustadz Pembimbing</h2>
+        <p class="section-subtitle">Perjalanan akan jauh lebih bermakna dengan bimbingan para ustadz mumpuni.</p>
+        <div class="ustadz-grid" id="ustadzGrid"></div>
+        <div class="ustadz-more">
+          <a href="#" class="btn btn-outline-dark">Lihat Lebih Banyak</a>
+        </div>
+      </div>
+    </section>
+    <section class="partners">
+      <div class="container">
+        <span class="section-label">Bekerja Sama dengan Partner Lokal & Global</span>
+        <div class="logo-slider" id="partnerSlider"></div>
+      </div>
+    </section>
+    <section id="artikel" class="section">
+      <div class="container">
+        <span class="section-label">Panduan & Artikel Islami</span>
+        <h2 class="section-title">Artikel Terbaru</h2>
+        <p class="section-subtitle">Dapatkan keilmuan tentang Islam hingga tips traveling di sini.</p>
+        <div class="articles-grid" id="articlesGrid"></div>
+      </div>
+    </section>
+    <section id="lokasi" class="section">
+      <div class="container">
+        <span class="section-label">Temukan Kami</span>
+        <h2 class="section-title">Lokasi Kantor Terdekat</h2>
+        <p class="section-subtitle">Kunjungi kantor kami di berbagai lokasi strategis untuk konsultasi langsung.</p>
+        <div class="offices-grid" id="officesGrid"></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="cta-panel" id="ctaPanel">
+          <img src="https://i.pravatar.cc/120?img=60" alt="Avatar konsultasi" class="cta-avatar">
+          <h3>Masih ada pertanyaan?</h3>
+          <p>Tidak menemukan jawaban yang dicari? Silakan hubungi tim kami.</p>
+          <a href="#daftar" class="btn btn-gold">Konsultasi Gratis</a>
+        </div>
+      </div>
+    </section>
+    <section id="daftar" class="section">
+      <div class="container">
+        <div class="register-wrap">
+          <div class="register-info">
+            <span class="section-label">Form Pendaftaran</span>
+            <h2 class="section-title" style="text-align:left;">Daftar & Konsultasi</h2>
+            <p class="section-subtitle" style="text-align:left;margin-left:0;">Isi form berikut, tim kami akan segera menghubungi Anda untuk konsultasi gratis.</p>
+            <ul class="register-benefits">
+              <li><i class="fa-solid fa-circle-check"></i> Konsultasi gratis & tanpa biaya</li>
+              <li><i class="fa-solid fa-circle-check"></i> Penawaran paket terbaru</li>
+              <li><i class="fa-solid fa-circle-check"></i> Bantuan pengurusan dokumen</li>
+              <li><i class="fa-solid fa-circle-check"></i> Pembimbingan lengkap ke Tanah Suci</li>
+            </ul>
+          </div>
+          <form class="register-form" id="registerForm">
+            <h3>Isi Data Anda</h3>
+            <div class="form-field">
+              <label for="regName">Nama Lengkap *</label>
+              <input type="text" id="regName" placeholder="Nama Anda" required>
+            </div>
+            <div class="form-field">
+              <label for="regPhone">Nomor WhatsApp *</label>
+              <input type="tel" id="regPhone" placeholder="Contoh: 0812xxxxxxx" required>
+            </div>
+            <div class="form-field">
+              <label for="regInterest">Tertarik Paket</label>
+              <select id="regInterest">
+                <option value="Umroh Reguler">Umroh Reguler</option>
+                <option value="Umroh Plus">Umroh Plus</option>
+                <option value="Haji Khusus">Haji Khusus</option>
+                <option value="Jelajah Dunya">Jelajah Dunya</option>
+                <option value="Tabungan Umroh">Tabungan Umroh</option>
+                <option value="Konsultasi Umum">Konsultasi Umum</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="regMessage">Pesan (opsional)</label>
+              <textarea id="regMessage" rows="3" placeholder="Tulis pertanyaan / keinginan Anda..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-gold btn-full"><i class="fa-solid fa-paper-plane"></i> Kirim & Konsultasi Gratis</button>
+            <p class="register-success" id="registerSuccess" hidden><i class="fa-solid fa-circle-check"></i> Terima kasih! Data Anda sudah kami terima, tim kami akan segera menghubungi.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Popup Promo -->
+  <div class="popup-overlay" id="popupOverlay" hidden>
+    <div class="popup-modal">
+      <button class="popup-close" id="popupClose" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+      <img id="popupImg" src="assets/images/logo.png" alt="Promo">
+      <div class="popup-body">
+        <span class="popup-badge" id="popupBadge">PROMO</span>
+        <h3 id="popupTitle">Judul Promo</h3>
+        <p id="popupMessage">Deskripsi promo...</p>
+        <a href="#" class="btn btn-gold btn-full" id="popupLink">Klaim Promo</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer" id="footer"></footer>
+
+  <!-- FAB WhatsApp -->
+  <a href="https://wa.me/6281120000180" class="fab-wa" id="fabWa" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
