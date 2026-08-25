@@ -30,7 +30,7 @@
       </form>
       <p class="login-error" id="loginError" hidden></p>
       <div class="login-links" style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button type="button" class="btn btn-ghost btn-sm" id="btnShowSignup"><i class="fa-solid fa-user-plus"></i> Daftar Admin Baru</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnShowSignup" onclick="document.getElementById('signupForm').hidden=!document.getElementById('signupForm').hidden"><i class="fa-solid fa-user-plus"></i> Daftar Admin Baru</button>
         <button type="button" class="btn btn-ghost btn-sm" id="btnForgotPass"><i class="fa-solid fa-key"></i> Lupa Password</button>
       </div>
       <form id="signupForm" hidden style="margin-top:16px;border-top:1px solid var(--gray-100);padding-top:16px">
