@@ -32,27 +32,27 @@ const DATA = {
     { label: "Daftar", href: "#daftar" },
   ],
 
-  /* ---------- Hero ---------- */
+  /* ---------- Hero — Ka'bah minimalis ---------- */
   hero: {
     title: "Travel Haji, Umroh dan Halal Tours",
     quote:
       "\u201CIkutkanlah umroh kepada haji, karena keduanya menghilangkan kemiskinan dan dosa-dosa sebagaimana pembakaran menghilangkan karat pada besi, emas, dan perak. Sementara tidak ada pahala bagi haji yang mabrur kecuali surga.\u201D",
     quoteSource: "HR. An Nasai, Tirmidzi dan Ahmad",
     background:
-      "https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+      "https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
     primaryBtn: { text: "Konsultasi Gratis", url: "#lokasi" },
     secondaryBtn: { text: "Lihat Paket", url: "#layanan" },
     legalBadges: ["AMPHURI", "PIHK No. 394", "PPIU No. U.533", "Kemenag", "Siskopatuh"],
   },
 
-  /* ---------- Layanan (bento grid) ---------- */
+  /* ---------- Layanan — Mekkah & Madinah minimalis ---------- */
   services: [
     {
       area: "haji",
       title: "Haji",
       desc: "Sempurnakan rukun Islam dengan waktu tunggu lebih cepat hingga tanpa antri.",
       image:
-        "https://images.unsplash.com/photo-1582200832860-2646fc0c6f55?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
       url: "#",
     },
     {
@@ -60,7 +60,7 @@ const DATA = {
       title: "Umroh",
       desc: "Dapatkan ketenangan hati dari ibadah umroh di Tanah Suci dengan fasilitas lebih nyaman.",
       image:
-        "https://images.unsplash.com/photo-1591146200236-4c4b901fdb70?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1564769625905-50e93615e769?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
       url: "#",
     },
     {
@@ -68,7 +68,7 @@ const DATA = {
       title: "Jelajah Dunya",
       desc: "Nikmati keindahan bumi Allah dengan menjelajahi berbagai negara di dunia sebagai ungkapan syukur.",
       image:
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
       url: "#",
     },
     {
@@ -76,7 +76,7 @@ const DATA = {
       title: "Badal Haji",
       desc: "Bantu sempurnakan rukun islam orang terkasih yang memiliki keterbatasan fisik.",
       image:
-        "https://images.unsplash.com/photo-1542042220-47b2c93d25ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
       url: "#",
     },
     {
@@ -84,7 +84,7 @@ const DATA = {
       title: "Badal Umroh",
       desc: "Dapatkan pahala umroh untuk orang tersayang dengan menggantikannya.",
       image:
-        "https://images.unsplash.com/photo-1590396590212-04e38deec1c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1527838832700-505925240864?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
       url: "#",
     },
     {
@@ -92,12 +92,12 @@ const DATA = {
       title: "Tabungan Umroh",
       desc: "Wujudkan impian beribadah di Tanah Suci dengan menyisihkan sebagian rezeki.",
       image:
-        "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1580418827493-f2b22c37d3b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
       url: "#",
     },
   ],
 
-  /* ---------- Paket Umroh & Haji ---------- */
+  /* ---------- Paket — Ka'bah & Nabawi ---------- */
   packages: [
     {
       title: "Paket Umroh Reguler",
@@ -112,24 +112,24 @@ const DATA = {
         "Visa Umroh & Perlengkapan",
       ],
       image:
-        "https://images.unsplash.com/photo-1590396590212-04e38deec1c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1564769625905-50e93615e769?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       url: "#",
     },
     {
-      title: "Paket Umroh Plus",
+      title: "Paket Umroh Plus — Nabawi",
       price: "Rp 39.000.000",
       duration: "12 Hari",
       featured: true,
       badge: "PALING DIMINATI",
       facilities: [
-        "Hotel Bintang 5 (Pelataran Masjid)",
+        "Hotel Bintang 5 (Pelataran Masjidil Haram & Nabawi)",
         "Penerbangan Direct (Saudia)",
         "Kereta Cepat Haramain",
         "Eksklusif Lounge & Fast Track",
-        "City Tour Madinah & Ziarah",
+        "City Tour Madinah & Ziarah Nabawi",
       ],
       image:
-        "https://images.unsplash.com/photo-1591146200236-4c4b901fdb70?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       url: "#",
     },
     {
@@ -145,7 +145,7 @@ const DATA = {
         "Pembimbingan di Tanah Suci",
       ],
       image:
-        "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       url: "#",
     },
   ],
@@ -170,7 +170,7 @@ const DATA = {
     signatureName: "Direktur Utama",
     signatureRole: "PT Royal Haramain Internasional",
     image:
-      "https://images.unsplash.com/photo-1596484552993-9c88be238712?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1580418827493-f2b22c37d3b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
   },
 
   /* ---------- Testimoni ---------- */
@@ -217,12 +217,12 @@ const DATA = {
     "Partner 8",
   ],
 
-  /* ---------- Artikel ---------- */
+  /* ---------- Artikel — Haramain ---------- */
   articles: [
     {
       image:
-        "https://images.unsplash.com/photo-1606132479707-1e66c7a7b8e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-      title: "Niat & Doa Ihram",
+        "https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+      title: "Niat & Doa Ihram di Miqat",
       excerpt:
         "Kumpulan doa shahih saat memulai ihram dari Miqat hingga memasuki Masjidil Haram.",
       date: "12 Agustus 2026",
@@ -230,19 +230,19 @@ const DATA = {
     },
     {
       image:
-        "https://images.unsplash.com/photo-1542042220-47b2c93d25ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-      title: "Tata Cara Tawaf",
+        "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+      title: "Adab Ziarah Masjid Nabawi",
       excerpt:
-        "Panduan lengkap melakukan tawaf 7 putaran beserta doa di setiap putarannya.",
+        "Panduan adab dan doa saat ziarah ke Masjid Nabawi dan makam Rasulullah SAW.",
       date: "5 Agustus 2026",
       url: "#",
     },
     {
       image:
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-      title: "Barang Bawaan Umroh",
+        "https://images.unsplash.com/photo-1564769625905-50e93615e769?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+      title: "Tata Cara Tawaf Mengelilingi Ka'bah",
       excerpt:
-        "Daftar perlengkapan penting yang wajib dibawa oleh jamaah laki-laki dan perempuan.",
+        "Panduan lengkap melakukan tawaf 7 putaran beserta doa di setiap putarannya.",
       date: "28 Juli 2026",
       url: "#",
     },

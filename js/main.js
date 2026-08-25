@@ -100,7 +100,7 @@ function renderHero() {
   const el = document.getElementById("hero");
   if (!el) return;
   const h = DATA.hero;
-  el.style.background = `linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.35)), url('${h.background}') center/cover no-repeat`;
+  el.style.background = `linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.30) 70%, rgba(0,0,0,0.45) 100%), url('${h.background}') center/cover no-repeat`;
   el.innerHTML = `
     <div class="hero-content">
       <h1>${h.title}</h1>

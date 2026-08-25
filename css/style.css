@@ -6,22 +6,21 @@
 
 :root {
   --white: #ffffff;
-  --light: #f8f9fa;
+  --light: #fafaf9;
   --gray-25: #fcfcfd;
-  --gray-50: #f2f4f7;
-  --gray-100: #eaecf0;
-  --gray-300: #d0d5dd;
-  --gray-500: #667085;
-  --gray-600: #475467;
-  --gray-700: #344054;
-  --gray-900: #101828;
-  --black: #111111;
-  --gold: #be9234;
-  --gold-strong: #d1ad4f;
-  --gold-deep: #835625;
-  --gold-line: #eeb10e;
-  --shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
-  --radius: 20px;
+  --gray-50: #f5f5f7;
+  --gray-100: #e8e8ea;
+  --gray-300: #d4d4d8;
+  --gray-500: #71717a;
+  --gray-600: #52525b;
+  --gray-700: #3f3f46;
+  --gray-900: #18181b;
+  --black: #0f0f0f;
+  --gold: #c2a47a;
+  --gold-hover: #b89364;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.1);
+  --radius: 16px;
   --container: 1200px;
   --serif: 'Martel', 'Segoe UI', serif;
   --sans: 'Mulish', 'Segoe UI', sans-serif;
@@ -83,35 +82,37 @@ ul {
 }
 
 .btn-gold {
-  background: var(--gold-strong);
-  color: var(--black);
+  background: var(--gold);
+  color: var(--white);
+  border-color: var(--gold);
 }
 
 .btn-gold:hover {
-  background: var(--black);
-  color: var(--gold-strong);
+  background: var(--gold-hover);
+  border-color: var(--gold-hover);
+  color: var(--white);
 }
 
 .btn-outline-light {
   background: transparent;
   color: var(--white);
-  border-color: var(--white);
+  border-color: rgba(255, 255, 255, 0.9);
 }
 
 .btn-outline-light:hover {
-  background: var(--gold-strong);
-  border-color: var(--gold-strong);
+  background: var(--white);
+  border-color: var(--white);
   color: var(--black);
 }
 
 .btn-outline-dark {
   background: transparent;
-  color: var(--gold);
-  border-color: var(--gold);
+  color: var(--black);
+  border-color: var(--black);
 }
 
 .btn-outline-dark:hover {
-  background: var(--gold);
+  background: var(--black);
   color: var(--white);
 }
 
@@ -229,7 +230,7 @@ ul {
   left: 0;
   min-width: 240px;
   background: var(--white);
-  border-top: 3px solid var(--gold-line);
+  border-top: 2px solid var(--gold);
   border-radius: 4px;
   box-shadow: var(--shadow);
   padding: 14px;
@@ -361,7 +362,7 @@ ul {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.35));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.35) 60%, rgba(0, 0, 0, 0.5) 100%);
 }
 
 .hero-content {
@@ -394,7 +395,7 @@ ul {
 
 .hero .hero-quote-source {
   font-size: 13px;
-  color: var(--gold-strong);
+  color: var(--gold);
   font-weight: 700;
   margin-bottom: 34px;
 }
@@ -519,7 +520,7 @@ ul {
 }
 
 .bento-overlay .link-arrow {
-  color: var(--gold-strong);
+  color: var(--gold);
   margin-top: 4px;
 }
 
@@ -551,14 +552,14 @@ ul {
 }
 
 .paket-card.featured {
-  border: 2px solid var(--gold-strong);
+  border: 1px solid var(--gold);
 }
 
 .paket-img {
   width: 100%;
   height: 210px;
   object-fit: cover;
-  border-bottom: 3px solid var(--gold-strong);
+  border-bottom: 2px solid var(--gold);
 }
 
 .paket-body {
@@ -571,7 +572,7 @@ ul {
 .paket-badge {
   align-self: flex-start;
   background: var(--black);
-  color: var(--gold-strong);
+  color: var(--gold);
   padding: 5px 14px;
   border-radius: 999px;
   font-size: 11px;
@@ -679,7 +680,7 @@ ul {
   background: var(--light);
   border-radius: 12px;
   padding: 18px 20px;
-  border-left: 4px solid var(--gold-line);
+  border-left: 4px solid var(--gold);
   margin-bottom: 20px;
 }
 
@@ -767,7 +768,7 @@ ul {
   height: 52px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--gold-strong);
+  border: 1px solid var(--gold);
 }
 
 .testimonial-persona strong {
@@ -809,7 +810,7 @@ ul {
   border-radius: 50%;
   object-fit: cover;
   margin: 0 auto 14px;
-  border: 3px solid var(--gold-strong);
+  border: 2px solid var(--gold);
 }
 
 .ustadz-card strong {
@@ -997,7 +998,7 @@ ul {
   height: 56px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--gold-strong);
+  border: 1px solid var(--gold);
 }
 
 .cta-panel h3 {
@@ -1054,7 +1055,7 @@ ul {
   bottom: 0;
   width: 42px;
   height: 3px;
-  background: var(--gold-line);
+  background: var(--gold);
 }
 
 .footer ul li {
@@ -1068,7 +1069,7 @@ ul {
 }
 
 .footer ul a:hover {
-  color: var(--gold-strong);
+  color: var(--gold);
 }
 
 .footer-social {
@@ -1091,8 +1092,8 @@ ul {
 }
 
 .footer-social a:hover {
-  background: var(--gold-strong);
-  border-color: var(--gold-strong);
+  background: var(--gold);
+  border-color: var(--gold);
   color: var(--black);
 }
 
@@ -1264,7 +1265,7 @@ ul {
   width: 100%;
   height: 200px;
   object-fit: cover;
-  border-bottom: 3px solid var(--gold-strong);
+  border-bottom: 2px solid var(--gold);
 }
 
 .popup-body {
@@ -1274,7 +1275,7 @@ ul {
 .popup-badge {
   display: inline-block;
   background: var(--black);
-  color: var(--gold-strong);
+  color: var(--gold);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.5px;
