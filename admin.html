@@ -11,21 +11,36 @@
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
-  <!-- ================= LAYAR LOGIN ================= -->
+  <!-- ================= LAYAR LOGIN — Supabase Auth ================= -->
   <div class="login-screen" id="loginScreen">
     <div class="login-card">
       <img src="assets/images/logo.png" alt="Logo" class="login-logo">
       <h1>Admin Panel</h1>
-      <p>Masuk untuk mengelola website</p>
+      <p>Masuk dengan email terdaftar (konfirmasi email wajib)</p>
       <form id="loginForm">
+        <div class="form-field">
+          <label for="loginEmail">Email Admin</label>
+          <input type="email" id="loginEmail" placeholder="admin@royalharamain.co.id" required>
+        </div>
         <div class="form-field">
           <label for="loginPass">Password</label>
           <input type="password" id="loginPass" placeholder="Masukkan password" required>
         </div>
         <button type="submit" class="btn btn-gold btn-full"><i class="fa-solid fa-lock"></i> Masuk</button>
       </form>
-      <p class="login-error" id="loginError" hidden>Password salah. Coba lagi.</p>
-      <p class="login-hint"><i class="fa-solid fa-circle-info"></i> Password default: <strong>royal123</strong>. Ganti di tab Penyimpanan.</p>
+      <p class="login-error" id="loginError" hidden></p>
+      <div class="login-links" style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button type="button" class="btn btn-ghost btn-sm" id="btnShowSignup"><i class="fa-solid fa-user-plus"></i> Daftar Admin Baru</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnForgotPass"><i class="fa-solid fa-key"></i> Lupa Password</button>
+      </div>
+      <form id="signupForm" hidden style="margin-top:16px;border-top:1px solid var(--gray-100);padding-top:16px">
+        <h4 style="font-size:14px;margin-bottom:8px">Daftar — konfirmasi via email webmail</h4>
+        <div class="form-field"><input type="email" id="signupEmail" placeholder="email@royalharamain.co.id" required></div>
+        <div class="form-field"><input type="password" id="signupPass" placeholder="Password min 6 karakter" minlength="6" required></div>
+        <button type="submit" class="btn btn-gold btn-full"><i class="fa-solid fa-paper-plane"></i> Daftar & Kirim Konfirmasi</button>
+        <p class="form-hint" style="font-size:12px;margin-top:8px">Cek inbox/spam webmail kamu untuk link konfirmasi.</p>
+      </form>
+      <p class="login-hint"><i class="fa-solid fa-circle-info"></i> Mode lama <strong>royal123</strong> nonaktif. Gunakan Supabase Auth.</p>
     </div>
   </div>
 
@@ -279,74 +294,118 @@
 
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
+  <script src="js/supabaseClient.js"></script>
 <script>
-    /* ================== AUTH (LOGIN) ================== */
-    const AUTH_KEY = "rhi_admin_pass";
-    const AUTH_SESSION = "rhi_admin_logged";
-    const DEFAULT_PASSWORD = "royal123";
-
-    function getPassword() {
-      return localStorage.getItem(AUTH_KEY) || DEFAULT_PASSWORD;
-    }
-
-    function isLoggedIn() {
-      return sessionStorage.getItem(AUTH_SESSION) === "1";
-    }
+    /* ================== AUTH — Supabase (email konfirmasi via webmail) ================== */
+    let currentUser = null;
 
     function lockScreen() {
       document.getElementById("loginScreen").style.display = "flex";
       document.getElementById("btnLogout").hidden = true;
       document.body.style.overflow = "hidden";
     }
-
     function unlockScreen() {
       document.getElementById("loginScreen").style.display = "none";
       document.getElementById("btnLogout").hidden = false;
       document.body.style.overflow = "";
     }
-
-    if (!isLoggedIn()) {
-      lockScreen();
-    } else {
-      unlockScreen();
+    function showError(msg) {
+      const el = document.getElementById("loginError");
+      el.textContent = msg;
+      el.hidden = false;
     }
 
-    document.getElementById("loginForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const input = document.getElementById("loginPass").value;
-      if (input === getPassword()) {
-        sessionStorage.setItem(AUTH_SESSION, "1");
+    async function checkSession() {
+      if (!supabaseClient) { lockScreen(); return; }
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session && session.user && session.user.email_confirmed_at) {
+        currentUser = session.user;
         unlockScreen();
+      } else if (session && session.user && !session.user.email_confirmed_at) {
+        showError("Email belum dikonfirmasi. Cek inbox webmail kamu (spam juga).");
+        lockScreen();
       } else {
-        document.getElementById("loginError").hidden = false;
+        lockScreen();
       }
+    }
+    checkSession();
+    if (supabaseClient) {
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_IN" && session?.user?.email_confirmed_at) {
+          currentUser = session.user;
+          unlockScreen();
+        } else if (event === "SIGNED_OUT") {
+          currentUser = null;
+          lockScreen();
+        }
+      });
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPass").value;
+      document.getElementById("loginError").hidden = true;
+      if (!supabaseClient) return showError("Supabase belum terhubung.");
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) {
+        if (error.message.includes("Email not confirmed")) showError("Email belum dikonfirmasi. Cek webmail (inbox/spam).");
+        else if (error.message.includes("Invalid login")) showError("Email atau password salah.");
+        else showError(error.message);
+        return;
+      }
+      if (data.user && !data.user.email_confirmed_at) {
+        showError("Email belum dikonfirmasi. Cek webmail kamu.");
+        return;
+      }
+      currentUser = data.user;
+      unlockScreen();
     });
 
-    document.getElementById("btnLogout").addEventListener("click", () => {
-      sessionStorage.removeItem(AUTH_SESSION);
+    document.getElementById("btnShowSignup").addEventListener("click", () => {
+      const f = document.getElementById("signupForm");
+      f.hidden = !f.hidden;
+    });
+
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPass").value;
+      if (!email.endsWith("@royalharamain.co.id") && !email.includes("@")) { /* opsional batasi domain */ }
+      const { data, error } = await supabaseClient.auth.signUp({
+        email, password,
+        options: { emailRedirectTo: window.location.origin + "/admin.html" }
+      });
+      if (error) return showError(error.message);
+      alert("Pendaftaran berhasil! Cek webmail " + email + " (inbox & spam) untuk link konfirmasi. Link dikirim via SMTP webmail domain kamu jika sudah di-set di Supabase → Auth → SMTP.");
+      e.target.hidden = true;
+    });
+
+    document.getElementById("btnForgotPass").addEventListener("click", async () => {
+      const email = prompt("Masukkan email admin untuk reset password:");
+      if (!email) return;
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/admin.html" });
+      if (error) alert("Gagal: " + error.message);
+      else alert("Link reset dikirim ke " + email + ". Cek webmail (inbox/spam).");
+    });
+
+    document.getElementById("btnLogout").addEventListener("click", async () => {
+      if (supabaseClient) await supabaseClient.auth.signOut();
+      currentUser = null;
       lockScreen();
     });
 
-    document.getElementById("passwordForm").addEventListener("submit", (e) => {
+    document.getElementById("passwordForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const oldPass = document.getElementById("oldPass").value;
       const newPass = document.getElementById("newPass").value;
       const confirmPass = document.getElementById("confirmPass").value;
-      if (oldPass !== getPassword()) {
-        alert("Password lama salah.");
-        return;
-      }
-      if (newPass !== confirmPass) {
-        alert("Konfirmasi password baru tidak cocok.");
-        return;
-      }
-      if (newPass.length < 6) {
-        alert("Password baru minimal 6 karakter.");
-        return;
-      }
-      localStorage.setItem(AUTH_KEY, newPass);
-      alert("Password berhasil diganti!");
-      e.target.reset();
+      if (newPass !== confirmPass) return alert("Konfirmasi password baru tidak cocok.");
+      if (newPass.length < 6) return alert("Password baru minimal 6 karakter.");
+      if (!supabaseClient || !currentUser) return alert("Harus login via Supabase dulu.");
+      const { error } = await supabaseClient.auth.updateUser({ password: newPass });
+      if (error) alert("Gagal: " + error.message);
+      else { alert("Password berhasil diganti via Supabase Auth!"); e.target.reset(); }
     });
 
     /* ================== STORAGE HELPERS ================== */
@@ -383,6 +442,27 @@
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
+    }
+
+    /* ============ Supabase helpers (dengan fallback localStorage) ============ */
+    async function uploadToSupabase(file, folder) {
+      if (!supabaseClient || !file) return null;
+      try {
+        const ext = file.name.split('.').pop();
+        const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error } = await supabaseClient.storage.from('royalharamain').upload(path, file, { cacheControl: '3600', upsert: false });
+        if (error) { console.warn('storage upload gagal, fallback base64', error.message); return null; }
+        const { data } = supabaseClient.storage.from('royalharamain').getPublicUrl(path);
+        return data.publicUrl;
+      } catch (e) { console.warn(e); return null; }
+    }
+    async function sbFetch(table) {
+      if (!supabaseClient) return null;
+      try {
+        const { data, error } = await supabaseClient.from(table).select('*').order('created_at', { ascending: false });
+        if (error) { console.warn(table, error.message); return null; }
+        return data;
+      } catch (e) { return null; }
     }
 
     /* ================== TAB NAVIGATION ================== */
@@ -474,7 +554,8 @@
       const file = document.getElementById("fImageFile").files[0];
       if (file) {
         if (file.size > 1.5 * 1024 * 1024) return alert("Ukuran gambar maksimal 1,5 MB.");
-        image = await readFileAsDataURL(file);
+        const uploaded = await uploadToSupabase(file, "artikel");
+        image = uploaded || await readFileAsDataURL(file);
       }
       const article = {
         title: document.getElementById("fTitle").value.trim(),
@@ -483,6 +564,17 @@
         image: image || "assets/images/logo.png",
         url: document.getElementById("fLink").value.trim() || "#",
       };
+      // Supabase save (jika login)
+      if (supabaseClient && currentUser) {
+        try {
+          const payload = { title: article.title, excerpt: article.excerpt, date: article.date, image_url: article.image, url: article.url };
+          if (editingId !== null && articles[editingId]?.id) {
+            await supabaseClient.from("articles").update(payload).eq("id", articles[editingId].id);
+          } else {
+            await supabaseClient.from("articles").insert(payload);
+          }
+        } catch (err) { console.warn("supabase articles error", err); }
+      }
       if (editingId !== null) articles[editingId] = article;
       else articles.unshift(article);
       save(KEYS.articles, articles);
@@ -578,7 +670,8 @@ function startEditPaket(index) {
       const file = document.getElementById("pImageFile").files[0];
       if (file) {
         if (file.size > 1.5 * 1024 * 1024) return alert("Ukuran gambar maksimal 1,5 MB.");
-        image = await readFileAsDataURL(file);
+        const uploaded = await uploadToSupabase(file, "paket");
+        image = uploaded || await readFileAsDataURL(file);
       }
       const paket = {
         title: document.getElementById("pTitle").value.trim(),
@@ -590,6 +683,13 @@ function startEditPaket(index) {
         url: document.getElementById("pLink").value.trim() || "#",
         featured: document.getElementById("pFeatured").checked,
       };
+      if (supabaseClient && currentUser) {
+        try {
+          const payload = { title: paket.title, price: paket.price, duration: paket.duration, badge: paket.badge, facilities: paket.facilities, image_url: paket.image, url: paket.url, featured: paket.featured };
+          if (editingPaketId !== null && packages[editingPaketId]?.id) await supabaseClient.from("packages").update(payload).eq("id", packages[editingPaketId].id);
+          else await supabaseClient.from("packages").insert(payload);
+        } catch (err) { console.warn(err); }
+      }
       if (editingPaketId !== null) packages[editingPaketId] = paket;
       else packages.unshift(paket);
       save(KEYS.packages, packages);
@@ -782,12 +882,46 @@ document.getElementById("promoForm").addEventListener("submit", async (e) => {
       }
     });
 
-    /* ================== INIT ================== */
-    renderArticles();
-    renderPakets();
-    renderPromoForm();
-    renderLeads();
-    renderStorage();
+    /* ================== INIT — sync Supabase jika login ================== */
+    async function syncFromSupabase() {
+      if (!supabaseClient) return;
+      try {
+        const { data: arts } = await supabaseClient.from("articles").select("*");
+        if (arts && arts.length) {
+          save(KEYS.articles, arts.map(a => ({ id: a.id, title: a.title, excerpt: a.excerpt, date: a.date, image: a.image_url, url: a.url })));
+        }
+        const { data: pkgs } = await supabaseClient.from("packages").select("*");
+        if (pkgs && pkgs.length) {
+          save(KEYS.packages, pkgs.map(p => ({ id: p.id, title: p.title, price: p.price, duration: p.duration, badge: p.badge, facilities: p.facilities, image: p.image_url, url: p.url, featured: p.featured })));
+        }
+        const { data: lds } = await supabaseClient.from("leads").select("*").order("created_at", { ascending: false }).limit(100);
+        if (lds) {
+          // tampilkan di admin tapi tetap simpan local untuk renderLeads
+          window._supabaseLeads = lds;
+        }
+        const { data: pr } = await supabaseClient.from("promos").select("*").eq("id", 1).single();
+        if (pr) save(KEYS.promo, { enabled: pr.enabled, badge: pr.badge, title: pr.title, message: pr.message, image: pr.image_url, link: pr.link, delay: pr.delay, showOnce: pr.show_once });
+      } catch (e) { console.warn("sync supabase", e); }
+    }
+    (async () => {
+      await syncFromSupabase();
+      renderArticles();
+      renderPakets();
+      renderPromoForm();
+      renderLeads();
+      renderStorage();
+      // jika ada leads supabase, render ulang dengan data supabase
+      if (window._supabaseLeads && window._supabaseLeads.length) {
+        const list = document.getElementById("leadList");
+        if (list) {
+          document.getElementById("leadCount").textContent = window._supabaseLeads.length;
+          document.getElementById("leadEmpty").hidden = true;
+          list.innerHTML = window._supabaseLeads.map(l => `
+            <div class="lead-row"><div class="lead-info"><h4>${l.name} <span class="lead-badge">${l.interest||"Konsultasi"}</span></h4><p><a href="https://wa.me/${(l.phone||"").replace(/[^0-9]/g,"")}" target="_blank">${l.phone}</a> — ${new Date(l.created_at).toLocaleString("id-ID")}</p>${l.message?`<p>${l.message}</p>`:""}</div></div>`
+          ).join("");
+        }
+      }
+    })();
   </script>
 </body>
 </html>

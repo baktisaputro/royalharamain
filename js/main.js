@@ -4,21 +4,21 @@
    untuk update konten (cukup edit js/data.js).
    ============================================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   renderNavbar();
   renderHero();
   renderBadges();
   renderServices();
-  renderPackages();
+  await renderPackages();
   renderAbout();
   renderTestimonials();
   renderUstadz();
   renderPartners();
-  renderArticles();
+  await renderArticles();
   renderOffices();
   renderFooter();
   renderFab();
-  renderPopup();
+  await renderPopup();
   initRegisterForm();
 
   const toggle = document.getElementById("navToggle");
@@ -141,28 +141,35 @@ function renderServices() {
     .join("");
 }
 
-/* ============ PAKET UMROH & HAJI ============ */
-function getPackages() {
+/* ============ PAKET UMROH & HAJI — Supabase first ============ */
+async function getPackages() {
+  if (typeof supabaseClient !== "undefined" && supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient.from("packages").select("*").order("created_at", { ascending: false });
+      if (!error && data && data.length) {
+        return data.map(p => ({ id: p.id, title: p.title, price: p.price, duration: p.duration, badge: p.badge, facilities: p.facilities || [], image: p.image_url || p.image, url: p.url, featured: p.featured }));
+      }
+    } catch (e) {}
+  }
   try {
     const raw = localStorage.getItem("rhi_packages");
     if (raw) {
       const stored = JSON.parse(raw);
       if (Array.isArray(stored) && stored.length) return stored;
     }
-  } catch (e) {
-    /* fallback ke data.js */
-  }
+  } catch (e) {}
   return DATA.packages;
 }
 
-function renderPackages() {
+async function renderPackages() {
   const grid = document.getElementById("packagesGrid");
   if (!grid) return;
-  grid.innerHTML = getPackages()
+  const pkgs = await getPackages();
+  grid.innerHTML = pkgs
     .map(
       (p) => `
     <div class="paket-card${p.featured ? " featured" : ""}">
-      <img src="${p.image || "assets/images/logo.png"}" alt="${p.title}" class="paket-img">
+      <img src="${p.image || p.image_url || "assets/images/logo.png"}" alt="${p.title}" class="paket-img">
       <div class="paket-body">
         ${p.badge ? `<span class="paket-badge">${p.badge}</span>` : ""}
         <h3>${p.title}</h3>
@@ -246,28 +253,35 @@ function renderPartners() {
   slider.innerHTML = `<div class="logo-slider-inner">${chips}${chips}</div>`;
 }
 
-/* ============ ARTIKEL ============ */
-function getArticles() {
+/* ============ ARTIKEL — Supabase first ============ */
+async function getArticles() {
+  if (typeof supabaseClient !== "undefined" && supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient.from("articles").select("*").order("created_at", { ascending: false });
+      if (!error && data && data.length) {
+        return data.map(a => ({ id: a.id, title: a.title, excerpt: a.excerpt, date: a.date, image: a.image_url || a.image, url: a.url }));
+      }
+    } catch (e) {}
+  }
   try {
     const raw = localStorage.getItem("rhi_articles");
     if (raw) {
       const stored = JSON.parse(raw);
       if (Array.isArray(stored) && stored.length) return stored;
     }
-  } catch (e) {
-    /* fallback ke data.js */
-  }
+  } catch (e) {}
   return DATA.articles;
 }
 
-function renderArticles() {
+async function renderArticles() {
   const grid = document.getElementById("articlesGrid");
   if (!grid) return;
-  grid.innerHTML = getArticles()
+  const arts = await getArticles();
+  grid.innerHTML = arts
     .map(
       (a) => `
     <article class="article-card">
-      <img src="${a.image || "assets/images/logo.png"}" alt="${a.title}">
+      <img src="${a.image || a.image_url || "assets/images/logo.png"}" alt="${a.title}">
       <div class="article-body">
         <p class="article-date">${a.date || ""}</p>
         <h3>${a.title}</h3>
@@ -341,16 +355,22 @@ function renderFab() {
   if (fab && DATA.contact.whatsapp) fab.href = DATA.contact.whatsapp;
 }
 
-/* ============ POPUP PROMO ============ */
-function renderPopup() {
+/* ============ POPUP PROMO — Supabase first ============ */
+async function renderPopup() {
   const forceTest = new URLSearchParams(window.location.search).get("promo") === "1";
 
-  let promo;
-  try {
-    const raw = localStorage.getItem("rhi_promo");
-    promo = raw ? JSON.parse(raw) : null;
-  } catch (e) {
-    promo = null;
+  let promo = null;
+  if (typeof supabaseClient !== "undefined" && supabaseClient && !forceTest) {
+    try {
+      const { data } = await supabaseClient.from("promos").select("*").eq("id", 1).single();
+      if (data) promo = { enabled: data.enabled, badge: data.badge, title: data.title, message: data.message, image: data.image_url || data.image, link: data.link, delay: data.delay, showOnce: data.show_once };
+    } catch (e) {}
+  }
+  if (!promo) {
+    try {
+      const raw = localStorage.getItem("rhi_promo");
+      promo = raw ? JSON.parse(raw) : null;
+    } catch (e) { promo = null; }
   }
 
   const overlay = document.getElementById("popupOverlay");
@@ -412,12 +432,12 @@ function renderPopup() {
   });
 }
 
-/* ============ FORM PENDAFTARAN (GRAB DATA) ============ */
+/* ============ FORM PENDAFTARAN — Supabase + localStorage ============ */
 function initRegisterForm() {
   const form = document.getElementById("registerForm");
   if (!form) return;
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = document.getElementById("regName").value.trim();
     const phone = document.getElementById("regPhone").value.trim();
@@ -425,25 +445,23 @@ function initRegisterForm() {
     const message = document.getElementById("regMessage").value.trim();
     if (!name || !phone) return;
 
-    let leads = [];
-    try {
-      leads = JSON.parse(localStorage.getItem("rhi_leads")) || [];
-    } catch (err) {
-      leads = [];
+    // simpan ke Supabase jika tersedia
+    if (typeof supabaseClient !== "undefined" && supabaseClient) {
+      try {
+        await supabaseClient.from("leads").insert({ name, phone, interest, message });
+      } catch (err) { console.warn("leads supabase error", err); }
     }
-    leads.unshift({
-      name: name,
-      phone: phone,
-      interest: interest,
-      message: message,
-      date: new Date().toLocaleString("id-ID"),
-    });
+    // fallback localStorage
+    let leads = [];
+    try { leads = JSON.parse(localStorage.getItem("rhi_leads")) || []; } catch (err) { leads = []; }
+    leads.unshift({ name, phone, interest, message, date: new Date().toLocaleString("id-ID") });
     localStorage.setItem("rhi_leads", JSON.stringify(leads));
 
     const success = document.getElementById("registerSuccess");
     if (success) success.hidden = false;
     form.querySelector("button[type='submit']").disabled = true;
     form.reset();
+    setTimeout(() => { form.querySelector("button[type='submit']").disabled = false; }, 3000);
   });
 }
 
