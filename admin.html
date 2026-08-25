@@ -363,10 +363,11 @@
       unlockScreen();
     });
 
-    document.getElementById("btnShowSignup").addEventListener("click", () => {
-      const f = document.getElementById("signupForm");
-      f.hidden = !f.hidden;
-    });
+    // toggle sudah via inline onclick, jangan double-toggle
+    // document.getElementById("btnShowSignup").addEventListener("click", () => {
+    //   const f = document.getElementById("signupForm");
+    //   f.hidden = !f.hidden;
+    // });
 
     document.getElementById("signupForm").addEventListener("submit", async (e) => {
       e.preventDefault();
