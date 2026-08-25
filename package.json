@@ -1,12 +1,5 @@
 {
   "name": "royalharamain",
   "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "deploy": "vercel --prod",
-    "dev": "vercel dev"
-  },
-  "devDependencies": {
-    "vercel": "^33.0.0"
-  }
+  "private": true
 }
