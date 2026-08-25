@@ -373,22 +373,31 @@
       e.preventDefault();
       const email = document.getElementById("signupEmail").value.trim();
       const password = document.getElementById("signupPass").value;
-      if (!email.endsWith("@royalharamain.co.id") && !email.includes("@")) { /* opsional batasi domain */ }
-      const { data, error } = await supabaseClient.auth.signUp({
-        email, password,
-        options: { emailRedirectTo: window.location.origin + "/admin.html" }
-      });
-      if (error) return showError(error.message);
-      alert("Pendaftaran berhasil! Cek webmail " + email + " (inbox & spam) untuk link konfirmasi. Link dikirim via SMTP webmail domain kamu jika sudah di-set di Supabase → Auth → SMTP.");
+      document.getElementById("loginError").hidden = true;
+      if (!supabaseClient) return showError("Supabase belum siap. Refresh halaman.");
+      // tanpa emailRedirectTo biar tidak 422 redirect not allowed — pakai Site URL default Supabase
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+      if (error) {
+        if (error.message.includes("already registered") || error.message.includes("User already")) {
+          showError("Email sudah terdaftar. Silakan Login, atau cek webmail untuk konfirmasi.");
+          // coba resend confirmation
+          await supabaseClient.auth.resend({ type: "signup", email });
+          alert("Email sudah terdaftar. Link konfirmasi dikirim ulang ke " + email + " (cek spam). Jika sudah confirm, langsung Login.");
+          return;
+        }
+        return showError(error.message + " — Cek Supabase Auth → URL Configuration → tambahkan https://royalharamain.vercel.app/*");
+      }
+      // jika auto-confirm mati, user perlu cek email
+      alert("Pendaftaran berhasil! Cek webmail " + email + " (inbox & spam) untuk link konfirmasi. Setelah confirm, kembali Login di sini.");
       e.target.hidden = true;
     });
 
     document.getElementById("btnForgotPass").addEventListener("click", async () => {
       const email = prompt("Masukkan email admin untuk reset password:");
       if (!email) return;
-      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/admin.html" });
-      if (error) alert("Gagal: " + error.message);
-      else alert("Link reset dikirim ke " + email + ". Cek webmail (inbox/spam).");
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+      if (error) alert("Gagal: " + error.message + " — pastikan email sudah terdaftar & confirm.");
+      else alert("Link reset dikirim ke " + email + ". Cek webmail (inbox/spam). Setelah klik link, kamu akan set password baru.");
     });
 
     document.getElementById("btnLogout").addEventListener("click", async () => {
