@@ -1,0 +1,39 @@
+# Royal Haramain - Apache config untuk shared hosting (cPanel)
+# Pastikan index.php diprioritaskan dibanding index.html (situs dinamis)
+
+DirectoryIndex index.php index.html
+
+# --- Keamanan dasar ---
+Options -Indexes
+ServerSignature Off
+
+# Cegah akses langsung ke file konfigurasi / file sensitif
+<FilesMatch "^(config\.php|setup_|database\.sql|\.env)">
+  Require all denied
+</FilesMatch>
+
+# Blokir akses ke file .git di server (keamanan)
+RedirectMatch 404 /\.git
+
+# --- Aturan dasar ---
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Tidak perlu halaman index di URL
+  RewriteCond %{THE_REQUEST} \s/+index\.php [NC]
+  RewriteRule ^index\.php$ / [R=301,L]
+</IfModule>
+
+# --- Cache statis ---
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+
+# --- PHP settings (aman untuk web) ---
+<IfModule mod_php.c>
+  php_flag display_errors Off
+  php_flag log_errors On
+</IfModule>

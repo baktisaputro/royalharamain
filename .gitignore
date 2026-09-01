@@ -1,0 +1,6 @@
+# Log & temp
+*.log
+*.tmp
+
+# file sekali-pakai yang bisa memuat password (jangan pernah commit)
+app/setup_password.php
