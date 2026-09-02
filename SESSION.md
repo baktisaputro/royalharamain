@@ -6,6 +6,7 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
 Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel menjadi PHP + MySQL di shared hosting cPanel, dilengkapi panel admin ber-level (super admin/admin/viewer), tab edit hero, upload gambar lokal + tema warna seluruh website yang dikelola dari admin. Slideshow hero + popup daftar sudah diimplementasikan.
 
 ## Status Terakhir (saat sesi berakhir)
+- Commit `eb47c0b` di-push ke GitHub: slideshow/hero/popup selesai & terkirim.
 - Slideshow hero 5 gambar (slide_1..5.webp) berjalan, overlay gelap ditambahkan agar teks terbaca.
 - Kotak `.hero-image` (gambar kanan yang mengulang slide) DIHAPUS.
 - Tombol "Daftar 1-Klik" di header DIHAPUS (desktop & mobile).
@@ -24,7 +25,7 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 - 3 level akses: `super_admin` (kelola user+semua), `admin` (kelola konten), `viewer` (read-only). Panel admin gaya "netral modern".
 - Tema: preset + color picker (keduanya), berlaku seluruh website. Warna dasar logo: emerald #046a38, emerald-dark #023d1f, gold #d4af37.
 - GD aktif (`extension=gd` di `C:\xampp\php\php.ini`), terverifikasi web mode.
-- Git last push: commit `2b82a81` (19 file, 2079 baris). Perubahan slideshow/hero/popup menunggu commit berikutnya.
+- Git last push: commit `eb47c0b` (slideshow hero 5 gambar + overlay, hero 1 kolom, popup booking, upload gambar hero).
 - Sistem lama (Vercel/Supabase) masih ada sebagai arsip: `index.html`, `admin.html`, `js/supabaseClient.js`, `supabase/schema.sql`, `vercel.json`.
 - PowerShell 5.1 `Invoke-WebRequest` tidak punya `-Form`; multipart upload diuji via `curl.exe`.
 
@@ -43,7 +44,11 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 - Hero 1 kolom center + tombol "Daftar" di akhir; popup booking modal + auto-open setelah submit; mobile nav toggle.
 
 ### Active
-- Perubahan hero/popup menunggu COMMIT + PUSH ke GitHub.
+- (empty)
+
+### Next Move
+1. Ganti password superadmin dari `NewPass456` sebelum go-live.
+2. Lanjut go-live: minta kredensial DB cPanel → set `app/config.php` → upload ke `public_html` + import `database.sql` → uji.
 
 ### Blocked
 - Go-live cPanel belum bisa: belum ada kredensial DB hosting (nama DB, user, password).
