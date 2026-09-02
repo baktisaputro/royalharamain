@@ -6,7 +6,7 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
 Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel menjadi PHP + MySQL di shared hosting cPanel, dilengkapi panel admin ber-level (super admin/admin/viewer), tab edit hero, upload gambar lokal + tema warna seluruh website yang dikelola dari admin. Slideshow hero + popup daftar sudah diimplementasikan.
 
 ## Status Terakhir (saat sesi berakhir)
-- Fix: Carousel hero tidak bergerak — background statis disembunyikan saat slideshow aktif, `z-index:0` + `will-change:opacity` ditambahkan supaya browser render animasi fade antar-slide dengan benar.
+- Fix: Lightbox galeri selalu terlihat (overlay gelap + ✕ di pojok kanan atas) karena CSS `.lightbox { display:flex }` override atribut HTML `hidden`. Ditambah `.lightbox[hidden] { display:none!important }` → ✕ hilang & carousel hero terlihat normal.
 - Fitur baru: Keunggulan/Layanan, Galeri Foto, dan Halaman Kontak + form pesan (inbox) — SEMUA TERUJI & di-commit/push.
 - Slideshow hero 5 gambar (slide_1..5.webp) berjalan, overlay gelap ditambahkan agar teks terbaca.
 - Kotak `.hero-image` (gambar kanan yang mengulang slide) DIHAPUS.

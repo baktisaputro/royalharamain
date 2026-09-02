@@ -127,7 +127,7 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style_pub.css?v=2">
+  <link rel="stylesheet" href="css/style_pub.css?v=3">
   <style>
     /* Tema dinamis dari database (Admin -> Hero -> Tema Website) */
     <?php if (count($hero_slides) > 1): ?>

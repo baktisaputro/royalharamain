@@ -132,6 +132,7 @@ section { padding:64px 0; }
 .gallery-ig .ig-follow { display:inline-flex; align-items:center; gap:8px; padding:10px 22px; border-radius:30px; background:linear-gradient(135deg,#d4af37,#b8860b); color:#fff; font-size:14px; font-weight:700; }
 
 /* Lightbox */
+.lightbox[hidden] { display:none!important; }
 .lightbox { position:fixed; inset:0; z-index:300; background:rgba(0,0,0,.9); display:flex; align-items:center; justify-content:center; padding:20px; }
 .lightbox-inner { max-width:90vw; max-height:86vh; text-align:center; }
 .lightbox-inner img { max-width:100%; max-height:78vh; border-radius:10px; box-shadow:0 10px 50px rgba(0,0,0,.5); }
