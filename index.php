@@ -130,7 +130,12 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
   <link rel="stylesheet" href="css/style_pub.css?v=2">
   <style>
     /* Tema dinamis dari database (Admin -> Hero -> Tema Website) */
+    <?php if (count($hero_slides) > 1): ?>
+    /* Slideshow aktif: sembunyikan hero-bg statis, pakai slide pertama sebagai fallback */
+    .hero { background:rgba(2,36,18,.9)!important; }
+    <?php else: ?>
     .hero { --hero-bg: url('<?= htmlspecialchars($hero_bg ? (strpos($hero_bg,'http')===0?$hero_bg:BASE_URL.'/'.$hero_bg) : 'https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') ?>'); }
+    <?php endif; ?>
     :root {
       --emerald: <?= htmlspecialchars($theme['primary_color'] ?? '#046a38') ?>;
       --emerald-dark: <?= htmlspecialchars($theme['secondary_color'] ?? '#023d1f') ?>;
@@ -139,8 +144,9 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
     /* Slideshow hero background */
     .hero { position:relative; overflow:hidden; }
     .hero-slide {
-      position:absolute; inset:0; background-size:cover; background-position:center;
-      opacity:0; animation:heroFade <?= count($hero_slides) * 5 ?>s linear infinite;
+      position:absolute; inset:0; z-index:0; background-size:cover; background-position:center;
+      opacity:0; will-change:opacity;
+      animation:heroFade <?= count($hero_slides) * 5 ?>s linear infinite;
     }
     /* Overlay gelap agar teks di atas gambar selalu terbaca */
     .hero-overlay {
