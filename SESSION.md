@@ -21,7 +21,7 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 - Repo GitHub: `baktisaputro/royalharamain` (branch `master`), clone di `C:\Users\IESPA 000\royalharamain`.
 - Git identity lokal repo: name `baktisaputro`, email `baktisaputro@users.noreply.github.com`.
 - Junction lokal: `C:\xampp\htdocs\royalharamain` → folder repo. BASE_URL = `http://localhost/royalharamain`.
-- Kredensial lokal: DB `royalharamain` (user `root`, password kosong). Login admin: `superadmin` / `NewPass456` (harus diganti sebelum go-live).
+- Kredensial lokal: DB `royalharamain` (user `root`, password kosong). Login admin: `superadmin` / `@#$Admin321` (password baru, sudah di-set & diverifikasi).
 - 3 level akses: `super_admin` (kelola user+semua), `admin` (kelola konten), `viewer` (read-only). Panel admin gaya "netral modern".
 - Tema: preset + color picker (keduanya), berlaku seluruh website. Warna dasar logo: emerald #046a38, emerald-dark #023d1f, gold #d4af37.
 - GD aktif (`extension=gd` di `C:\xampp\php\php.ini`), terverifikasi web mode.
@@ -75,5 +75,5 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 - `C:\xampp\mysql\bin\mysql.exe` & `C:\xampp\php\php.exe`: CLI untuk query DB & uji PHP.
 
 ## Kredensial & Akses
-- Admin lokal: `http://localhost/royalharamain/admin/login.php` → `superadmin` / `NewPass456`.
+- Admin lokal: `http://localhost/royalharamain/admin/login.php` → `superadmin` / `@#$Admin321`.
 - Supabase lama: `https://yxdpovmnkxpqdudgwtaz.supabase.co` (arsip).
