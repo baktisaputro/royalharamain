@@ -174,6 +174,55 @@ INSERT INTO articles (title, excerpt, date, image_url, url, sort_order, is_activ
   'https://images.unsplash.com/photo-1564769625905-50e93615e769?w=600&auto=format&fit=crop', '#', 3, 1);
 
 -- ------------------------------------------------------------
+-- Tabel KEUNGGULAN / LAYANAN (section "mengapa memilih kami")
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS features (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  icon VARCHAR(64) DEFAULT 'fa-star',
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO features (icon, title, description, sort_order, is_active) VALUES
+ ('fa-certificate', 'Berizin & Resmi', 'Terdaftar resmi Kemenag RI, AMPHURI, PIHK, dan Siskopatuh.', 1, 1),
+ ('fa-hand-holding-heart', 'Melayani Sepenuh Hati', 'Pendampingan kekeluargaan dari pendaftaran hingga kembali ke tanah air.', 2, 1),
+ ('fa-plane', 'Penerbangan Terjamin', 'Maskapai terbaik (Garuda / Saudia) dengan rute paling nyaman.', 3, 1),
+ ('fa-hotel', 'Hotel Bintang 5', 'Penginapan premium dekat Masjidil Haram & Masjid Nabawi.', 4, 1),
+ ('fa-shield-halved', 'Amanah & Terpercaya', 'Lebih dari 15 tahun pengalaman memberangkatkan puluhan ribu jamaah.', 5, 1),
+ ('fa-cash-register', 'Pembayaran Mudah', 'Fasilitas cicilan biaya haji & umroh untuk memudahkan Anda.', 6, 1)
+ON DUPLICATE KEY UPDATE title = VALUES(title);
+
+-- ------------------------------------------------------------
+-- Tabel GALERI FOTO (upload & kelola dari admin)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS gallery_images (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  image_path VARCHAR(500) NOT NULL,
+  caption VARCHAR(255) DEFAULT '',
+  sort_order INT NOT NULL DEFAULT 0,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ------------------------------------------------------------
+-- Tabel KONTAK / PESAN MASUK (dari form kontak website)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  email VARCHAR(120),
+  phone VARCHAR(50),
+  subject VARCHAR(200),
+  message TEXT NOT NULL,
+  status ENUM('baru','dibaca','selesai') NOT NULL DEFAULT 'baru',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ------------------------------------------------------------
 -- Tabel LEADS (data pendaftar dari form website)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS leads (

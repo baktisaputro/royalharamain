@@ -6,7 +6,7 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
 Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel menjadi PHP + MySQL di shared hosting cPanel, dilengkapi panel admin ber-level (super admin/admin/viewer), tab edit hero, upload gambar lokal + tema warna seluruh website yang dikelola dari admin. Slideshow hero + popup daftar sudah diimplementasikan.
 
 ## Status Terakhir (saat sesi berakhir)
-- Commit `eb47c0b` di-push ke GitHub: slideshow/hero/popup selesai & terkirim.
+- Fitur baru: Keunggulan/Layanan, Galeri Foto, dan Halaman Kontak + form pesan (inbox) — SEMUA TERUJI & di-commit/push.
 - Slideshow hero 5 gambar (slide_1..5.webp) berjalan, overlay gelap ditambahkan agar teks terbaca.
 - Kotak `.hero-image` (gambar kanan yang mengulang slide) DIHAPUS.
 - Tombol "Daftar 1-Klik" di header DIHAPUS (desktop & mobile).
@@ -32,6 +32,10 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 ## Work State
 
 ### Completed
+- Fitur Keunggulan/Layanan (tabel `features`), Galeri Foto (tabel `gallery_images`, upload via `handle_image_upload` ke `uploads/galeri/`), Kontak/Inbox (tabel `contact_messages` + form publik + panel admin `kontak.php` + detail modal).
+- Panel admin baru: `admin/panels/fitur.php`, `admin/panels/galeri.php`, `admin/panels/kontak.php`; tab & menu terdaftar di `admin/index.php` (peran viewer read-only).
+- Section publik baru di `index.php`: `#keunggulan` (grid `.features`), `#galeri` (grid `.gallery-grid`), `#kontak` (layout `.contact-wrap`, form pesan → tabel `contact_messages`).
+- `.credentials.local` (gitignored) menyimpan password admin & DB lokal — jangan commit.
 - XAMPP aktif, GD aktif. DB `royalharamain` + `database.sql` (roles, admin_users, hero_content, packages, package_facilities, articles, leads, promos, settings).
 - Seed super admin + bcrypt valid; seed 3 paket + 3 artikel + tema emerald-gold.
 - Backend PHP lengkap & teruji: `app/config.php`, `app/upload.php`; `admin/login.php`, `admin/logout.php`, `admin/index.php` (tab per role); panels `hero.php`, `paket.php`, `artikel.php`, `leads.php`, `promo.php`, `users.php`, `profil.php`.

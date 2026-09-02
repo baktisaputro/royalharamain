@@ -9,13 +9,13 @@ if (!$u) {
 }
 
 $role = $u['role_slug'];
-$allowed_tabs = ['hero', 'paket', 'artikel', 'leads', 'promo'];
+$allowed_tabs = ['hero', 'paket', 'artikel', 'galeri', 'fitur', 'leads', 'kontak', 'promo'];
 if ($role === 'super_admin') {
     $allowed_tabs[] = 'users';
 }
 if ($role === 'viewer') {
-    // viewer hanya lihat: hero, paket, artikel, leads (read-only)
-    $allowed_tabs = ['hero', 'paket', 'artikel', 'leads'];
+    // viewer hanya lihat: hero, paket, artikel, galeri, fitur, leads, kontak (read-only)
+    $allowed_tabs = ['hero', 'paket', 'artikel', 'galeri', 'fitur', 'leads', 'kontak'];
 }
 // setiap yang login bisa akses profil (ganti password sendiri)
 $allowed_tabs[] = 'profil';
@@ -30,7 +30,10 @@ $panels = [
     'hero'     => __DIR__ . '/panels/hero.php',
     'paket'    => __DIR__ . '/panels/paket.php',
     'artikel'  => __DIR__ . '/panels/artikel.php',
+    'galeri'   => __DIR__ . '/panels/galeri.php',
+    'fitur'    => __DIR__ . '/panels/fitur.php',
     'leads'    => __DIR__ . '/panels/leads.php',
+    'kontak'   => __DIR__ . '/panels/kontak.php',
     'promo'    => __DIR__ . '/panels/promo.php',
     'users'    => __DIR__ . '/panels/users.php',
     'profil'   => __DIR__ . '/panels/profil.php',
@@ -64,7 +67,10 @@ $panels = [
             'hero'    => ['fa-house', 'Hero / Beranda'],
             'paket'   => ['fa-box-open', 'Paket Umroh'],
             'artikel' => ['fa-newspaper', 'Artikel'],
+            'galeri'  => ['fa-images', 'Galeri Foto'],
+            'fitur'   => ['fa-star', 'Keunggulan'],
             'leads'   => ['fa-users', 'Data Pendaftar'],
+    'kontak'  => ['fa-envelope-open-text', 'Pesan Masuk'],
     'promo'   => ['fa-bullhorn', 'Popup Promo'],
     'users'   => ['fa-user-shield', 'Manajemen Admin'],
     'profil'  => ['fa-user-gear', 'Profil & Password'],

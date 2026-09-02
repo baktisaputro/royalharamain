@@ -32,6 +32,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['daftar'])) {
     }
 }
 
+// Handle pesan dari form kontak
+$contact_msg = '';
+$contact_ok = false;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['kontak'])) {
+    $cname    = trim($_POST['cname'] ?? '');
+    $cemail   = trim($_POST['cemail'] ?? '');
+    $cphone   = trim($_POST['cphone'] ?? '');
+    $csubject = trim($_POST['csubject'] ?? '');
+    $cmessage = trim($_POST['cmessage'] ?? '');
+
+    if ($cname === '' || $cmessage === '') {
+        $contact_msg = 'Nama dan pesan wajib diisi.';
+    } else {
+        try {
+            db()->prepare('INSERT INTO contact_messages (name, email, phone, subject, message) VALUES (?,?,?,?,?)')
+                ->execute([$cname, $cemail ?: null, $cphone ?: null, $csubject ?: null, $cmessage]);
+            $contact_msg = 'Terima kasih! Pesan Anda sudah kami terima, kami akan segera merespons.';
+            $contact_ok = true;
+        } catch (Exception $e) {
+            $contact_msg = 'Terjadi kesalahan, silakan coba lagi.';
+        }
+    }
+}
+
 // Ambil data hero
 $hero = db()->query('SELECT * FROM hero_content WHERE id=1')->fetch() ?: [];
 $legal_badges = json_decode($hero['legal_badges'] ?? '[]', true) ?: [];
@@ -66,6 +90,12 @@ foreach ($packages as $pk) {
 
 // Ambil artikel
 $articles = db()->query('SELECT * FROM articles WHERE is_active=1 ORDER BY id DESC LIMIT 3')->fetchAll();
+
+// Ambil keunggulan / layanan
+$features = db()->query('SELECT * FROM features WHERE is_active=1 ORDER BY sort_order ASC, id ASC')->fetchAll();
+
+// Ambil galeri foto
+$gallery = db()->query('SELECT * FROM gallery_images WHERE is_active=1 ORDER BY sort_order ASC, id ASC')->fetchAll();
 
 // Ambil promo popup
 $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
@@ -129,8 +159,10 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
       <nav class="main-nav">
         <a href="#beranda">Beranda</a>
         <a href="#paket">Paket</a>
-        <a href="#tentang">Tentang</a>
+        <a href="#keunggulan">Keunggulan</a>
         <a href="#berita">Berita</a>
+        <a href="#galeri">Galeri</a>
+        <a href="#kontak">Kontak</a>
         <a href="#lokasi">Lokasi</a>
       </nav>
       <button class="mobile-menu" onclick="toggleNav()">☰</button>
@@ -182,6 +214,28 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
         </div>
       </div>
     </div>
+    <?php endif; ?>
+
+    <!-- ============ KEUNGGULAN / LAYANAN (dari DB) ============ -->
+    <?php if ($features): ?>
+    <section id="keunggulan">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow" style="background:rgba(4,106,56,.1);color:var(--emerald)">Mengapa Memilih Kami</span>
+          <h2>Keunggulan & Layanan Terbaik</h2>
+          <p>Kami hadir untuk mewujudkan perjalanan ibadah Anda dengan pelayanan prima dan amanah.</p>
+        </div>
+        <div class="features">
+          <?php foreach ($features as $f): ?>
+            <article class="card">
+              <div class="feature-icon"><i class="fa-solid <?= htmlspecialchars($f['icon']) ?>"></i></div>
+              <h3><?= htmlspecialchars($f['title']) ?></h3>
+              <p><?= htmlspecialchars($f['description'] ?? '') ?></p>
+            </article>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </section>
     <?php endif; ?>
 
     <!-- ============ PAKET (dari DB) ============ -->
@@ -262,6 +316,67 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
     </section>
     <?php endif; ?>
 
+    <!-- ============ GALERI (dari DB) ============ -->
+    <?php if ($gallery): ?>
+    <section id="galeri" style="background:var(--white)">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow" style="background:rgba(4,106,56,.1);color:var(--emerald)">Galeri Kegiatan</span>
+          <h2>Dokumentasi Perjalanan</h2>
+          <p>Momen kebersamaan jamaah di Tanah Suci dan layanan kami.</p>
+        </div>
+        <div class="gallery-grid">
+          <?php foreach ($gallery as $g): ?>
+            <figure>
+              <a href="<?= BASE_URL.'/'.htmlspecialchars($g['image_path']) ?>" target="_blank">
+                <img src="<?= BASE_URL.'/'.htmlspecialchars($g['image_path']) ?>" alt="<?= htmlspecialchars($g['caption']) ?>" loading="lazy">
+              </a>
+              <?php if ($g['caption']): ?><figcaption><?= htmlspecialchars($g['caption']) ?></figcaption><?php endif; ?>
+            </figure>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </section>
+    <?php endif; ?>
+
+    <!-- ============ KONTAK / FORM PESAN ============ -->
+    <section id="kontak">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow" style="background:rgba(4,106,56,.1);color:var(--emerald)">Hubungi Kami</span>
+          <h2>Kirim Pesan atau Konsultasi</h2>
+          <p>Tim kami siap membantu menjawab pertanyaan Anda seputar haji & umroh.</p>
+        </div>
+        <div class="contact-wrap">
+          <div class="contact-info">
+            <h3>Informasi Kontak</h3>
+            <div class="ci"><i class="fa-solid fa-location-dot"></i><div><strong>Kantor Pusat</strong><span>Jl. Sudirman No. 88, Jakarta Pusat 10210</span></div></div>
+            <div class="ci"><i class="fa-solid fa-phone"></i><div><strong>Telepon</strong><span>+62 811 2000 0180</span></div></div>
+            <div class="ci"><i class="fa-solid fa-envelope"></i><div><strong>Email</strong><span>info@royalharamain.com</span></div></div>
+            <div class="ci"><i class="fa-brands fa-whatsapp"></i><div><strong>WhatsApp</strong><span>+62 811 2000 0180</span></div></div>
+            <p class="hint" style="margin-top:18px;font-size:13px;color:var(--muted)">Atau klik tombol di bawah untuk daftar langsung.</p>
+            <button class="gradient-button" onclick="openBooking()">✈ Daftar Sekarang</button>
+          </div>
+          <div class="contact-form">
+            <?php if ($contact_msg): ?>
+              <div class="form-msg <?= $contact_ok ? 'ok' : 'err' ?>" style="margin-bottom:16px"><?= htmlspecialchars($contact_msg) ?></div>
+            <?php endif; ?>
+            <form method="post" action="#kontak">
+              <input type="hidden" name="kontak" value="1">
+              <div class="grid2">
+                <div class="fm"><label>Nama Lengkap *</label><input type="text" name="cname" required></div>
+                <div class="fm"><label>Email</label><input type="email" name="cemail"></div>
+                <div class="fm"><label>Nomor WA / Telepon</label><input type="text" name="cphone" placeholder="08xxxxxxxxxx"></div>
+                <div class="fm"><label>Subjek</label><input type="text" name="csubject"></div>
+              </div>
+              <div class="fm"><label>Pesan *</label><textarea name="cmessage" rows="5" required></textarea></div>
+              <button type="submit" class="gold-button">Kirim Pesan</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ LOKASI ============ -->
     <section id="lokasi" style="background:var(--white)">
       <div class="container">
@@ -321,7 +436,7 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
       </div>
       <div>
         <h4>Navigasi</h4>
-        <a href="#beranda">Beranda</a><a href="#paket">Paket</a><a href="javascript:void(0)" onclick="openBooking()">Daftar</a>
+        <a href="#beranda">Beranda</a><a href="#paket">Paket</a><a href="#galeri">Galeri</a><a href="#kontak">Kontak</a><a href="javascript:void(0)" onclick="openBooking()">Daftar</a>
       </div>
       <div>
         <h4>Layanan</h4>

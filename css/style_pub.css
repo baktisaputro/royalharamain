@@ -120,6 +120,26 @@ section { padding:64px 0; }
 .office p { font-size:13px; color:var(--muted); margin-bottom:6px; }
 .office a { color:var(--emerald); font-weight:600; }
 
+/* Gallery */
+.gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
+.gallery-grid figure { position:relative; border-radius:14px; overflow:hidden; border:1px solid var(--border); background:#fff; }
+.gallery-grid figure img { width:100%; height:200px; object-fit:cover; display:block; transition:transform .3s; }
+.gallery-grid figure:hover img { transform:scale(1.05); }
+.gallery-grid figcaption { padding:10px 12px; font-size:13px; color:var(--muted); background:#fff; }
+
+/* Contact */
+.contact-wrap { display:grid; grid-template-columns:1fr 1.2fr; gap:26px; align-items:start; }
+.contact-info { background:var(--emerald-dark); color:#fff; border-radius:16px; padding:28px; }
+.contact-info h3 { font-size:19px; margin-bottom:20px; }
+.contact-info .ci { display:flex; gap:14px; margin-bottom:18px; }
+.contact-info .ci i { color:var(--gold); font-size:20px; margin-top:3px; width:22px; text-align:center; }
+.contact-info .ci strong { display:block; font-size:14px; }
+.contact-info .ci span { font-size:13px; color:#9db5ac; }
+.contact-info .gradient-button { margin-top:8px; }
+.contact-form { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:28px; }
+.contact-form .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+.contact-form textarea { min-height:110px; }
+
 /* Form (di dalam modal booking) */
 .form-card { background:#fff; color:var(--text); border-radius:18px; padding:30px; border:1px solid var(--border); }
 .form-card h3 { color:var(--emerald-dark); margin-bottom:18px; }
@@ -164,4 +184,6 @@ footer.site .brand-text { color:#fff; font-family:'Cinzel',serif; margin-bottom:
   .hero h1 { font-size:32px; }
   .stats { gap:20px; flex-wrap:wrap; }
   .footer-grid { grid-template-columns:1fr 1fr; }
+  .contact-wrap { grid-template-columns:1fr; }
+  .contact-form .grid2 { grid-template-columns:1fr; }
 }

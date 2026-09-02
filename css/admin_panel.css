@@ -115,6 +115,7 @@ table.admin-table { width:100%; border-collapse:collapse; font-size:14px; }
 /* status leads */
 .st-baru { background:#cff4fc; color:#055160; }
 .st-dihubungi { background:#fff3cd; color:#664d03; }
+.st-dibaca { background:#e2e3f3; color:#373a6b; }
 .st-selesai { background:#d1e7dd; color:#0f5132; }
 
 .empty { text-align:center; color:var(--muted); padding:40px 0; }
