@@ -6,8 +6,9 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
 Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel menjadi PHP + MySQL di shared hosting cPanel, dilengkapi panel admin ber-level (super admin/admin/viewer), tab edit hero, upload gambar lokal + tema warna seluruh website yang dikelola dari admin. Slideshow hero + popup daftar sudah diimplementasikan.
 
 ## Status Terakhir (saat sesi berakhir)
+- Fix: Section "Dokumentasi Perjalanan" dirapikan → grid foto rapi (4/baris desktop) + lightbox preview besar saat diklik, tombol kecil "Ikuti @royalharamainbantul" → buka IG.
+- Fix: Tulisan hero desktop diperbesar & proporsional (judul 56px, subjudul/quote/statistik & tombol ikut membesar).
 - Fix: Foto "Tentang Kami" tidak lagi bergantung Unsplash (ganti ke foto upload lokal, bisa diatur dari admin).
-- Fix: Section "Dokumentasi Perjalanan" → preview akun Instagram (@royalharamainbantul) dengan grid foto perjalanan.
 - Fitur baru: Keunggulan/Layanan, Galeri Foto, dan Halaman Kontak + form pesan (inbox) — SEMUA TERUJI & di-commit/push.
 - Slideshow hero 5 gambar (slide_1..5.webp) berjalan, overlay gelap ditambahkan agar teks terbaca.
 - Kotak `.hero-image` (gambar kanan yang mengulang slide) DIHAPUS.

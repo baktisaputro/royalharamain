@@ -106,6 +106,13 @@ $features = db()->query('SELECT * FROM features WHERE is_active=1 ORDER BY sort_
 
 // Ambil galeri foto
 $gallery = db()->query('SELECT * FROM gallery_images WHERE is_active=1 ORDER BY sort_order ASC, id ASC')->fetchAll();
+$gallery_items = [];
+foreach ($gallery as $g) {
+    $gallery_items[] = [
+        'img' => BASE_URL . '/' . $g['image_path'],
+        'cap' => $g['caption'] ?? '',
+    ];
+}
 
 // Ambil promo popup
 $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
@@ -120,7 +127,7 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style_pub.css">
+  <link rel="stylesheet" href="css/style_pub.css?v=2">
   <style>
     /* Tema dinamis dari database (Admin -> Hero -> Tema Website) */
     .hero { --hero-bg: url('<?= htmlspecialchars($hero_bg ? (strpos($hero_bg,'http')===0?$hero_bg:BASE_URL.'/'.$hero_bg) : 'https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') ?>'); }
@@ -152,10 +159,11 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
     .hero-slide { opacity:1; animation:none; }
     <?php endif; ?>
     /* gambar kanan dihapus: hero jadi satu kolom terpusat */
-    .hero-content { text-align:center; max-width:820px; margin:0 auto; }
+    .hero-content { text-align:center; max-width:900px; margin:0 auto; }
     .hero-content .lead { margin:0 auto; }
     .hero-actions { justify-content:center; }
     .stats { justify-content:center; }
+    .hero-content .eyebrow { font-size:14px; }
   </style>
 </head>
 <body>
@@ -328,53 +336,45 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
     </section>
     <?php endif; ?>
 
-    <!-- ============ GALERI / PREVIEW INSTAGRAM ============ -->
+    <!-- ============ GALERI / DOKUMENTASI ============ -->
     <section id="galeri" style="background:var(--white)">
       <div class="container">
         <div class="section-heading">
           <span class="eyebrow" style="background:rgba(4,106,56,.1);color:var(--emerald)">Galeri Kegiatan</span>
           <h2>Dokumentasi Perjalanan</h2>
-          <p>Ikuti akun Instagram kami untuk foto-foto terbaru perjalanan jamaah.</p>
+          <p>Momen kebersamaan jamaah di Tanah Suci dan layanan kami.</p>
         </div>
 
-        <div class="ig-card">
-          <div class="ig-header">
-            <a href="<?= htmlspecialchars($ig_url) ?>" target="_blank" rel="noopener" class="ig-avatar-wrap">
-              <img src="assets/images/logo.png" alt="@<?= htmlspecialchars($ig_handle ?: 'royalharamain') ?>" class="ig-avatar">
-            </a>
-            <div class="ig-info">
-              <div class="ig-handle">
-                <strong>@<?= htmlspecialchars($ig_handle ?: 'royalharamain') ?></strong>
-                <a href="<?= htmlspecialchars($ig_url) ?>" target="_blank" rel="noopener" class="ig-follow"><i class="fa-brands fa-instagram"></i> Ikuti</a>
-              </div>
-              <div class="ig-stats">
-                <span><strong><?= count($gallery) ?></strong> foto</span>
-                <span><strong>2.5rb</strong> pengikut</span>
-                <span><strong>120</strong> mengikuti</span>
-              </div>
-              <div class="ig-bio">
-                <strong>PT Royal Haramain Internasional</strong>
-                <span>Travel Haji, Umroh & Halal Tours Bantul</span>
-                <span>#UmrohBantul #RoyalHaramain</span>
-              </div>
+        <?php if ($gallery): ?>
+          <div class="gallery-grid" id="galleryGrid">
+            <?php foreach ($gallery as $i => $g): ?>
+              <figure>
+                <img src="<?= BASE_URL.'/'.htmlspecialchars($g['image_path']) ?>" alt="<?= htmlspecialchars($g['caption']) ?>" loading="lazy" onclick="openLB(<?= (int)$i ?>)" title="<?= htmlspecialchars($g['caption']) ?>">
+                <?php if ($g['caption']): ?><figcaption><?= htmlspecialchars($g['caption']) ?></figcaption><?php endif; ?>
+              </figure>
+            <?php endforeach; ?>
+          </div>
+          <?php if ($ig_handle): ?>
+            <div class="gallery-ig">
+              <a href="<?= htmlspecialchars($ig_url) ?>" target="_blank" rel="noopener" class="ig-follow"><i class="fa-brands fa-instagram"></i> Ikuti @<?= htmlspecialchars($ig_handle) ?></a>
             </div>
-          </div>
-
-          <div class="ig-grid">
-            <?php if ($gallery): ?>
-              <?php foreach ($gallery as $g): ?>
-                <a class="ig-tile" href="<?= htmlspecialchars($ig_url) ?>" target="_blank" rel="noopener" title="<?= htmlspecialchars($g['caption']) ?>">
-                  <img src="<?= BASE_URL.'/'.htmlspecialchars($g['image_path']) ?>" alt="<?= htmlspecialchars($g['caption']) ?>" loading="lazy">
-                  <?php if ($g['caption']): ?><span class="ig-tile-cap"><i class="fa-solid fa-camera"></i> <?= htmlspecialchars($g['caption']) ?></span><?php endif; ?>
-                </a>
-              <?php endforeach; ?>
-            <?php else: ?>
-              <p class="empty">Belum ada foto. Upload dari panel admin → Galeri.</p>
-            <?php endif; ?>
-          </div>
-        </div>
+          <?php endif; ?>
+        <?php else: ?>
+          <p class="empty">Belum ada foto. Upload dari panel admin → Galeri.</p>
+        <?php endif; ?>
       </div>
     </section>
+
+    <!-- ============ LIGHTBOX GALERI ============ -->
+    <div class="lightbox" id="lightbox" hidden>
+      <button class="lightbox-close" onclick="closeLB()" aria-label="Tutup">✕</button>
+      <button class="lightbox-nav prev" onclick="lbNav(-1)" aria-label="Sebelumnya">‹</button>
+      <div class="lightbox-inner">
+        <img id="lbImg" src="" alt="">
+        <div class="lightbox-cap" id="lbCap"></div>
+      </div>
+      <button class="lightbox-nav next" onclick="lbNav(1)" aria-label="Berikutnya">›</button>
+    </div>
 
     <!-- ============ KONTAK / FORM PESAN ============ -->
     <section id="kontak">
@@ -517,6 +517,19 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
     function toggleNav() { var n=document.querySelector('nav.main-nav'); if(n) n.classList.toggle('open'); }
     function closePromo(){ document.getElementById('promoModal').classList.remove('show'); }
     function goPromo(url){ closePromo(); if(url && url!=='#' && url!=='#daftar' && url!=='') window.location.href=url; else openBooking(); }
+    /* Lightbox galeri */
+    var LB_ITEMS = <?= json_encode($gallery_items, JSON_UNESCAPED_UNICODE) ?>;
+    var lbIdx = 0;
+    function openLB(i){ if(!LB_ITEMS.length) return; lbIdx=(i+LB_ITEMS.length)%LB_ITEMS.length; updLB(); document.getElementById('lightbox').hidden=false; document.body.style.overflow='hidden'; }
+    function closeLB(){ document.getElementById('lightbox').hidden=true; document.body.style.overflow=''; }
+    function updLB(){ document.getElementById('lbImg').src=LB_ITEMS[lbIdx].img; document.getElementById('lbCap').textContent=LB_ITEMS[lbIdx].cap||''; }
+    function lbNav(d){ openLB(lbIdx+d); }
+    document.addEventListener('keydown', function(ev){
+      var lb=document.getElementById('lightbox'); if (lb && !lb.hidden){ if(ev.key==='Escape')closeLB(); if(ev.key==='ArrowLeft')lbNav(-1); if(ev.key==='ArrowRight')lbNav(1); }
+    });
+    document.addEventListener('click', function(ev){
+      if (ev.target && ev.target.id==='lightbox' && ev.target.classList.contains('lightbox')) closeLB();
+    });
     <?php if (!empty($promo['enabled'])): ?>
     setTimeout(function(){ var m=document.getElementById('promoModal'); if(m) m.classList.add('show'); }, (parseInt('<?= (int)($promo['delay'] ?? 3) ?>')||3)*1000);
     <?php endif; ?>
