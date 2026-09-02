@@ -76,6 +76,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
         db()->prepare('UPDATE settings SET theme_preset=?, primary_color=?, secondary_color=?, accent_color=? WHERE id=1')
             ->execute([$theme_preset, $hex($primary), $hex($secondary), $hex($accent)]);
 
+        // --- TENTANG & INSTAGRAM (settings) ---
+        $ig_handle = trim($_POST['instagram_handle'] ?? '');
+        $old_settings = db()->query('SELECT about_image FROM settings WHERE id=1')->fetch();
+        $old_about = $old_settings['about_image'] ?? '';
+
+        $about_url = trim($_POST['about_image_url'] ?? '');
+        $has_about_file = isset($_FILES['about_file']) && $_FILES['about_file']['name'] !== '';
+        $new_about = '';
+        if ($has_about_file) {
+            $up_about = handle_image_upload($_FILES['about_file'], 'tentang');
+            if (!$up_about['ok']) throw new Exception($up_about['error']);
+            $new_about = $up_about['path'];
+        } elseif ($about_url !== '' && strpos($about_url, BASE_URL . '/uploads/tentang/') !== 0) {
+            $new_about = $about_url;
+        } else {
+            // tidak ubah apa-apa: pertahankan nilai lama
+            $new_about = $old_about;
+        }
+
+        db()->prepare('UPDATE settings SET instagram_handle=?, about_image=? WHERE id=1')
+            ->execute([$ig_handle, $new_about]);
+
+        if ($has_about_file && $old_about && strpos($old_about, 'uploads/tentang/') === 0 && $old_about !== $new_about) {
+            delete_upload($old_about);
+        }
+
         $save_msg = 'Berhasil disimpan.';
     } catch (Exception $e) {
         $save_msg = 'Gagal menyimpan: ' . $e->getMessage();
@@ -156,6 +182,32 @@ $sos = [
       <textarea name="legal_badges" rows="4" <?= $readonly?'disabled':'' ?>><?= htmlspecialchars(implode("\n", $legal_badges)) ?></textarea>
       <p class="hint">Contoh: AMPHURI, PIHK No. 394, PPIU No. U.533, Kemenag</p>
     </div>
+  </div>
+
+  <!-- ============ TENTANG & INSTAGRAM ============ -->
+  <div class="card">
+    <h2><i class="fa-brands fa-instagram"></i> Tentang Kami & Instagram</h2>
+    <div class="field">
+      <label>Username Instagram (tanpa @)</label>
+      <input type="text" name="instagram_handle" value="<?= htmlspecialchars($settings['instagram_handle'] ?? '') ?>" placeholder="royalharamainbantul" <?= $readonly?'disabled':'' ?>>
+      <p class="hint">Dipakai untuk tombol "Ikuti" & tautan grid foto di section Dokumentasi Perjalanan.</p>
+    </div>
+    <div class="field">
+      <label>Foto Section "Tentang Kami"</label>
+      <input type="file" name="about_file" accept="image/jpeg,image/png,image/webp,image/gif" <?= $readonly?'disabled':'' ?>>
+      <p class="hint">Upload gambar dari komputer (otomatis dikompres) ATAU isi URL di bawah. Kosongkan keduanya untuk mempertahankan foto lama.</p>
+    </div>
+    <div class="field">
+      <label>URL Foto Tentang (opsional)</label>
+      <input type="text" name="about_image_url" value="<?= htmlspecialchars((strpos($settings['about_image'] ?? '', 'http') === 0) ? $settings['about_image'] : '') ?>" placeholder="https://..." <?= $readonly?'disabled':'' ?>>
+    </div>
+    <?php $show_about = $settings['about_image'] ?? ''; $show_about_disp = $show_about ? (strpos($show_about,'http')===0?$show_about:BASE_URL.'/'.$show_about) : ''; ?>
+    <?php if ($show_about_disp): ?>
+      <div class="field">
+        <img src="<?= htmlspecialchars($show_about_disp) ?>" alt="Preview Tentang" style="max-width:100%;border-radius:10px;max-height:200px;object-fit:cover;border:1px solid var(--border)">
+        <p class="hint">Foto "Tentang Kami" saat ini (<?= htmlspecialchars($show_about) ?>).</p>
+      </div>
+    <?php endif; ?>
   </div>
 
   <!-- ============ TEMA WEBSITE (seluruh halaman) ============ -->

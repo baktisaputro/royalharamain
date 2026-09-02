@@ -6,6 +6,8 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
 Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel menjadi PHP + MySQL di shared hosting cPanel, dilengkapi panel admin ber-level (super admin/admin/viewer), tab edit hero, upload gambar lokal + tema warna seluruh website yang dikelola dari admin. Slideshow hero + popup daftar sudah diimplementasikan.
 
 ## Status Terakhir (saat sesi berakhir)
+- Fix: Foto "Tentang Kami" tidak lagi bergantung Unsplash (ganti ke foto upload lokal, bisa diatur dari admin).
+- Fix: Section "Dokumentasi Perjalanan" → preview akun Instagram (@royalharamainbantul) dengan grid foto perjalanan.
 - Fitur baru: Keunggulan/Layanan, Galeri Foto, dan Halaman Kontak + form pesan (inbox) — SEMUA TERUJI & di-commit/push.
 - Slideshow hero 5 gambar (slide_1..5.webp) berjalan, overlay gelap ditambahkan agar teks terbaca.
 - Kotak `.hero-image` (gambar kanan yang mengulang slide) DIHAPUS.
@@ -32,6 +34,9 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 ## Work State
 
 ### Completed
+- Fix Tentang Kami: foto dari `settings.about_image` (lokal), fallback logo; URL Unsplash dihapus dari section publik.
+- Section Galeri diubah jadi preview profil Instagram: header akun (avatar, handle, stats, bio, tombol Ikuti → `instagram.com/<handle>`) + grid foto 3 kolom dari `gallery_images`. Handle IG & foto tentang bisa diubah di panel Hero (tab hero → card "Tentang Kami & Instagram", upload ke `uploads/tentang/`).
+- `settings` + kolom `about_image`, `instagram_handle` (database.sql & lokal); tema DB dikembalikan ke emerald-gold.
 - Fitur Keunggulan/Layanan (tabel `features`), Galeri Foto (tabel `gallery_images`, upload via `handle_image_upload` ke `uploads/galeri/`), Kontak/Inbox (tabel `contact_messages` + form publik + panel admin `kontak.php` + detail modal).
 - Panel admin baru: `admin/panels/fitur.php`, `admin/panels/galeri.php`, `admin/panels/kontak.php`; tab & menu terdaftar di `admin/index.php` (peran viewer read-only).
 - Section publik baru di `index.php`: `#keunggulan` (grid `.features`), `#galeri` (grid `.gallery-grid`), `#kontak` (layout `.contact-wrap`, form pesan → tabel `contact_messages`).

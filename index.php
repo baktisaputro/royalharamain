@@ -69,6 +69,16 @@ if (!empty($hero['hero_bg_path'])) {
     $hero_bg = $hero['hero_bg_path']; // path lokal
 }
 
+// Siapkan foto section Tentang & handle Instagram (dari settings)
+$about_image = $theme['about_image'] ?? '';
+if ($about_image && strpos($about_image, 'http') !== 0 && strpos($about_image, '/') === 0) {
+    $about_image = BASE_URL . $about_image;
+} elseif ($about_image && strpos($about_image, 'http') !== 0) {
+    $about_image = BASE_URL . '/' . $about_image;
+}
+$ig_handle = trim($theme['instagram_handle'] ?? '');
+$ig_url = $ig_handle ? 'https://www.instagram.com/' . $ig_handle : '#';
+
 // Kumpulkan gambar hero slideshow: scan folder uploads/hero/slide_*.webp
 $hero_slides = [];
 $slide_dir = __DIR__ . '/uploads/hero/';
@@ -276,7 +286,9 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
     <!-- ============ TENTANG ============ -->
     <section id="tentang" style="background:var(--white)">
       <div class="container about-grid">
-        <img src="https://images.unsplash.com/photo-1580418827493-f2b22c37d3b5?w=900&auto=format&fit=crop" alt="Tentang">
+        <?php if ($about_image): ?>
+          <img src="<?= htmlspecialchars($about_image) ?>" alt="Tentang PT Royal Haramain Internasional" onerror="this.src='assets/images/logo.png'">
+        <?php endif; ?>
         <div>
           <span class="eyebrow" style="background:rgba(4,106,56,.1);color:var(--emerald)">Tentang Kami</span>
           <h2 style="font-size:32px;color:var(--emerald-dark);margin:14px 0 16px">Menjadi Sebaik-baiknya Pelayan Tamu Allah</h2>
@@ -316,28 +328,53 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
     </section>
     <?php endif; ?>
 
-    <!-- ============ GALERI (dari DB) ============ -->
-    <?php if ($gallery): ?>
+    <!-- ============ GALERI / PREVIEW INSTAGRAM ============ -->
     <section id="galeri" style="background:var(--white)">
       <div class="container">
         <div class="section-heading">
           <span class="eyebrow" style="background:rgba(4,106,56,.1);color:var(--emerald)">Galeri Kegiatan</span>
           <h2>Dokumentasi Perjalanan</h2>
-          <p>Momen kebersamaan jamaah di Tanah Suci dan layanan kami.</p>
+          <p>Ikuti akun Instagram kami untuk foto-foto terbaru perjalanan jamaah.</p>
         </div>
-        <div class="gallery-grid">
-          <?php foreach ($gallery as $g): ?>
-            <figure>
-              <a href="<?= BASE_URL.'/'.htmlspecialchars($g['image_path']) ?>" target="_blank">
-                <img src="<?= BASE_URL.'/'.htmlspecialchars($g['image_path']) ?>" alt="<?= htmlspecialchars($g['caption']) ?>" loading="lazy">
-              </a>
-              <?php if ($g['caption']): ?><figcaption><?= htmlspecialchars($g['caption']) ?></figcaption><?php endif; ?>
-            </figure>
-          <?php endforeach; ?>
+
+        <div class="ig-card">
+          <div class="ig-header">
+            <a href="<?= htmlspecialchars($ig_url) ?>" target="_blank" rel="noopener" class="ig-avatar-wrap">
+              <img src="assets/images/logo.png" alt="@<?= htmlspecialchars($ig_handle ?: 'royalharamain') ?>" class="ig-avatar">
+            </a>
+            <div class="ig-info">
+              <div class="ig-handle">
+                <strong>@<?= htmlspecialchars($ig_handle ?: 'royalharamain') ?></strong>
+                <a href="<?= htmlspecialchars($ig_url) ?>" target="_blank" rel="noopener" class="ig-follow"><i class="fa-brands fa-instagram"></i> Ikuti</a>
+              </div>
+              <div class="ig-stats">
+                <span><strong><?= count($gallery) ?></strong> foto</span>
+                <span><strong>2.5rb</strong> pengikut</span>
+                <span><strong>120</strong> mengikuti</span>
+              </div>
+              <div class="ig-bio">
+                <strong>PT Royal Haramain Internasional</strong>
+                <span>Travel Haji, Umroh & Halal Tours Bantul</span>
+                <span>#UmrohBantul #RoyalHaramain</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ig-grid">
+            <?php if ($gallery): ?>
+              <?php foreach ($gallery as $g): ?>
+                <a class="ig-tile" href="<?= htmlspecialchars($ig_url) ?>" target="_blank" rel="noopener" title="<?= htmlspecialchars($g['caption']) ?>">
+                  <img src="<?= BASE_URL.'/'.htmlspecialchars($g['image_path']) ?>" alt="<?= htmlspecialchars($g['caption']) ?>" loading="lazy">
+                  <?php if ($g['caption']): ?><span class="ig-tile-cap"><i class="fa-solid fa-camera"></i> <?= htmlspecialchars($g['caption']) ?></span><?php endif; ?>
+                </a>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p class="empty">Belum ada foto. Upload dari panel admin → Galeri.</p>
+            <?php endif; ?>
+          </div>
         </div>
       </div>
     </section>
-    <?php endif; ?>
 
     <!-- ============ KONTAK / FORM PESAN ============ -->
     <section id="kontak">

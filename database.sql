@@ -55,11 +55,13 @@ CREATE TABLE IF NOT EXISTS settings (
   primary_color VARCHAR(20) NOT NULL DEFAULT '#046a38',
   secondary_color VARCHAR(20) NOT NULL DEFAULT '#023d1f',
   accent_color VARCHAR(20) NOT NULL DEFAULT '#d4af37',
+  about_image VARCHAR(500) NULL,
+  instagram_handle VARCHAR(60) NULL,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO settings (id, theme_preset, primary_color, secondary_color, accent_color)
-VALUES (1, 'emerald-gold', '#046a38', '#023d1f', '#d4af37')
+INSERT INTO settings (id, theme_preset, primary_color, secondary_color, accent_color, about_image, instagram_handle)
+VALUES (1, 'emerald-gold', '#046a38', '#023d1f', '#d4af37', 'uploads/hero/slide_1.webp', 'royalharamainbantul')
 ON DUPLICATE KEY UPDATE id = id;
 
 -- ------------------------------------------------------------
