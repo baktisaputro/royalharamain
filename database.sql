@@ -46,6 +46,23 @@ CREATE TABLE IF NOT EXISTS admin_users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ------------------------------------------------------------
+-- Tabel SETTINGS (tema warna website + pengaturan global)
+-- id 1 = tema website
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS settings (
+  id INT PRIMARY KEY,
+  theme_preset VARCHAR(32) NOT NULL DEFAULT 'emerald-gold',
+  primary_color VARCHAR(20) NOT NULL DEFAULT '#046a38',
+  secondary_color VARCHAR(20) NOT NULL DEFAULT '#023d1f',
+  accent_color VARCHAR(20) NOT NULL DEFAULT '#d4af37',
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO settings (id, theme_preset, primary_color, secondary_color, accent_color)
+VALUES (1, 'emerald-gold', '#046a38', '#023d1f', '#d4af37')
+ON DUPLICATE KEY UPDATE id = id;
+
+-- ------------------------------------------------------------
 -- Tabel HERO PAGE (konten hero dikustomisasi via admin)
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS hero_content (
@@ -55,6 +72,7 @@ CREATE TABLE IF NOT EXISTS hero_content (
   quote TEXT,
   quote_source VARCHAR(255),
   background_image VARCHAR(500),
+  hero_image_path VARCHAR(255),
   primary_btn_text VARCHAR(100),
   primary_btn_url VARCHAR(255),
   secondary_btn_text VARCHAR(100),

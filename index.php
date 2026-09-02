@@ -36,6 +36,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['daftar'])) {
 $hero = db()->query('SELECT * FROM hero_content WHERE id=1')->fetch() ?: [];
 $legal_badges = json_decode($hero['legal_badges'] ?? '[]', true) ?: [];
 
+// Ambil tema website
+$theme = db()->query('SELECT * FROM settings WHERE id=1')->fetch() ?: [];
+
+// Siapkan background hero (prioritas: file upload lokal > URL)
+$hero_bg = $hero['background_image'] ?? '';
+if (!empty($hero['hero_bg_path'])) {
+    $hero_bg = $hero['hero_bg_path']; // path lokal
+}
+
+// Kumpulkan gambar hero slideshow: scan folder uploads/hero/slide_*.webp
+$hero_slides = [];
+$slide_dir = __DIR__ . '/uploads/hero/';
+if (is_dir($slide_dir)) {
+    foreach (glob($slide_dir . 'slide_*.webp') as $f) {
+        $hero_slides[] = BASE_URL . '/uploads/hero/' . basename($f);
+    }
+}
+$hero_slides = array_values(array_unique($hero_slides));
+
 // Ambil paket + fasilitas
 $packages = db()->query('SELECT * FROM packages WHERE is_active=1 ORDER BY featured DESC, sort_order ASC, id ASC')->fetchAll();
 $facStmt = db()->prepare('SELECT facility FROM package_facilities WHERE package_id=? ORDER BY id');
@@ -63,7 +82,40 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style_pub.css">
   <style>
-    .hero { --hero-bg: url('<?= htmlspecialchars($hero['background_image'] ?? 'https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') ?>'); }
+    /* Tema dinamis dari database (Admin -> Hero -> Tema Website) */
+    .hero { --hero-bg: url('<?= htmlspecialchars($hero_bg ? (strpos($hero_bg,'http')===0?$hero_bg:BASE_URL.'/'.$hero_bg) : 'https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') ?>'); }
+    :root {
+      --emerald: <?= htmlspecialchars($theme['primary_color'] ?? '#046a38') ?>;
+      --emerald-dark: <?= htmlspecialchars($theme['secondary_color'] ?? '#023d1f') ?>;
+      --gold: <?= htmlspecialchars($theme['accent_color'] ?? '#d4af37') ?>;
+    }
+    /* Slideshow hero background */
+    .hero { position:relative; overflow:hidden; }
+    .hero-slide {
+      position:absolute; inset:0; background-size:cover; background-position:center;
+      opacity:0; animation:heroFade <?= count($hero_slides) * 5 ?>s linear infinite;
+    }
+    /* Overlay gelap agar teks di atas gambar selalu terbaca */
+    .hero-overlay {
+      position:absolute; inset:0; z-index:1;
+      background:linear-gradient(180deg, rgba(1,23,13,.82) 0%, rgba(2,36,18,.66) 55%, rgba(1,23,13,.88) 100%);
+    }
+    .hero-grid { position:relative; z-index:2; }
+    @keyframes heroFade {
+      0%   { opacity:0; }
+      4%   { opacity:1; }
+      20%  { opacity:1; }
+      24%  { opacity:0; }
+      100% { opacity:0; }
+    }
+    <?php if (count($hero_slides) === 1): ?>
+    .hero-slide { opacity:1; animation:none; }
+    <?php endif; ?>
+    /* gambar kanan dihapus: hero jadi satu kolom terpusat */
+    .hero-content { text-align:center; max-width:820px; margin:0 auto; }
+    .hero-content .lead { margin:0 auto; }
+    .hero-actions { justify-content:center; }
+    .stats { justify-content:center; }
   </style>
 </head>
 <body>
@@ -81,16 +133,21 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
         <a href="#berita">Berita</a>
         <a href="#lokasi">Lokasi</a>
       </nav>
-      <button type="button" class="gradient-button" onclick="openBooking()">Daftar 1-Klik →</button>
-      <button class="mobile-menu" onclick="openBooking()">☰</button>
+      <button class="mobile-menu" onclick="toggleNav()">☰</button>
     </div>
   </header>
 
   <main>
     <!-- ================= HERO (dari DB) ================= -->
     <section class="hero" id="beranda">
+      <?php if (count($hero_slides) > 1): ?>
+        <?php foreach ($hero_slides as $i => $slide): ?>
+          <div class="hero-slide" style="background-image:url('<?= htmlspecialchars($slide) ?>');animation-delay:<?= $i * 5 ?>s"></div>
+        <?php endforeach; ?>
+      <?php endif; ?>
+      <div class="hero-overlay"></div>
       <div class="container hero-grid">
-        <div>
+        <div class="hero-content">
           <?php if (!empty($hero['subtitle'])): ?>
             <span class="eyebrow" style="color:#f3e5ab;background:rgba(212,175,55,.15)">✦ <?= htmlspecialchars($hero['subtitle']) ?></span>
           <?php endif; ?>
@@ -101,26 +158,14 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
           <?php if (!empty($hero['quote'])): ?>
             <div class="hero-quote">"<?= htmlspecialchars($hero['quote']) ?>"<cite>— <?= htmlspecialchars($hero['quote_source'] ?? '') ?></cite></div>
           <?php endif; ?>
-          <div class="hero-actions">
-            <?php if (!empty($hero['primary_btn_text'])): ?>
-              <button class="gold-button" onclick="openBooking('<?= htmlspecialchars($hero['primary_btn_text']) ?>')">✈ <?= htmlspecialchars($hero['primary_btn_text']) ?></button>
-            <?php endif; ?>
-            <?php if (!empty($hero['secondary_btn_text'])): ?>
-              <a class="gradient-button" href="<?= htmlspecialchars($hero['secondary_btn_url'] ?: '#paket') ?>"><?= htmlspecialchars($hero['secondary_btn_text']) ?> →</a>
-            <?php endif; ?>
-          </div>
           <div class="stats">
             <div><strong>15+</strong><span>Tahun Pengalaman</span></div>
             <div><strong>25.000+</strong><span>Jamaah Diberangkatkan</span></div>
             <div><strong>100%</strong><span>Legalitas Kemenag</span></div>
           </div>
-        </div>
-        <div class="hero-image">
-          <img src="<?= htmlspecialchars($hero['background_image'] ?? '') ?>" alt="Tanah Suci" onerror="this.src='assets/images/logo.png'">
-          <div class="hero-caption">
-            <small class="gold-text">★ PAKET UNGGULAN BULAN INI</small>
-            <strong><?= htmlspecialchars($hero['title'] ?? '') ?></strong>
-            <small><?= htmlspecialchars($hero['badge_line'] ?? '') ?></small>
+          <div class="hero-actions">
+            <button class="gold-button" onclick="openBooking()">✈ Daftar Sekarang</button>
+            <a class="gradient-button" href="#paket">Lihat Paket →</a>
           </div>
         </div>
       </div>
@@ -129,7 +174,12 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
     <?php if ($legal_badges): ?>
     <div class="badges-strip">
       <div class="container">
-        <?php foreach ($legal_badges as $b): ?><span class="badge-item"><?= htmlspecialchars($b) ?></span><?php endforeach; ?>
+        <div class="badges-row">
+          <?php foreach ($legal_badges as $b): ?><span class="badge-item"><?= htmlspecialchars($b) ?></span><?php endforeach; ?>
+        </div>
+        <div class="badges-cta">
+          <button class="gold-button" onclick="openBooking()">✈ Daftar Sekarang</button>
+        </div>
       </div>
     </div>
     <?php endif; ?>
@@ -229,21 +279,14 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
       </div>
     </section>
 
-    <!-- ============ DAFTAR ============ -->
-    <section class="register-section" id="daftar">
-      <div class="container register-grid">
-        <div>
-          <h2 style="font-size:32px;color:#fff;margin-bottom:14px">Amankan Kursi Ibadah Anda</h2>
-          <p style="color:#9db5ac;margin-bottom:20px">Isi form berikut, tim kami akan segera menghubungi Anda untuk konsultasi gratis.</p>
-          <ul class="register-list">
-            <li>Konsultasi gratis & tanpa biaya</li>
-            <li>Penawaran paket terbaru</li>
-            <li>Bantuan pengurusan dokumen</li>
-            <li>Pembimbingan lengkap ke Tanah Suci</li>
-          </ul>
-        </div>
-        <div class="form-card">
-          <h3>Daftar & Konsultasi</h3>
+    <!-- ============ DAFTAR (melalui popup) ============ -->
+    <!-- ============ POPUP BOOKING ============ -->
+    <div class="modal-overlay" id="bookModal">
+      <div class="modal-card modal-card-lg">
+        <button class="modal-close" onclick="closeBooking()">✕</button>
+        <div class="modal-body">
+          <span class="eyebrow" style="background:rgba(212,175,55,.2);color:#8a6d1f">Daftar Sekarang</span>
+          <h3>Daftar & Konsultasi Gratis</h3>
           <?php if ($form_msg): ?>
             <div class="form-msg <?= $form_ok ? 'ok' : 'err' ?>"><?= htmlspecialchars($form_msg) ?></div>
           <?php endif; ?>
@@ -266,7 +309,7 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
           </form>
         </div>
       </div>
-    </section>
+    </div>
   </main>
 
   <footer class="site">
@@ -278,7 +321,7 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
       </div>
       <div>
         <h4>Navigasi</h4>
-        <a href="#beranda">Beranda</a><a href="#paket">Paket</a><a href="#daftar">Daftar</a>
+        <a href="#beranda">Beranda</a><a href="#paket">Paket</a><a href="javascript:void(0)" onclick="openBooking()">Daftar</a>
       </div>
       <div>
         <h4>Layanan</h4>
@@ -303,7 +346,7 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
         <?php if ($promo['badge']): ?><span class="eyebrow" style="background:rgba(212,175,55,.2);color:#8a6d1f"><?= htmlspecialchars($promo['badge']) ?></span><?php endif; ?>
         <h3 style="margin-top:8px"><?= htmlspecialchars($promo['title']) ?></h3>
         <p><?= htmlspecialchars($promo['message']) ?></p>
-        <button class="gold-button" onclick="goPromo('<?= htmlspecialchars($promo['link'] ?: '#daftar') ?>')">Lihat Penawaran</button>
+        <button class="gold-button" onclick="goPromo('<?= htmlspecialchars($promo['link'] ?? '') ?>')">Lihat Penawaran</button>
       </div>
     </div>
   </div>
@@ -311,17 +354,26 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
 
   <script>
     function openBooking(pkg) {
-      var el = document.querySelector('#daftar');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-        var sel = document.querySelector('select[name=package]');
+      var m = document.getElementById('bookModal');
+      if (m) {
+        m.classList.add('show');
+        var sel = document.querySelector('#bookModal select[name=package]');
         if (sel && pkg) { for (var i=0;i<sel.options.length;i++){ if(sel.options[i].text===pkg){ sel.selectedIndex=i; break; } } }
       }
     }
+    function closeBooking(){ var m=document.getElementById('bookModal'); if (m) m.classList.remove('show'); }
+    function toggleNav() { var n=document.querySelector('nav.main-nav'); if(n) n.classList.toggle('open'); }
     function closePromo(){ document.getElementById('promoModal').classList.remove('show'); }
-    function goPromo(url){ closePromo(); if(url && url!=='#') window.location.href=url; else openBooking(); }
+    function goPromo(url){ closePromo(); if(url && url!=='#' && url!=='#daftar' && url!=='') window.location.href=url; else openBooking(); }
     <?php if (!empty($promo['enabled'])): ?>
     setTimeout(function(){ var m=document.getElementById('promoModal'); if(m) m.classList.add('show'); }, (parseInt('<?= (int)($promo['delay'] ?? 3) ?>')||3)*1000);
+    <?php endif; ?>
+    document.addEventListener('click', function(ev){
+      if (ev.target.classList && ev.target.classList.contains('modal-overlay') && ev.target.id==='bookModal') closeBooking();
+      if (ev.target.classList && ev.target.classList.contains('modal-overlay') && ev.target.id==='promoModal') closePromo();
+    });
+    <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['daftar'])): ?>
+    openBooking();
     <?php endif; ?>
   </script>
 </body>
