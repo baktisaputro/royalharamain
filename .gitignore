@@ -5,5 +5,8 @@
 # file sekali-pakai yang bisa memuat password (jangan pernah commit)
 app/setup_password.php
 
+# Kredensial lokal rahasia (jangan di-commit/push)
+.credentials.local
+
 # Gambar asli upload pengguna (besar) - hanya versi ringan (slide_*) yang di-commit
 uploads/hero/1*.webp

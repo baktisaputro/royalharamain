@@ -21,7 +21,7 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 - Repo GitHub: `baktisaputro/royalharamain` (branch `master`), clone di `C:\Users\IESPA 000\royalharamain`.
 - Git identity lokal repo: name `baktisaputro`, email `baktisaputro@users.noreply.github.com`.
 - Junction lokal: `C:\xampp\htdocs\royalharamain` → folder repo. BASE_URL = `http://localhost/royalharamain`.
-- Kredensial lokal: DB `royalharamain` (user `root`, password kosong). Login admin: `superadmin` / `@#$Admin321` (password baru, sudah di-set & diverifikasi).
+- Kredensial lokal: DB `royalharamain` (user `root`, password kosong). Login admin: `superadmin` / lihat `.credentials.local` (password sudah di-set & diverifikasi; jangan commit plaintext password ke GitHub).
 - 3 level akses: `super_admin` (kelola user+semua), `admin` (kelola konten), `viewer` (read-only). Panel admin gaya "netral modern".
 - Tema: preset + color picker (keduanya), berlaku seluruh website. Warna dasar logo: emerald #046a38, emerald-dark #023d1f, gold #d4af37.
 - GD aktif (`extension=gd` di `C:\xampp\php\php.ini`), terverifikasi web mode.
@@ -47,8 +47,7 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 - (empty)
 
 ### Next Move
-1. Ganti password superadmin dari `NewPass456` sebelum go-live.
-2. Lanjut go-live: minta kredensial DB cPanel → set `app/config.php` → upload ke `public_html` + import `database.sql` → uji.
+1. Lanjut go-live: minta kredensial DB cPanel → set `app/config.php` → upload ke `public_html` + import `database.sql` → uji.
 
 ### Blocked
 - Go-live cPanel belum bisa: belum ada kredensial DB hosting (nama DB, user, password).
@@ -56,10 +55,8 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 - Perlu konfirmasi visual user atas tampilan baru hero/popup di browser sebelum commit.
 
 ## Next Move
-1. Konfirmasi visual kolaborator atas hasil tampilan baru (slideshow + overlay + popup) di `http://localhost/royalharamain/`.
-2. Commit + push perubahan ke GitHub (git add -A; commit; push origin master), atau sesuai permintaan user.
-3. Ganti password superadmin dari `NewPass456` sebelum go-live.
-4. Lanjut go-live: minta kredensial DB cPanel → set `app/config.php` → upload ke `public_html` + import `database.sql` → uji.
+1. Konfirmasi visual kolaborator atas hasil tampilan baru (slideshow + overlay + popup) di `http://localhost/royalharamain/`. (Sudah dikonfirmasi & di-commit pada `eb47c0b`.)
+2. Lanjut go-live: minta kredensial DB cPanel → set `app/config.php` → upload ke `public_html` + import `database.sql` → uji.
 
 ## Relevant Files
 - `C:\Users\IESPA 000\royalharamain\index.php`: halaman publik; slideshow (`$hero_slides`, `.hero-slide`, `.hero-overlay`), hero 1 kolom + tombol daftar, popup booking `#bookModal`, JS `openBooking/closeBooking/toggleNav`.
@@ -75,5 +72,6 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 - `C:\xampp\mysql\bin\mysql.exe` & `C:\xampp\php\php.exe`: CLI untuk query DB & uji PHP.
 
 ## Kredensial & Akses
-- Admin lokal: `http://localhost/royalharamain/admin/login.php` → `superadmin` / `@#$Admin321`.
+- Kredensial lokal (username/password admin & DB) tersimpan di `.credentials.local` (gitignored, RAHASIA — jangan commit/push).
+- Admin lokal: `http://localhost/royalharamain/admin/login.php` (username & password lihat `.credentials.local`).
 - Supabase lama: `https://yxdpovmnkxpqdudgwtaz.supabase.co` (arsip).
