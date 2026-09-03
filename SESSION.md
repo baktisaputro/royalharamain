@@ -55,16 +55,37 @@ Membangun kembali website royalharamain (travel haji/umroh) dari statis Vercel m
 - (empty)
 
 ### Next Move
-1. Lanjut go-live: minta kredensial DB cPanel → set `app/config.php` → upload ke `public_html` + import `database.sql` → uji.
+1. TUNGGU DNS propagate (1x24 jam) untuk domain `royalharamain.com`, lalu lanjut proses go-live (lihat detail di bawah).
 
 ### Blocked
-- Go-live cPanel belum bisa: belum ada kredensial DB hosting (nama DB, user, password).
-- Tidak bisa verifikasi visual gambar (tanpa dukungan input gambar) — mengandalkan pilihan user.
-- Perlu konfirmasi visual user atas tampilan baru hero/popup di browser sebelum commit.
+- Go-live cPanel terblokir sementara: DNS domain belum aktif (error cPanel: "domain points to an IP address that does not use the DNS servers associated with this server"). Perlu ditangani oleh support hosting (rumahweb) + tunggu DNS 1x24 jam.
 
 ## Next Move
 1. Konfirmasi visual kolaborator atas hasil tampilan baru (slideshow + overlay + popup) di `http://localhost/royalharamain/`. (Sudah dikonfirmasi & di-commit pada `eb47c0b`.)
-2. Lanjut go-live: minta kredensial DB cPanel → set `app/config.php` → upload ke `public_html` + import `database.sql` → uji.
+2. [GO-LIVE cPanel - DALAM PROSES] Setelah DNS propagate:
+   - Domain akun: `pesm4254_royalharamain` / password hosting.
+   - `app/config.php` sudah diisi kredensial hosting: DB_NAME & DB_USER `pesm4254_royalharamain`, DB_PASS (password hosting), BASE_URL `https://www.royalharamain.com`. ⚠️ File ini SUDAH DIHAPUS dari git-track (aman), hanya ada di disk lokal → jangan di-commit.
+   - Database 12 tabel SUDAH berhasil di-import di phpMyAdmin (Langkah 4 selesai).
+   - Paket deploy: `Downloads/royalharamain-deploy.zip` (±12MB, bersih dari arsip lama & file sensitif).
+   - Panduan lengkap: `Downloads/PANDUAN_DEPLOY_cPanel.md`.
+   - Login admin awal saat go-live: `superadmin` / `PASSWORD123` (ganti segera).
+   - Objekter: tambah addon domain `royalharamain.com` di cPanel; JANGAN share document root `public_html` (akun hosting ini juga dipakai domain lain `pesantrenriyadhulquran.com`). Gunakan document root terpisah mis. `royalharamain.com`.
+
+## Catatan fitur yang SUDAH dibuat sesi ini (tidak perlu diulang)
+- Logo publik: `object-fit:contain` (tidak terpotong circle), ukuran 46px.
+- Grid galeri publik: dibatasi max 6 foto (portofolio), caption selalu tampil di bawah.
+- Judul hero diisi: "Umroh Nyaman Sesuai Tuntunan" (DB lokal).
+- Show/hide password (ikon mata) di login & form ganti password (profil).
+- Reset password ke default `123456` di Manajemen Admin (semua user termasuk super admin sendiri); hint menampilkan password default.
+- File darurat `admin/_reset.php` (reset password via browser, HAPUS setelah pakai) → di-gitignore, JANGAN di-commit/upload.
+- Background login: gradasi hijau+hitam (bukan polos).
+- Header/menu bar kini ikut tema (`var(--emerald-dark)`, bukan hardcoded).
+- Hero mobile: padding dikecilkan, `<h1>` kosong disembunyikan, tombol vertikal.
+- `app/config.example.php` dibuat sebagai template (config.php asli dihapus dari track git).
+
+## HAL PENTING SEBELUM LANJUT
+- GIT STATUS bersih? Commit terakhir `326181c` (keamanan config + fitur). Belum di-push? — PUSH dulu saat lanjut.
+- Konflik/aksi selanjutnya akan dibahas di sesi berikutnya.
 
 ## Relevant Files
 - `C:\Users\IESPA 000\royalharamain\index.php`: halaman publik; slideshow (`$hero_slides`, `.hero-slide`, `.hero-overlay`), hero 1 kolom + tombol daftar, popup booking `#bookModal`, JS `openBooking/closeBooking/toggleNav`.
