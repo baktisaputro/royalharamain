@@ -2,6 +2,8 @@
 /** Panel: Manajemen Admin - HANYA Super Admin yang berhak akses */
 require_role(['super_admin']);
 
+define('DEFAULT_PASS', '123456');
+
 $msg = '';
 // Aksi: tambah / ubah / hapus / toggle aktif / reset password
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -130,6 +132,7 @@ if (isset($_GET['edit'])) {
   <h2><i class="fa-solid fa-user-shield"></i> Daftar Admin (<span id="userCount"><?= count($users) ?></span>)</h2>
   <p class="hint" style="margin-top:-8px;margin-bottom:14px">
     Super Admin dapat menambah, mengubah level, menonaktifkan, menghapus, dan mereset password admin lain.
+    Tombol <i class="fa-solid fa-key"></i> mereset password menjadi <strong><?= DEFAULT_PASS ?></strong>.
   </p>
   <div class="table-wrap">
     <table class="admin-table">
@@ -147,13 +150,13 @@ if (isset($_GET['edit'])) {
             <td>
               <div class="actions">
                 <a href="?tab=users&edit=<?= (int)$x['id'] ?>" class="btn btn-sm btn-outline" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                <form method="post" action="?tab=users" onsubmit="return confirm('Reset password <?= htmlspecialchars($x['username']) ?> menjadi \'<?= DEFAULT_PASS ?>\'?')" style="display:inline">
+                  <input type="hidden" name="action" value="reset_pass">
+                  <input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
+                  <input type="hidden" name="password" value="<?= DEFAULT_PASS ?>">
+                  <button type="submit" class="btn btn-sm btn-outline" title="Reset password ke <?= DEFAULT_PASS ?>"><i class="fa-solid fa-key"></i></button>
+                </form>
                 <?php if (!$isSelf && $x['role_slug'] !== 'super_admin'): ?>
-                  <form method="post" action="?tab=users" onsubmit="return confirm('Reset password?')" style="display:inline">
-                    <input type="hidden" name="action" value="reset_pass">
-                    <input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
-                    <input type="hidden" name="password" value="123456">
-                    <button type="submit" class="btn btn-sm btn-outline" title="Reset password (123456)"><i class="fa-solid fa-key"></i></button>
-                  </form>
                   <form method="post" action="?tab=users" style="display:inline">
                     <input type="hidden" name="action" value="toggle">
                     <input type="hidden" name="id" value="<?= (int)$x['id'] ?>">

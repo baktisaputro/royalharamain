@@ -1,23 +1,20 @@
 <?php
 /**
  * Royal Haramain - Konfigurasi & Koneksi Database (MySQL)
- * Sesuaikan kredensial dengan database di hosting cPanel Anda.
- * Untuk uji lokal (XAMPP), gunakan default di bawah.
+ * CONTOH/TEMPLATE. Salin file ini menjadi app/config.php lalu isi kredensial Anda.
+ * JANGAN commit app/config.php yang berisi kredensial asli ke repo publik.
  */
 
 // ===== KONFIGURASI DATABASE =====
-// Ganti sesuai database hosting Anda (cPanel > Databases > MySQL Databases)
 define('DB_HOST', 'localhost');        // shared hosting: biasanya 'localhost'
-define('DB_NAME', 'royalharamain');    // nama database Anda
-define('DB_USER', 'root');             // cPanel: user_dbuser
-define('DB_PASS', '');                 // cPanel: your_db_password
+define('DB_NAME', 'NAMA_DATABASE');    // nama database Anda (cPanel: user_namadb)
+define('DB_USER', 'USER_DATABASE');    // cPanel: user_dbuser
+define('DB_PASS', 'PASSWORD_DATABASE'); // password user database
 
-// URL dasar aplikasi (untuk redirect/link). Contoh:
-//   Lokal  : http://localhost/royalharamain
-//   Hosting: https://mydomain.com
-define('BASE_URL', 'http://localhost/royalharamain');
+// ===== URL DASAR APLIKASI =====
+define('BASE_URL', 'https://www.domain-anda.com');
 
-// ===== SESI =====
+// ===== SESI & ERROR (jangan diubah) =====
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -42,13 +39,11 @@ function db(): PDO
 }
 
 // ===== HELPERS SESSION / ROLE =====
-/** Cek apakah user sudah login */
 function is_logged_in(): bool
 {
     return isset($_SESSION['admin_id']);
 }
 
-/** Ambil data user yang login (cache per request) */
 function current_user(): ?array
 {
     static $user = false;
@@ -73,7 +68,6 @@ function current_user(): ?array
     return $user;
 }
 
-/** Periksa izin: user harus login + role tertentu */
 function require_role(array $roles): void
 {
     $u = current_user();

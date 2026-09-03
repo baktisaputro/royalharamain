@@ -4,8 +4,10 @@
 
 # file sekali-pakai yang bisa memuat password (jangan pernah commit)
 app/setup_password.php
+admin/_reset.php
 
-# Kredensial lokal rahasia (jangan di-commit/push)
+# Kredensial & konfigurasi DB asli (jangan commit - jaga kerahasiaan)
+app/config.php
 .credentials.local
 
 # Gambar asli upload pengguna (besar) - hanya versi ringan (slide_*) yang di-commit

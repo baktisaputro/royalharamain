@@ -55,7 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       font-family:'Inter',sans-serif;
       min-height:100vh;
       display:flex; align-items:center; justify-content:center;
-      background:linear-gradient(135deg,#0f5132,#198754);
+      background:
+        radial-gradient(800px 600px at 15% 10%, rgba(4,106,56,.55), transparent 60%),
+        radial-gradient(900px 700px at 90% 90%, rgba(2,61,31,.8), transparent 60%),
+        linear-gradient(160deg, #01130a 0%, #023d1f 45%, #000000 100%);
     }
     .login-card {
       background:#fff; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.3);
@@ -71,6 +74,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       font-size:14px; transition:border-color .15s;
     }
     .field input:focus { outline:none; border-color:#198754; box-shadow:0 0 0 3px rgba(25,135,84,.15); }
+    .pw-wrap { position:relative; }
+    .pw-wrap input { padding-right:44px; }
+    .pw-toggle {
+      position:absolute; right:4px; top:50%; transform:translateY(-50%);
+      background:none; border:none; cursor:pointer; color:#6c757d; padding:8px; font-size:16px;
+    }
+    .pw-toggle:hover { color:#198754; }
     .btn {
       width:100%; padding:12px; background:#198754; color:#fff; border:none; border-radius:8px;
       font-size:15px; font-weight:700; cursor:pointer; transition:background .15s;
@@ -107,11 +117,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
       <div class="field">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="••••••••" required>
+        <div class="pw-wrap">
+          <input type="password" id="password" name="password" placeholder="••••••••" required>
+          <button type="button" class="pw-toggle" onclick="togglePw()" tabindex="-1" aria-label="Tampilkan password">
+            <i class="fa-solid fa-eye" id="pwIcon"></i>
+          </button>
+        </div>
       </div>
       <button type="submit" class="btn"><i class="fa-solid fa-lock"></i> Masuk</button>
     </form>
     <a href="../index.php" class="back"><i class="fa-solid fa-arrow-left"></i> Kembali ke website</a>
   </div>
+  <script>
+    function togglePw() {
+      var inp = document.getElementById('password');
+      var icon = document.getElementById('pwIcon');
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        inp.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+  </script>
 </body>
 </html>

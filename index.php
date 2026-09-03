@@ -104,8 +104,8 @@ $articles = db()->query('SELECT * FROM articles WHERE is_active=1 ORDER BY id DE
 // Ambil keunggulan / layanan
 $features = db()->query('SELECT * FROM features WHERE is_active=1 ORDER BY sort_order ASC, id ASC')->fetchAll();
 
-// Ambil galeri foto
-$gallery = db()->query('SELECT * FROM gallery_images WHERE is_active=1 ORDER BY sort_order ASC, id ASC')->fetchAll();
+// Ambil galeri foto (maks 6 untuk portofolio perjalanan)
+$gallery = db()->query('SELECT * FROM gallery_images WHERE is_active=1 ORDER BY sort_order ASC, id ASC LIMIT 6')->fetchAll();
 $gallery_items = [];
 foreach ($gallery as $g) {
     $gallery_items[] = [
@@ -127,7 +127,7 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style_pub.css?v=3">
+  <link rel="stylesheet" href="css/style_pub.css?v=8">
   <style>
     /* Tema dinamis dari database (Admin -> Hero -> Tema Website) */
     <?php if (count($hero_slides) > 1): ?>
@@ -207,7 +207,9 @@ $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
           <?php if (!empty($hero['subtitle'])): ?>
             <span class="eyebrow" style="color:#f3e5ab;background:rgba(212,175,55,.15)">✦ <?= htmlspecialchars($hero['subtitle']) ?></span>
           <?php endif; ?>
-          <h1><?= htmlspecialchars($hero['title'] ?? '') ?></h1>
+          <?php if (!empty($hero['title'])): ?>
+          <h1><?= htmlspecialchars($hero['title']) ?></h1>
+          <?php endif; ?>
           <?php if (!empty($hero['badge_line'])): ?>
             <p class="lead"><?= htmlspecialchars($hero['badge_line']) ?></p>
           <?php endif; ?>

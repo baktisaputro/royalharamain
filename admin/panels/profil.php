@@ -39,9 +39,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <p class="hint" style="margin-top:-8px;margin-bottom:16px">Password minimal 8 karakter.</p>
   <form method="post" action="?tab=profil" style="max-width:400px">
     <input type="hidden" name="action" value="change_pass">
-    <div class="field"><label>Password Lama</label><input type="password" name="old_password" required></div>
-    <div class="field"><label>Password Baru</label><input type="password" name="new_password" minlength="8" required></div>
-    <div class="field"><label>Konfirmasi Password Baru</label><input type="password" name="confirm_password" minlength="8" required></div>
+    <div class="field"><label>Password Lama</label>
+      <div class="pw-wrap"><input type="password" name="old_password" id="pw0" required>
+        <button type="button" class="pw-toggle" onclick="toggleFieldPw('pw0')" tabindex="-1" aria-label="Tampilkan"><i class="fa-solid fa-eye" id="pw0i"></i></button>
+      </div>
+    </div>
+    <div class="field"><label>Password Baru</label>
+      <div class="pw-wrap"><input type="password" name="new_password" id="pw1" minlength="8" required>
+        <button type="button" class="pw-toggle" onclick="toggleFieldPw('pw1')" tabindex="-1" aria-label="Tampilkan"><i class="fa-solid fa-eye" id="pw1i"></i></button>
+      </div>
+    </div>
+    <div class="field"><label>Konfirmasi Password Baru</label>
+      <div class="pw-wrap"><input type="password" name="confirm_password" id="pw2" minlength="8" required>
+        <button type="button" class="pw-toggle" onclick="toggleFieldPw('pw2')" tabindex="-1" aria-label="Tampilkan"><i class="fa-solid fa-eye" id="pw2i"></i></button>
+      </div>
+    </div>
     <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Simpan Password</button>
   </form>
+  <script>
+    function toggleFieldPw(id) {
+      var inp = document.getElementById(id);
+      var icon = document.getElementById(id + 'i');
+      if (!inp) return;
+      if (inp.type === 'password') { inp.type = 'text'; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); }
+      else { inp.type = 'password'; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); }
+    }
+  </script>
 </div>
