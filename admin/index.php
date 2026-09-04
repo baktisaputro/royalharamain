@@ -60,6 +60,7 @@ $panels = [
           <strong>Royal Haramain</strong>
           <span>Admin Panel</span>
         </div>
+        <button class="sidebar-toggle" onclick="toggleCollapse()" title="Ciutkan/Lebarkan"><i class="fa-solid fa-angles-left"></i></button>
       </div>
       <nav class="side-nav">
         <?php
@@ -79,7 +80,7 @@ $panels = [
             if (!in_array($key, $allowed_tabs, true)) continue;
             $active = ($tab === $key) ? 'active' : '';
             $icon = $item[0]; $label = $item[1];
-            echo "<a class=\"nav-item $active\" href=\"?tab=$key\"><i class=\"fa-solid $icon\"></i> $label</a>";
+            echo "<a class=\"nav-item $active\" href=\"?tab=$key\"><i class=\"fa-solid $icon\"></i> <span>$label</span></a>";
         }
         ?>
       </nav>
@@ -91,14 +92,17 @@ $panels = [
             <span class="role-badge role-<?= $role ?>"><?= htmlspecialchars($u['role_name']) ?></span>
           </div>
         </div>
-        <a href="../admin/logout.php" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Keluar</a>
+        <a href="../admin/logout.php" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span></a>
       </div>
     </aside>
 
     <!-- ===== MAIN ===== -->
     <main class="main">
       <header class="topbar">
-        <h1><?= htmlspecialchars(ucfirst($tab)) ?></h1>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+          <h1><?= htmlspecialchars(ucfirst($tab)) ?></h1>
+        </div>
         <a href="../index.php" target="_blank" class="btn-view"><i class="fa-solid fa-arrow-up-right-from-square"></i> Lihat Website</a>
       </header>
 
@@ -114,7 +118,18 @@ $panels = [
 
   <div id="toast" class="toast"></div>
   <div id="modal" class="modal" hidden></div>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
   <script src="../js/admin_panel.js"></script>
-  <script>window.RH_ADMIN = { tab: <?= json_encode($tab) ?>, role: <?= json_encode($role) ?> };</script>
+  <script>
+    window.RH_ADMIN = { tab: <?= json_encode($tab) ?>, role: <?= json_encode($role) ?> };
+    function toggleSidebar(){
+      var s=document.querySelector('.sidebar'), o=document.getElementById('sidebarOverlay');
+      s.classList.toggle('open'); o.classList.toggle('show');
+    }
+    function toggleCollapse(){
+      var s=document.querySelector('.sidebar');
+      s.classList.toggle('collapsed');
+    }
+  </script>
 </body>
 </html>

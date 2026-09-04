@@ -1,4 +1,7 @@
 <?php
+/** Panel: Paket Umroh (upload foto + URL, CRUD + fasilitas) */
+require_once __DIR__ . '/../../app/upload.php';
+
 $readonly = ($role === 'viewer');
 $msg = '';
 
@@ -13,9 +16,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
             $duration = trim($_POST['duration'] ?? '');
             $badge = trim($_POST['badge'] ?? '');
             $featured = isset($_POST['featured']) ? 1 : 0;
-            $image = trim($_POST['image_url'] ?? '');
             $url = trim($_POST['url'] ?? '#');
             if ($title === '' || $price === '') throw new Exception('Judul & harga wajib diisi.');
+
+            // Prioritas: upload file > URL manual
+            $image = '';
+            $has_file = isset($_FILES['image_file']) && isset($_FILES['image_file']['name']) && $_FILES['image_file']['name'] !== '';
+            if ($has_file) {
+                $up = handle_image_upload($_FILES['image_file'], 'paket');
+                if (!$up['ok']) throw new Exception($up['error']);
+                $image = BASE_URL . '/' . $up['path'];
+                // Hapus gambar lama jika edit
+                if ($id > 0) {
+                    $old = db()->prepare('SELECT image_url FROM packages WHERE id=?');
+                    $old->execute([$id]);
+                    $old_row = $old->fetch();
+                    if ($old_row && strpos($old_row['image_url'], BASE_URL . '/uploads/') === 0) {
+                        $old_path = str_replace(BASE_URL . '/', '', $old_row['image_url']);
+                        delete_upload($old_path);
+                    }
+                }
+            } else {
+                $image = trim($_POST['image_url'] ?? '');
+            }
 
             if ($id > 0) {
                 $stmt = db()->prepare('UPDATE packages SET title=?, price=?, price_old=?, duration=?, badge=?, featured=?, image_url=?, url=? WHERE id=?');
@@ -34,6 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
         }
         elseif ($action === 'delete') {
             $id = (int)($_POST['id'] ?? 0);
+            // Hapus gambar terkait
+            $old = db()->prepare('SELECT image_url FROM packages WHERE id=?');
+            $old->execute([$id]);
+            $old_row = $old->fetch();
+            if ($old_row && strpos($old_row['image_url'], BASE_URL . '/uploads/') === 0) {
+                $old_path = str_replace(BASE_URL . '/', '', $old_row['image_url']);
+                delete_upload($old_path);
+            }
             db()->prepare('DELETE FROM packages WHERE id=?')->execute([$id]);
             $msg = 'Paket dihapus.';
         }
@@ -61,7 +92,7 @@ if (isset($_GET['edit'])) {
 <div class="card">
   <h2><i class="fa-solid fa-box-open"></i> <?= $editing ? 'Edit Paket' : 'Tambah Paket Baru' ?></h2>
   <?php if ($editing): ?><p class="hint" style="margin-top:-10px;margin-bottom:14px">Edit paket #<?= (int)$editing['id'] ?></p><?php endif; ?>
-  <form method="post" action="?tab=paket">
+  <form method="post" action="?tab=paket" enctype="multipart/form-data">
     <?php if ($editing): ?><input type="hidden" name="id" value="<?= (int)$editing['id'] ?>"><?php endif; ?>
     <input type="hidden" name="action" value="save">
     <div class="grid">
@@ -71,7 +102,17 @@ if (isset($_GET['edit'])) {
       <div class="field"><label>Durasi</label><input type="text" name="duration" value="<?= htmlspecialchars($editing['duration'] ?? '') ?>" placeholder="9 Hari"></div>
       <div class="field"><label>Badge (opsional)</label><input type="text" name="badge" value="<?= htmlspecialchars($editing['badge'] ?? '') ?>" placeholder="PALING DIMINATI"></div>
       <div class="field"><label>Link Daftar</label><input type="text" name="url" value="<?= htmlspecialchars($editing['url'] ?? '#') ?>"></div>
-      <div class="field" style="grid-column:1/-1"><label>URL Gambar</label><input type="text" name="image_url" value="<?= htmlspecialchars($editing['image_url'] ?? '') ?>"><p class="hint">URL atau path /assets/images/xxx.jpg</p></div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Gambar <span class="hint">(upload dari komputer, max 5MB — JPG/PNG/WebP)</span></label>
+        <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp,image/gif" <?= $readonly?'disabled':'' ?>>
+        <?php if ($editing && !empty($editing['image_url'])): ?>
+          <div style="margin-top:8px">
+            <img src="<?= htmlspecialchars($editing['image_url']) ?>" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--border)" onerror="this.style.display='none'">
+            <div style="font-size:12px;color:var(--muted);margin-top:4px">Gambar saat ini. Pilih file baru untuk mengganti.</div>
+          </div>
+        <?php endif; ?>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>Atau URL Gambar <span class="hint">(opsional, jika tidak upload)</span></label><input type="text" name="image_url" value="<?= htmlspecialchars($editing['image_url'] ?? '') ?>" placeholder="https://..."></div>
     </div>
     <div class="field">
       <label>Fasilitas (satu per baris)</label>

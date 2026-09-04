@@ -1,4 +1,7 @@
 <?php
+/** Panel: Artikel (upload foto + URL, CRUD) */
+require_once __DIR__ . '/../../app/upload.php';
+
 $readonly = ($role === 'viewer');
 $msg = '';
 
@@ -10,9 +13,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
             $title = trim($_POST['title'] ?? '');
             $excerpt = trim($_POST['excerpt'] ?? '');
             $date = trim($_POST['date'] ?? '');
-            $image = trim($_POST['image_url'] ?? '');
             $url = trim($_POST['url'] ?? '#');
             if ($title === '' || $excerpt === '') throw new Exception('Judul & ringkasan wajib diisi.');
+
+            // Prioritas: upload file > URL manual
+            $image = '';
+            $has_file = isset($_FILES['image_file']) && isset($_FILES['image_file']['name']) && $_FILES['image_file']['name'] !== '';
+            if ($has_file) {
+                $up = handle_image_upload($_FILES['image_file'], 'artikel');
+                if (!$up['ok']) throw new Exception($up['error']);
+                $image = BASE_URL . '/' . $up['path'];
+                // Hapus gambar lama jika edit
+                if ($id > 0) {
+                    $old = db()->prepare('SELECT image_url FROM articles WHERE id=?');
+                    $old->execute([$id]);
+                    $old_row = $old->fetch();
+                    if ($old_row && strpos($old_row['image_url'], BASE_URL . '/uploads/') === 0) {
+                        $old_path = str_replace(BASE_URL . '/', '', $old_row['image_url']);
+                        delete_upload($old_path);
+                    }
+                }
+            } else {
+                $image = trim($_POST['image_url'] ?? '');
+            }
+
             if ($id > 0) {
                 $stmt = db()->prepare('UPDATE articles SET title=?, excerpt=?, date=?, image_url=?, url=? WHERE id=?');
                 $stmt->execute([$title, $excerpt, $date, $image, $url, $id]);
@@ -24,6 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
         }
         elseif ($action === 'delete') {
             $id = (int)($_POST['id'] ?? 0);
+            // Hapus gambar terkait
+            $old = db()->prepare('SELECT image_url FROM articles WHERE id=?');
+            $old->execute([$id]);
+            $old_row = $old->fetch();
+            if ($old_row && strpos($old_row['image_url'], BASE_URL . '/uploads/') === 0) {
+                $old_path = str_replace(BASE_URL . '/', '', $old_row['image_url']);
+                delete_upload($old_path);
+            }
             db()->prepare('DELETE FROM articles WHERE id=?')->execute([$id]);
             $msg = 'Artikel dihapus.';
         }
@@ -38,13 +70,23 @@ if (isset($_GET['edit'])) foreach ($articles as $x) if ((int)$x['id'] === (int)$
 
 <div class="card">
   <h2><i class="fa-solid fa-newspaper"></i> <?= $editing ? 'Edit Artikel' : 'Tambah Artikel Baru' ?></h2>
-  <form method="post" action="?tab=artikel">
+  <form method="post" action="?tab=artikel" enctype="multipart/form-data">
     <?php if ($editing): ?><input type="hidden" name="id" value="<?= (int)$editing['id'] ?>"><?php endif; ?>
     <input type="hidden" name="action" value="save">
     <div class="grid">
       <div class="field"><label>Judul *</label><input type="text" name="title" value="<?= htmlspecialchars($editing['title'] ?? '') ?>" required></div>
       <div class="field"><label>Tanggal</label><input type="text" name="date" value="<?= htmlspecialchars($editing['date'] ?? '') ?>" placeholder="12 Agustus 2026"></div>
-      <div class="field" style="grid-column:1/-1"><label>URL Gambar</label><input type="text" name="image_url" value="<?= htmlspecialchars($editing['image_url'] ?? '') ?>" placeholder="https://..."></div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Gambar <span class="hint">(upload dari komputer, max 5MB — JPG/PNG/WebP)</span></label>
+        <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp,image/gif" <?= $readonly?'disabled':'' ?>>
+        <?php if ($editing && !empty($editing['image_url'])): ?>
+          <div style="margin-top:8px">
+            <img src="<?= htmlspecialchars($editing['image_url']) ?>" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--border)" onerror="this.style.display='none'">
+            <div style="font-size:12px;color:var(--muted);margin-top:4px">Gambar saat ini. Pilih file baru untuk mengganti.</div>
+          </div>
+        <?php endif; ?>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>Atau URL Gambar <span class="hint">(opsional, jika tidak upload)</span></label><input type="text" name="image_url" value="<?= htmlspecialchars($editing['image_url'] ?? '') ?>" placeholder="https://..."></div>
       <div class="field" style="grid-column:1/-1"><label>Link Artikel</label><input type="text" name="url" value="<?= htmlspecialchars($editing['url'] ?? '#') ?>"></div>
       <div class="field" style="grid-column:1/-1"><label>Ringkasan *</label><textarea name="excerpt" rows="3" required><?= htmlspecialchars($editing['excerpt'] ?? '') ?></textarea></div>
     </div>
