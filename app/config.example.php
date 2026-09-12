@@ -14,10 +14,11 @@ define('DB_PASS', 'PASSWORD_DATABASE'); // password user database
 // ===== URL DASAR APLIKASI =====
 define('BASE_URL', 'https://www.domain-anda.com');
 
-// ===== SESI & ERROR (jangan diubah) =====
+// ===== SESI & ERROR =====
 session_start();
 error_reporting(E_ALL);
-ini_set('display_errors', '1');
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
 
 // ===== KONEKSI =====
 function db(): PDO

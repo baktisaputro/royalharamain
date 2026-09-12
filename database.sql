@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS settings (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO settings (id, theme_preset, primary_color, secondary_color, accent_color, about_image, instagram_handle)
-VALUES (1, 'emerald-gold', '#046a38', '#023d1f', '#d4af37', 'uploads/hero/slide_1.webp', 'royalharamainbantul')
+VALUES (1, 'emerald-gold', '#046a38', '#023d1f', '#d4af37', 'uploads/hero/slide_1.webp', 'royalumrah.jogja')
 ON DUPLICATE KEY UPDATE id = id;
 
 -- ------------------------------------------------------------
@@ -87,15 +87,15 @@ CREATE TABLE IF NOT EXISTS hero_content (
 INSERT INTO hero_content (id, title, subtitle, quote, quote_source, background_image,
   primary_btn_text, primary_btn_url, secondary_btn_text, secondary_btn_url, badge_line, legal_badges)
 VALUES (1,
-  'Travel Haji, Umroh dan Halal Tours',
-  'Resmi, Amanah & Berizin Kemenag RI',
+  'Perjalanan Suci yang Tenang, Terarah, dan Penuh Kehormatan',
+  'Travel Umrah Ramah Lansia — PT. Royal Haramain International',
   'Ikutkanlah umroh kepada haji, karena keduanya menghilangkan kemiskinan dan dosa-dosa sebagaimana pembakaran menghilangkan karat pada besi, emas, dan perak. Sementara tidak ada pahala bagi haji yang mabrur kecuali surga.',
   'HR. An Nasai, Tirmidzi dan Ahmad',
   'https://images.unsplash.com/photo-1591604466107-ec97de577aff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
-  'Konsultasi Gratis', '#lokasi',
-  'Lihat Paket', '#paket',
+  'Lihat Paket Umrah', '#paket',
+  'Hubungi Kami', 'https://wa.me/6281215151552',
   'Wujudkan Niat Suci Tanpa Hambatan',
-  '["AMPHURI","PIHK No. 394","PPIU No. U.533","Kemenag","Siskopatuh"]')
+  '["PPIU No. 21092200513570003","PIHK No. 694/2020 by. Hajar Aswad","Kemenag RI","Resmi & Berizin"]')
 ON DUPLICATE KEY UPDATE id = id;
 
 -- ------------------------------------------------------------
@@ -127,28 +127,59 @@ CREATE TABLE IF NOT EXISTS package_facilities (
     REFERENCES packages(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Seed paket contoh (dapat diedit via admin)
+-- Seed paket (sesuai royalharamain.id)
 INSERT INTO packages (title, price, price_old, duration, badge, featured, image_url, url, sort_order, is_active) VALUES
- ('Umrah VIP Reguler', 'Rp 28.5 Juta', NULL, '9 Hari', NULL, 0,
+ ('Umrah Hemat 2026', 'Rp 29,9 Jt', NULL, '9 Hari', NULL, 0,
   'https://images.unsplash.com/photo-1564769625905-50e93615e769?w=800&auto=format&fit=crop', '#', 1, 1),
- ('Umrah Plus — Nabawi', 'Rp 39 Juta', 'Rp 42 Juta', '12 Hari', 'PALING DIMINATI', 1,
+ ('Umrah Premium 2026', 'Rp 39,9 Jt', NULL, '12 Hari', 'PALING DIMINATI', 1,
   'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=800&auto=format&fit=crop', '#', 2, 1),
- ('Haji Khusus', 'Rp 65 Juta', NULL, '25 Hari', NULL, 0,
-  'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&auto=format&fit=crop', '#', 3, 1);
+ ('Program Umrah 10 Hari', 'Rp 33,9 Jt', NULL, '10 Hari', NULL, 0,
+  'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&auto=format&fit=crop', '#', 3, 1),
+ ('Haji Khusus 2027', 'USD 13.400', NULL, '23 Hari', NULL, 0,
+  'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&auto=format&fit=crop', '#', 4, 1);
 
 INSERT INTO package_facilities (package_id, facility, sort_order) VALUES
- (1, 'Hotel Bintang 4 (Makkah & Madinah)', 1),
- (1, 'Pesawat Garuda / Saudia', 2),
- (1, 'Muthawwif Berpengalaman', 3),
- (1, 'Visa Umroh & Perlengkapan', 4),
- (2, 'Hotel Bintang 5 (Pelataran Masjidil Haram & Nabawi)', 1),
- (2, 'Penerbangan Direct (Saudia)', 2),
- (2, 'Kereta Cepat Haramain', 3),
- (2, 'Eksklusif Lounge & Fast Track', 4),
- (2, 'City Tour Madinah & Ziarah Nabawi', 5),
- (3, 'Hotel Bintang 5 (Makkah & Madinah)', 1),
- (3, 'Muthawwif & Pembimbing Haji', 2),
- (3, 'Visa Haji & Perlengkapan', 3);
+ (1, 'Tiket Pesawat PP Internasional', 1),
+ (1, 'Hotel Madinah Nusk El Eiman (3 malam)', 2),
+ (1, 'Hotel Makkah Snood Ajyad (4 malam)', 3),
+ (1, 'Kereta Cepat Haramain', 4),
+ (1, 'Taifsama Cable Car & Al Baik', 5),
+ (1, 'Bimbingan Manasik & Tour Leader', 6),
+ (1, 'Transportasi bus full trip & city tour', 7),
+ (1, 'Makan full board hotel & snack', 8),
+ (1, 'Visa Umrah & asuransi perjalanan', 9),
+ (1, 'Dokumentasi foto & video', 10),
+ (1, 'Air Zam-zam 5L & suvenir', 11),
+ (2, 'Direct Flight Garuda Indonesia', 1),
+ (2, 'Hotel Madinah Nusk El Eiman (3 malam)', 2),
+ (2, 'Hotel Makkah Snood Ajyad (4 malam)', 3),
+ (2, 'Kereta Cepat Haramain', 4),
+ (2, 'Taifsama Cable Car & Al Baik', 5),
+ (2, 'Bimbingan Manasik & Tour Leader', 6),
+ (2, 'Transportasi bus full trip & city tour', 7),
+ (2, 'Makan full board hotel & snack', 8),
+ (2, 'Visa Umrah & asuransi perjalanan', 9),
+ (2, 'Dokumentasi foto & video', 10),
+ (2, 'Air Zam-zam 5L & suvenir', 11),
+ (3, 'Tiket pesawat YIA – CGK PP', 1),
+ (3, 'Tiket Saudi Airlines PP', 2),
+ (3, 'Visa Umrah', 3),
+ (3, 'Hotel Madinah Grand Plaza ±150m dari Masjid Nabawi', 4),
+ (3, 'Hotel Makkah Maysan Al Maqam ±350m dari Masjidil Haram', 5),
+ (3, 'Mutowif (pembimbing ibadah)', 6),
+ (3, 'City tour Madinah & Makkah', 7),
+ (3, 'Manasik Umrah', 8),
+ (3, 'Perlengkapan Umrah', 9),
+ (4, 'Kuota Murni 2027', 1),
+ (4, 'Oman Air PP Jakarta – Arab Saudi', 2),
+ (4, 'Konsorsium Saudi Journey', 3),
+ (4, 'Maktab VIP Majr Kabs Zona 1–2', 4),
+ (4, 'Meals 3x sehari', 5),
+ (4, 'Tour leader & pembimbing ibadah', 6),
+ (4, 'Bus kontrak', 7),
+ (4, 'Pelepasan haji H-1', 8),
+ (4, 'Asuransi perjalanan', 9),
+ (4, 'Mutawif (guide)', 10);
 
 -- ------------------------------------------------------------
 -- Tabel ARTIKEL
@@ -190,12 +221,10 @@ CREATE TABLE IF NOT EXISTS features (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO features (icon, title, description, sort_order, is_active) VALUES
- ('fa-certificate', 'Berizin & Resmi', 'Terdaftar resmi Kemenag RI, AMPHURI, PIHK, dan Siskopatuh.', 1, 1),
- ('fa-hand-holding-heart', 'Melayani Sepenuh Hati', 'Pendampingan kekeluargaan dari pendaftaran hingga kembali ke tanah air.', 2, 1),
- ('fa-plane', 'Penerbangan Terjamin', 'Maskapai terbaik (Garuda / Saudia) dengan rute paling nyaman.', 3, 1),
- ('fa-hotel', 'Hotel Bintang 5', 'Penginapan premium dekat Masjidil Haram & Masjid Nabawi.', 4, 1),
- ('fa-shield-halved', 'Amanah & Terpercaya', 'Lebih dari 15 tahun pengalaman memberangkatkan puluhan ribu jamaah.', 5, 1),
- ('fa-cash-register', 'Pembayaran Mudah', 'Fasilitas cicilan biaya haji & umroh untuk memudahkan Anda.', 6, 1)
+ ('fa-calendar-check', 'Berpengalaman', 'Melayani Sejak 2009 — Pengalaman lebih dari 17 tahun memberangkatkan jamaah Umrah, dikelola oleh tim yang memahami seluk-beluk perjalanan ke Tanah Suci.', 1, 1),
+ ('fa-certificate', 'Berizin', 'Resmi PPIU & PIHK — Beroperasi dengan izin umrah (PPIU) dan izin haji khusus (PIHK) yang terdaftar resmi, sehingga keberangkatan jamaah legal dan terlindungi.', 2, 1),
+ ('fa-user-graduate', 'Bimbingan', 'Muthawif & Tour Leader — Setiap keberangkatan didampingi tour leader, pembimbing ibadah, dan muthawif kompeten bersertifikat resmi BNSP, lulusan pondok pesantren serta universitas Islam ternama.', 3, 1),
+ ('fa-list-check', 'Fleksibel', 'Pilihan Program Beragam — Dari Umrah Reguler, Hemat, hingga Premium — disesuaikan kemampuan dan kebutuhan jamaah.', 4, 1)
 ON DUPLICATE KEY UPDATE title = VALUES(title);
 
 -- ------------------------------------------------------------
@@ -261,15 +290,11 @@ CREATE TABLE IF NOT EXISTS promos (
 -- SEED SUPER ADMIN (role_id = 1)
 -- !! PENTING: ganti username & password_hash sebelum go-live !!
 -- username : superadmin
--- password : PASSWORD123  (ganti segera!)
---   (password_hash = sha1 dari password, karena memakai PHP
---    password_verify dengan format bcrypt juga bisa. Di bawah
---    dicontohkan hash bcrypt dari: "PASSWORD123")
+-- password : @#$Admin321  (ganti segera setelah login pertama!)
+--   (password_hash = bcrypt dari password, dihasilkan via:
+--    echo password_hash("@#\$Admin321", PASSWORD_DEFAULT); )
 -- ============================================================
--- Untuk membuat hash bcrypt, jalankan script PHP berikut:
---   echo password_hash("PASSWORD123", PASSWORD_DEFAULT);
--- lalu tempel hasilnya di bawah ini.
 INSERT INTO admin_users (role_id, name, username, email, password_hash, is_active)
-VALUES (1, 'Super Admin', 'superadmin', 'superadmin@royalharamain.co.id',
-  '$2y$10$e0MYzXyjpJS7Pd0RVvHwHeFxGyRZisPDNNxRQy1HcF0jT0zT8O3SO', 1)
+VALUES (1, 'Super Admin', 'superadmin', 'superadmin@royalharamain.id',
+  '$2y$10$.Q5xirtaAMQ77Xng6xCizuXlbo9tn3vekmikDN/OnPAXfWp3sEnaG', 1)
 ON DUPLICATE KEY UPDATE username = username;
