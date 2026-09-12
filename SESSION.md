@@ -42,7 +42,14 @@ Sync konten website Royal Haramain (travel haji/umroh) dengan head office `royal
 ### Active
 - (empty)
 
-### Next Move
+### Progres
+
+- Step 1 CSRF (`ad15c09`) ✔
+- Step 2 display_errors + password (`e34d337`) ✔
+- Step 3 SEO meta tags + favicon (`126bc6d`) ✔
+- Step 4 robots.txt + sitemap.xml (`471bc88`) ✔
+
+## Next Move
 1. Go-live cPanel (tunggu DNS propagate)
 2. Visual check `index.php` di browser setelah deploy
 3. Pull di hosting cPanel via Git untuk update live site
