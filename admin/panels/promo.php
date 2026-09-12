@@ -1,8 +1,13 @@
 <?php
+require_once __DIR__ . '/../../app/csrf.php';
+
 $readonly = ($role === 'viewer');
 $msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
+    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+        $msg = 'Sesi telah berakhir. Silakan muat ulang halaman.';
+    } else {
     $action = $_POST['action'] ?? '';
     try {
         if ($action === 'save') {
@@ -23,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
             $msg = 'Popup promo disimpan.';
         }
     } catch (Exception $e) { $msg = 'Gagal: ' . $e->getMessage(); }
+    } // endif csrf_validate
 }
 
 $p = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
@@ -34,6 +40,7 @@ $p = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
   <p class="hint" style="margin-top:-8px;margin-bottom:16px">Popup yang muncul di halaman depan website.</p>
   <form method="post" action="?tab=promo">
     <input type="hidden" name="action" value="save">
+    <?= csrf_field() ?>
     <div class="field checkbox-row mt">
       <input type="checkbox" name="enabled" id="p_enabled" <?= !empty($p['enabled']) ? 'checked' : '' ?>>
       <label for="p_enabled">Aktifkan popup promo</label>

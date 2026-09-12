@@ -1,11 +1,15 @@
 <?php
 /** Panel: Galeri Foto (upload & kelola dari admin) */
 require_once __DIR__ . '/../../app/upload.php';
+require_once __DIR__ . '/../../app/csrf.php';
 
 $readonly = ($role === 'viewer');
 $msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
+    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+        $msg = 'Sesi telah berakhir. Silakan muat ulang halaman.';
+    } else {
     $action = $_POST['action'] ?? '';
     try {
         if ($action === 'upload') {
@@ -43,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
             $msg = 'Gambar dihapus.';
         }
     } catch (Exception $e) { $msg = 'Gagal: ' . $e->getMessage(); }
+    } // endif csrf_validate
 }
 
 $images = db()->query('SELECT * FROM gallery_images ORDER BY sort_order ASC, id DESC')->fetchAll();
@@ -53,6 +58,7 @@ $images = db()->query('SELECT * FROM gallery_images ORDER BY sort_order ASC, id 
   <h2><i class="fa-solid fa-upload"></i> Upload Foto Baru</h2>
   <form method="post" action="?tab=galeri" enctype="multipart/form-data">
     <input type="hidden" name="action" value="upload">
+    <?= csrf_field() ?>
     <div class="grid">
       <div class="field" style="grid-column:1/-1">
         <label>Pilih Gambar <span class="hint">(otomatis dikompres, max 5MB)</span></label>
@@ -81,6 +87,7 @@ $images = db()->query('SELECT * FROM gallery_images ORDER BY sort_order ASC, id 
             <?php if ($edit_id === (int)$x['id']): ?>
               <form method="post" action="?tab=galeri">
                 <input type="hidden" name="action" value="update"><input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
+                <?= csrf_field() ?>
                 <input type="text" name="caption" value="<?= htmlspecialchars($x['caption']) ?>" placeholder="Keterangan" style="width:100%;padding:6px 8px;border:1px solid #ced4da;border-radius:6px;font-size:13px;margin-bottom:6px">
                 <input type="number" name="sort_order" value="<?= (int)$x['sort_order'] ?>" style="width:100%;padding:6px 8px;border:1px solid #ced4da;border-radius:6px;font-size:13px;margin-bottom:8px">
                 <button type="submit" class="btn btn-sm btn-primary"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
@@ -93,10 +100,12 @@ $images = db()->query('SELECT * FROM gallery_images ORDER BY sort_order ASC, id 
                   <a href="?tab=galeri&edit=<?= (int)$x['id'] ?>" class="btn btn-sm btn-outline"><i class="fa-solid fa-pen"></i></a>
                   <form method="post" action="?tab=galeri" style="display:inline">
                     <input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
+                    <?= csrf_field() ?>
                     <button type="submit" class="btn btn-sm btn-outline" title="Aktif/Nonaktif"><i class="fa-solid fa-eye<?= $x['is_active']?'-slash':'' ?>"></i></button>
                   </form>
                   <form method="post" action="?tab=galeri" onsubmit="return confirm('Hapus foto ini?')" style="display:inline">
                     <input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
+                    <?= csrf_field() ?>
                     <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
                   </form>
                 <?php else: ?>

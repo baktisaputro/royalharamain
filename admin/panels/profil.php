@@ -1,8 +1,13 @@
 <?php
+require_once __DIR__ . '/../../app/csrf.php';
+
 $u = current_user();
 $msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+        $msg = 'Sesi telah berakhir. Silakan muat ulang halaman.';
+    } else {
     $action = $_POST['action'] ?? '';
     try {
         if ($action === 'change_pass') {
@@ -21,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $msg = 'Password berhasil diubah.';
         }
     } catch (Exception $e) { $msg = 'Gagal: ' . $e->getMessage(); }
+    } // endif csrf_validate
 }
 ?>
 <?php if ($msg): ?><div class="card" style="border-color:<?= $msg==='Password berhasil diubah.'?'#198754':'#dc3545' ?>"><p><?= htmlspecialchars($msg) ?></p></div><?php endif; ?>
@@ -39,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <p class="hint" style="margin-top:-8px;margin-bottom:16px">Password minimal 8 karakter.</p>
   <form method="post" action="?tab=profil" style="max-width:400px">
     <input type="hidden" name="action" value="change_pass">
+    <?= csrf_field() ?>
     <div class="field"><label>Password Lama</label>
       <div class="pw-wrap"><input type="password" name="old_password" id="pw0" required>
         <button type="button" class="pw-toggle" onclick="toggleFieldPw('pw0')" tabindex="-1" aria-label="Tampilkan"><i class="fa-solid fa-eye" id="pw0i"></i></button>

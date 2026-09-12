@@ -1,11 +1,15 @@
 <?php
 /** Panel: Artikel (upload foto + URL, CRUD) */
 require_once __DIR__ . '/../../app/upload.php';
+require_once __DIR__ . '/../../app/csrf.php';
 
 $readonly = ($role === 'viewer');
 $msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
+    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+        $msg = 'Sesi telah berakhir. Silakan muat ulang halaman.';
+    } else {
     $action = $_POST['action'] ?? '';
     try {
         if ($action === 'save') {
@@ -60,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
             $msg = 'Artikel dihapus.';
         }
     } catch (Exception $e) { $msg = 'Gagal: ' . $e->getMessage(); }
+    } // endif csrf_validate
 }
 
 $articles = db()->query('SELECT * FROM articles ORDER BY id DESC')->fetchAll();
@@ -71,6 +76,7 @@ if (isset($_GET['edit'])) foreach ($articles as $x) if ((int)$x['id'] === (int)$
 <div class="card">
   <h2><i class="fa-solid fa-newspaper"></i> <?= $editing ? 'Edit Artikel' : 'Tambah Artikel Baru' ?></h2>
   <form method="post" action="?tab=artikel" enctype="multipart/form-data">
+    <?= csrf_field() ?>
     <?php if ($editing): ?><input type="hidden" name="id" value="<?= (int)$editing['id'] ?>"><?php endif; ?>
     <input type="hidden" name="action" value="save">
     <div class="grid">

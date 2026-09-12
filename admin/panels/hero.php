@@ -1,14 +1,18 @@
 <?php
 /** Panel: Edit Hero Page + Tema Website (seluruh halaman publik) */
 require_once __DIR__ . '/../../app/upload.php';
+require_once __DIR__ . '/../../app/csrf.php';
 
 $readonly = ($role === 'viewer');
 $save_msg = '';
 
 // ============ SIMPAN (konten hero + upload gambar + tema) ============
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
+    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+        $save_msg = 'Sesi telah berakhir. Silakan muat ulang halaman.';
+    } else {
 
-    try {
+        try {
         // --- bagian gambar: prioritas upload file > URL ---
         $new_bg = '';
         $new_bg_path = '';
@@ -106,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
     } catch (Exception $e) {
         $save_msg = 'Gagal menyimpan: ' . $e->getMessage();
     }
+    } // endif csrf_validate
 }
 
 $hero = db()->query('SELECT * FROM hero_content WHERE id = 1')->fetch();
@@ -125,6 +130,7 @@ $sos = [
 <?php endif; ?>
 
 <form method="post" action="?tab=hero" enctype="multipart/form-data">
+  <?= csrf_field() ?>
   <!-- ============ KONTEN HERO ============ -->
   <div class="card">
     <h2><i class="fa-solid fa-house"></i> Konten Utama Hero</h2>

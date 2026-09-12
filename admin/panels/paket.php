@@ -1,11 +1,15 @@
 <?php
 /** Panel: Paket Umroh (upload foto + URL, CRUD + fasilitas) */
 require_once __DIR__ . '/../../app/upload.php';
+require_once __DIR__ . '/../../app/csrf.php';
 
 $readonly = ($role === 'viewer');
 $msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
+    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+        $msg = 'Sesi telah berakhir. Silakan muat ulang halaman.';
+    } else {
     $action = $_POST['action'] ?? '';
     try {
         if ($action === 'save') {
@@ -71,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
     } catch (Exception $e) {
         $msg = 'Gagal: ' . $e->getMessage();
     }
+    } // endif csrf_validate
 }
 
 $packages = db()->query('SELECT * FROM packages ORDER BY sort_order ASC, id ASC')->fetchAll();
@@ -93,6 +98,7 @@ if (isset($_GET['edit'])) {
   <h2><i class="fa-solid fa-box-open"></i> <?= $editing ? 'Edit Paket' : 'Tambah Paket Baru' ?></h2>
   <?php if ($editing): ?><p class="hint" style="margin-top:-10px;margin-bottom:14px">Edit paket #<?= (int)$editing['id'] ?></p><?php endif; ?>
   <form method="post" action="?tab=paket" enctype="multipart/form-data">
+    <?= csrf_field() ?>
     <?php if ($editing): ?><input type="hidden" name="id" value="<?= (int)$editing['id'] ?>"><?php endif; ?>
     <input type="hidden" name="action" value="save">
     <div class="grid">

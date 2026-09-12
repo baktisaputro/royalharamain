@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../app/config.php';
+require_once __DIR__ . '/../app/csrf.php';
 
 // Jika sudah login, langsung masuk dashboard
 if (is_logged_in()) {
@@ -9,33 +10,37 @@ if (is_logged_in()) {
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
-
-    if ($username === '' || $password === '') {
-        $error = 'Username dan password wajib diisi.';
+    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+        $error = 'Sesi telah berakhir. Silakan muat ulang halaman.';
     } else {
-        $stmt = db()->prepare(
-            'SELECT u.*, r.slug AS role_slug, r.name AS role_name
-             FROM admin_users u
-             JOIN roles r ON r.id = u.role_id
-             WHERE u.username = ?'
-        );
-        $stmt->execute([$username]);
-        $user = $stmt->fetch();
+        $username = trim($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
 
-        if ($user && password_verify($password, $user['password_hash'])) {
-            if ((int)$user['is_active'] !== 1) {
-                $error = 'Akun Anda dinonaktifkan. Hubungi Super Admin.';
-            } else {
-                // Regenerasi session id keamanan
-                session_regenerate_id(true);
-                $_SESSION['admin_id'] = (int)$user['id'];
-                header('Location: ' . BASE_URL . '/admin/');
-                exit;
-            }
+        if ($username === '' || $password === '') {
+            $error = 'Username dan password wajib diisi.';
         } else {
-            $error = 'Username atau password salah.';
+            $stmt = db()->prepare(
+                'SELECT u.*, r.slug AS role_slug, r.name AS role_name
+                 FROM admin_users u
+                 JOIN roles r ON r.id = u.role_id
+                 WHERE u.username = ?'
+            );
+            $stmt->execute([$username]);
+            $user = $stmt->fetch();
+
+            if ($user && password_verify($password, $user['password_hash'])) {
+                if ((int)$user['is_active'] !== 1) {
+                    $error = 'Akun Anda dinonaktifkan. Hubungi Super Admin.';
+                } else {
+                    // Regenerasi session id keamanan
+                    session_regenerate_id(true);
+                    $_SESSION['admin_id'] = (int)$user['id'];
+                    header('Location: ' . BASE_URL . '/admin/');
+                    exit;
+                }
+            } else {
+                $error = 'Username atau password salah.';
+            }
         }
     }
 }
@@ -111,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="post" action="login.php" autocomplete="off">
+      <?= csrf_field() ?>
       <div class="field">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" placeholder="superadmin" required>

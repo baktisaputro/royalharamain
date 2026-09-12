@@ -1,8 +1,13 @@
 <?php
+require_once __DIR__ . '/../../app/csrf.php';
+
 $readonly = ($role === 'viewer');
 $msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
+    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+        $msg = 'Sesi telah berakhir. Silakan muat ulang halaman.';
+    } else {
     $action = $_POST['action'] ?? '';
     try {
         if ($action === 'status') {
@@ -17,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
             $msg = 'Data pelanggan dihapus.';
         }
     } catch (Exception $e) { $msg = 'Gagal: ' . $e->getMessage(); }
+    } // endif csrf_validate
 }
 
 $st = $_GET['status'] ?? 'all';
@@ -55,6 +61,7 @@ foreach ($counts as $c) $countMap[$c['status']] = (int)$c['c'];
                 <?php if (!$readonly): ?>
                   <form method="post" action="?tab=leads" style="display:inline">
                     <input type="hidden" name="action" value="status"><input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
+                    <?= csrf_field() ?>
                     <select name="status" onchange="this.form.submit()" style="padding:4px 6px;border-radius:6px;font-size:12px">
                       <option value="baru" <?= $x['status']==='baru'?'selected':'' ?>>Baru</option>
                       <option value="dihubungi" <?= $x['status']==='dihubungi'?'selected':'' ?>>Dihubungi</option>
@@ -66,6 +73,7 @@ foreach ($counts as $c) $countMap[$c['status']] = (int)$c['c'];
                 <?php if (!$readonly): ?>
                   <form method="post" action="?tab=leads" onsubmit="return confirm('Hapus data ini?')" style="display:inline">
                     <input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
+                    <?= csrf_field() ?>
                     <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
                   </form>
                 <?php endif; ?>

@@ -1,9 +1,14 @@
 <?php
 /** Panel: Keunggulan / Layanan (section "mengapa memilih kami") */
+require_once __DIR__ . '/../../app/csrf.php';
+
 $readonly = ($role === 'viewer');
 $msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
+    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+        $msg = 'Sesi telah berakhir. Silakan muat ulang halaman.';
+    } else {
     $action = $_POST['action'] ?? '';
     try {
         if ($action === 'save') {
@@ -33,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
             $msg = 'Status diubah.';
         }
     } catch (Exception $e) { $msg = 'Gagal: ' . $e->getMessage(); }
+    } // endif csrf_validate
 }
 
 $features = db()->query('SELECT * FROM features ORDER BY sort_order ASC, id ASC')->fetchAll();
@@ -45,6 +51,7 @@ $allowed_icons = ['fa-star','fa-certificate','fa-hand-holding-heart','fa-plane',
 <div class="card">
   <h2><i class="fa-solid fa-star"></i> <?= $editing ? 'Edit Keunggulan #'.(int)$editing['id'] : 'Tambah Keunggulan / Layanan' ?></h2>
   <form method="post" action="?tab=fitur">
+    <?= csrf_field() ?>
     <?php if ($editing): ?><input type="hidden" name="id" value="<?= (int)$editing['id'] ?>"><?php endif; ?>
     <input type="hidden" name="action" value="save">
     <div class="grid">
@@ -85,10 +92,12 @@ $allowed_icons = ['fa-star','fa-certificate','fa-hand-holding-heart','fa-plane',
                 <?php if (!$readonly): ?>
                   <form method="post" action="?tab=fitur" style="display:inline">
                     <input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
+                    <?= csrf_field() ?>
                     <button type="submit" class="btn btn-sm btn-outline" title="Aktif/Nonaktif"><i class="fa-solid fa-eye<?= $x['is_active']?'-slash':'' ?>"></i></button>
                   </form>
                   <form method="post" action="?tab=fitur" onsubmit="return confirm('Hapus keunggulan ini?')" style="display:inline">
                     <input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
+                    <?= csrf_field() ?>
                     <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
                   </form>
                 <?php endif; ?>

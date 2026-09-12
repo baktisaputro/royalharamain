@@ -1,12 +1,16 @@
 <?php
 /** Panel: Manajemen Admin - HANYA Super Admin yang berhak akses */
 require_role(['super_admin']);
+require_once __DIR__ . '/../../app/csrf.php';
 
 define('DEFAULT_PASS', '123456');
 
 $msg = '';
 // Aksi: tambah / ubah / hapus / toggle aktif / reset password
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+        $msg = 'Sesi telah berakhir. Silakan muat ulang halaman.';
+    } else {
     $action = $_POST['action'] ?? '';
 
     try {
@@ -62,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $msg = 'Gagal: ' . $e->getMessage();
     }
+    } // endif csrf_validate
 }
 
 $users = db()->query(
@@ -85,6 +90,7 @@ if (isset($_GET['edit'])) {
 <div class="card">
   <h2><i class="fa-solid fa-user-plus"></i> <?= $editing ? 'Edit Admin' : 'Tambah Admin Baru' ?></h2>
   <form method="post" action="?tab=users">
+    <?= csrf_field() ?>
     <?php if ($editing): ?>
       <input type="hidden" name="action" value="update">
       <input type="hidden" name="id" value="<?= (int)$editing['id'] ?>">
@@ -154,17 +160,20 @@ if (isset($_GET['edit'])) {
                   <input type="hidden" name="action" value="reset_pass">
                   <input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
                   <input type="hidden" name="password" value="<?= DEFAULT_PASS ?>">
+                  <?= csrf_field() ?>
                   <button type="submit" class="btn btn-sm btn-outline" title="Reset password ke <?= DEFAULT_PASS ?>"><i class="fa-solid fa-key"></i></button>
                 </form>
                 <?php if (!$isSelf && $x['role_slug'] !== 'super_admin'): ?>
                   <form method="post" action="?tab=users" style="display:inline">
                     <input type="hidden" name="action" value="toggle">
                     <input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
+                    <?= csrf_field() ?>
                     <button type="submit" class="btn btn-sm btn-outline" title="Aktif/Nonaktifkan"><i class="fa-solid fa-power-off"></i></button>
                   </form>
                   <form method="post" action="?tab=users" onsubmit="return confirm('Hapus admin ini?')" style="display:inline">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
+                    <?= csrf_field() ?>
                     <button type="submit" class="btn btn-sm btn-danger" title="Hapus"><i class="fa-solid fa-trash"></i></button>
                   </form>
                 <?php endif; ?>
