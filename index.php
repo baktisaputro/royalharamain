@@ -157,6 +157,32 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
   <meta name="twitter:title" content="<?= $meta_title ?>">
   <meta name="twitter:description" content="<?= htmlspecialchars($meta_desc) ?>">
   <meta name="twitter:image" content="<?= htmlspecialchars($meta_logo) ?>">
+  <meta name="theme-color" content="#046a38">
+  <!-- Structured data (Google rich results) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TravelAgency",
+    "name": "PT Royal Haramain Internasional",
+    "url": "<?= htmlspecialchars($meta_url) ?>",
+    "logo": "<?= htmlspecialchars($meta_logo) ?>",
+    "description": "<?= htmlspecialchars($meta_desc) ?>",
+    "telephone": "+6281215151552",
+    "areaServed": "ID",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Jl. Srandakan Km. 4, RW. 6, Ngabean, Triharjo, Kec. Pandak",
+      "addressLocality": "Bantul",
+      "addressRegion": "DI Yogyakarta",
+      "addressCountry": "ID"
+    },
+    "sameAs": [
+      "https://instagram.com/royalumrah.jogja",
+      "https://www.tiktok.com/@royalumrah.jogja",
+      "https://www.facebook.com/RoyalHaramainInternasional"
+    ]
+  }
+  </script>
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="assets/images/logo.png">
   <link rel="apple-touch-icon" href="assets/images/logo.png">
@@ -225,9 +251,9 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
         <a href="#paket">Paket</a>
         <a href="#keunggulan">Keunggulan</a>
         <a href="#kontak">Kontak</a>
-        <a href="https://wa.me/6281215151552" target="_blank" class="gold-button" style="padding:10px 20px;font-size:13px;">Hubungi Kami</a>
+        <a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer" class="gold-button" style="padding:10px 20px;font-size:13px;">Hubungi Kami</a>
       </nav>
-      <button class="mobile-menu" onclick="toggleNav()">☰</button>
+      <button class="mobile-menu" onclick="toggleNav()" aria-label="Buka menu navigasi">☰</button>
     </div>
   </header>
 
@@ -260,7 +286,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
             <div><strong>100%</strong><span>Legalitas Kemenag</span></div>
           </div>
           <div class="hero-actions">
-            <a href="https://wa.me/6281215151552" target="_blank" class="gold-button" style="display:inline-block;text-align:center;">Hubungi Kami</a>
+            <a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer" class="gold-button" style="display:inline-block;text-align:center;">Hubungi Kami</a>
             <a class="gradient-button" href="#paket" style="display:inline-block;text-align:center;">Lihat Paket →</a>
           </div>
         </div>
@@ -274,7 +300,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
           <?php foreach ($legal_badges as $b): ?><span class="badge-item"><?= htmlspecialchars($b) ?></span><?php endforeach; ?>
         </div>
         <div class="badges-cta">
-          <a href="https://wa.me/6281215151552" target="_blank" class="gold-button" style="display:inline-block;text-align:center;">Hubungi Kami</a>
+          <a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer" class="gold-button" style="display:inline-block;text-align:center;">Hubungi Kami</a>
         </div>
       </div>
     </div>
@@ -329,7 +355,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
                   </ul>
                 <?php endif; ?>
               </div>
-              <a href="https://wa.me/6281215151552?text=Assalamualaikum%2C%20saya%20ingin%20tanya%20paket%20<?= urlencode($pk['title']) ?>" target="_blank" class="gradient-button" style="display:block;text-align:center;">Lihat Detail</a>
+              <a href="https://wa.me/6281215151552?text=Assalamualaikum%2C%20saya%20ingin%20tanya%20paket%20<?= urlencode($pk['title']) ?>" target="_blank" rel="noopener noreferrer" class="gradient-button" style="display:block;text-align:center;">Lihat Detail</a>
             </article>
           <?php endforeach; ?>
         </div>
@@ -402,7 +428,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
           </div>
           <?php if ($ig_handle): ?>
             <div class="gallery-ig">
-              <a href="<?= htmlspecialchars($ig_url) ?>" target="_blank" rel="noopener" class="ig-follow"><i class="fa-brands fa-instagram"></i> Ikuti @<?= htmlspecialchars($ig_handle) ?></a>
+              <a href="<?= htmlspecialchars($ig_url) ?>" target="_blank" rel="noopener noreferrer" rel="noopener" class="ig-follow"><i class="fa-brands fa-instagram"></i> Ikuti @<?= htmlspecialchars($ig_handle) ?></a>
             </div>
           <?php endif; ?>
         <?php else: ?>
@@ -433,11 +459,11 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
         <div class="contact-wrap">
           <div class="contact-info">
             <h3>Kontak Langsung</h3>
-            <div class="ci"><i class="fa-brands fa-whatsapp"></i><div><strong>WhatsApp Marketing</strong><span><a href="https://wa.me/6281215151552" target="_blank" style="color:var(--emerald);font-weight:700;">0812 1515 1552</a></span></div></div>
+            <div class="ci"><i class="fa-brands fa-whatsapp"></i><div><strong>WhatsApp Marketing</strong><span><a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer" style="color:var(--emerald);font-weight:700;">0812 1515 1552</a></span></div></div>
             <div class="ci"><i class="fa-solid fa-phone"></i><div><strong>Telepon</strong><span><a href="tel:081215151552" style="color:var(--emerald);">0812 1515 1552</a></span></div></div>
             <div class="ci"><i class="fa-solid fa-location-dot"></i><div><strong>Kantor Bantul</strong><span>Jl. Srandakan Km. 4, RW. 6, Ngabean, Triharjo, Kec. Pandak, Kab. Bantul, DIY</span></div></div>
             <p class="hint" style="margin-top:18px;font-size:13px;color:var(--muted)">Klik tombol di bawah untuk konsultasi gratis via WhatsApp.</p>
-            <a href="https://wa.me/6281215151552" target="_blank" class="gradient-button" style="display:inline-block;text-align:center;">💬 Chat WhatsApp Sekarang</a>
+            <a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer" class="gradient-button" style="display:inline-block;text-align:center;">💬 Chat WhatsApp Sekarang</a>
           </div>
           <div class="contact-form">
             <?php if ($contact_msg): ?>
@@ -469,10 +495,10 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
           <p>Royal Haramain hadir di beberapa titik layanan di Yogyakarta dan Jawa Tengah untuk memudahkan konsultasi dan pendaftaran jamaah.</p>
         </div>
         <div class="offices">
-          <div class="office"><h3>Yogyakarta</h3><p>Jl. Magelang No. 12, Dukuh, Tridadi, Kec. Sleman, Kabupaten Sleman, DIY</p><a href="https://wa.me/6281273099920" target="_blank">0812 7309 9920</a></div>
-          <div class="office"><h3>Bantul</h3><p>Jl. Srandakan Km. 4, RW. 6, Ngabean, Triharjo, Kec. Pandak, Kab. Bantul, DIY</p><a href="https://wa.me/6281215151552" target="_blank">0812 1515 1552</a></div>
-          <div class="office"><h3>Temanggung</h3><p>Rumah Tahfidz Zabisa Putri, Jl. Ringroad Utara Krikil, Walitelon Selatan, Temanggung, Jawa Tengah</p><a href="https://wa.me/6287834342424" target="_blank">0878 3434 2424</a></div>
-          <div class="office"><h3>Magelang</h3><p>Perum Depkes Blok B2 No. 26, RT.02/RW.06, Kramat Utara, Kec. Magelang Utara, Kota Magelang, Jawa Tengah</p><a href="https://wa.me/628112650165" target="_blank">0811 2650 165</a></div>
+          <div class="office"><h3>Yogyakarta</h3><p>Jl. Magelang No. 12, Dukuh, Tridadi, Kec. Sleman, Kabupaten Sleman, DIY</p><a href="https://wa.me/6281273099920" target="_blank" rel="noopener noreferrer">0812 7309 9920</a></div>
+          <div class="office"><h3>Bantul</h3><p>Jl. Srandakan Km. 4, RW. 6, Ngabean, Triharjo, Kec. Pandak, Kab. Bantul, DIY</p><a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer">0812 1515 1552</a></div>
+          <div class="office"><h3>Temanggung</h3><p>Rumah Tahfidz Zabisa Putri, Jl. Ringroad Utara Krikil, Walitelon Selatan, Temanggung, Jawa Tengah</p><a href="https://wa.me/6287834342424" target="_blank" rel="noopener noreferrer">0878 3434 2424</a></div>
+          <div class="office"><h3>Magelang</h3><p>Perum Depkes Blok B2 No. 26, RT.02/RW.06, Kramat Utara, Kec. Magelang Utara, Kota Magelang, Jawa Tengah</p><a href="https://wa.me/628112650165" target="_blank" rel="noopener noreferrer">0811 2650 165</a></div>
         </div>
       </div>
     </section>
@@ -518,14 +544,14 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
         <p style="font-size:13px;margin-bottom:14px">PT. Royal Haramain International — PPIU & PIHK Resmi.</p>
         <p style="font-size:13px">Kantor Bantul: Jl. Srandakan Km. 4, RW. 6, Ngabean, Triharjo, Kec. Pandak, Kab. Bantul, DIY</p>
         <p style="font-size:13px;margin-top:6px">
-          <a href="https://instagram.com/royalumrah.jogja" target="_blank" style="color:var(--gold)"><i class="fa-brands fa-instagram"></i> @royalumrah.jogja</a><br>
-          <a href="https://www.tiktok.com/@royalumrah.jogja" target="_blank" style="color:var(--gold)"><i class="fa-brands fa-tiktok"></i> @royalumrah.jogja</a><br>
-          <a href="https://www.facebook.com/RoyalHaramainInternasional" target="_blank" style="color:var(--gold)"><i class="fa-brands fa-facebook"></i> Royal Haramain Internasional</a>
+          <a href="https://instagram.com/royalumrah.jogja" target="_blank" rel="noopener noreferrer" style="color:var(--gold)"><i class="fa-brands fa-instagram"></i> @royalumrah.jogja</a><br>
+          <a href="https://www.tiktok.com/@royalumrah.jogja" target="_blank" rel="noopener noreferrer" style="color:var(--gold)"><i class="fa-brands fa-tiktok"></i> @royalumrah.jogja</a><br>
+          <a href="https://www.facebook.com/RoyalHaramainInternasional" target="_blank" rel="noopener noreferrer" style="color:var(--gold)"><i class="fa-brands fa-facebook"></i> Royal Haramain Internasional</a>
         </p>
       </div>
       <div>
         <h4>Navigasi</h4>
-        <a href="#beranda">Beranda</a><a href="#paket">Paket</a><a href="#galeri">Galeri</a><a href="#kontak">Kontak</a><a href="https://wa.me/6281215151552" target="_blank">Hubungi Kami</a>
+        <a href="#beranda">Beranda</a><a href="#paket">Paket</a><a href="#galeri">Galeri</a><a href="#kontak">Kontak</a><a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer">Hubungi Kami</a>
       </div>
       <div>
         <h4>Layanan</h4>
@@ -533,7 +559,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
       </div>
       <div>
         <h4>Kontak</h4>
-        <a href="https://wa.me/6281215151552" target="_blank">WhatsApp: 0812 1515 1552</a>
+        <a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer">WhatsApp: 0812 1515 1552</a>
         <a href="tel:081215151552">Telepon: 0812 1515 1552</a>
         <a href="admin/login.php">Login Admin</a>
       </div>
