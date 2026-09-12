@@ -48,6 +48,12 @@ Sync konten website Royal Haramain (travel haji/umroh) dengan head office `royal
 - Step 2 display_errors + password (`e34d337`) ✔
 - Step 3 SEO meta tags + favicon (`126bc6d`) ✔
 - Step 4 robots.txt + sitemap.xml (`471bc88`) ✔
+- Step 5 Security headers + .htaccess hardening (`fa6817f`) ✔
+    - Redirect HTTP→HTTPS + canonical `www` (hanya domain produksi; localhost aman)
+    - Header: X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy, HSTS
+    - CSP kompatibel (inline style/script + Font Awesome + Google Fonts + Supabase admin)
+    - Blokir eksekusi PHP di `uploads/`, blokir `/app/`, proteksi file sensitif (`*.sql`, `.env`, `.credentials.local`)
+- ⚠️ Blocker: commit 1–5 sudah di GitHub tapi **belum di-deploy** — hosting masih versi lama (robots/sitemap 404, `index.php` lama).
 
 ## Next Move
 1. Go-live cPanel (tunggu DNS propagate)
