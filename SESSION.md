@@ -53,7 +53,17 @@ Sync konten website Royal Haramain (travel haji/umroh) dengan head office `royal
     - Header: X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy, HSTS
     - CSP kompatibel (inline style/script + Font Awesome + Google Fonts + Supabase admin)
     - Blokir eksekusi PHP di `uploads/`, blokir `/app/`, proteksi file sensitif (`*.sql`, `.env`, `.credentials.local`)
-- ⚠️ Blocker: commit 1–5 sudah di GitHub tapi **belum di-deploy** — hosting masih versi lama (robots/sitemap 404, `index.php` lama).
+- Step 6 Performa (`40301dc`) ✔
+    - `logo.png` 366KB → 58KB (trim + resize 512px)
+    - `loading="lazy"` + `decoding="async"` di gambar bawah-lipatan
+    - Preload hero slide pertama (LCP) + `fetchpriority="high"`
+    - Kompresi gzip (mod_deflate) + cache font/svg
+    - Tambah `#berita` di sitemap
+- Step 7 Aksesibilitas & SEO (`2f18812`) ✔
+    - `rel="noopener noreferrer"` di 16 link `target="_blank"`
+    - `aria-label` tombol menu mobile
+    - `theme-color` + structured data JSON-LD `TravelAgency`
+- ⚠️ Blocker: commit 1–7 sudah di GitHub tapi **belum di-deploy** — hosting masih versi lama (robots/sitemap 404, `index.php` lama).
 
 ## Next Move
 1. Go-live cPanel (tunggu DNS propagate)
