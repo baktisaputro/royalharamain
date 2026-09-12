@@ -125,13 +125,41 @@ foreach ($gallery as $g) {
 
 // Ambil promo popup
 $promo = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
+
+// ===== SEO / META =====
+$meta_title = htmlspecialchars($hero['title'] ?? 'PT Royal Haramain Internasional | Travel Umrah & Haji Khusus');
+$meta_desc  = trim($hero['subtitle'] ?? '') ?: 'PT Royal Haramain Internasional — travel haji, umroh dan halal tours resmi PPIU & PIHK. Pendamping ibadah dari awal hingga pulang ke rumah.';
+$meta_desc  = mb_substr($meta_desc, 0, 158);
+$meta_logo  = BASE_URL . '/assets/images/logo.png';
+$meta_url   = rtrim(BASE_URL, '/') . '/';
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= htmlspecialchars($hero['title'] ?? 'PT Royal Haramain Internasional') ?></title>
+  <title><?= $meta_title ?></title>
+  <meta name="description" content="<?= htmlspecialchars($meta_desc) ?>">
+  <meta name="keywords" content="umroh, haji, umrah murah, travel umroh jogja, umroh bantul, royal haramain, haji khusus, halal tour, paket umroh 2026">
+  <meta name="author" content="PT Royal Haramain Internasional">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="<?= htmlspecialchars($meta_url) ?>">
+  <!-- Open Graph (share ke WA/FB/IG/Twitter) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PT Royal Haramain Internasional">
+  <meta property="og:title" content="<?= $meta_title ?>">
+  <meta property="og:description" content="<?= htmlspecialchars($meta_desc) ?>">
+  <meta property="og:url" content="<?= htmlspecialchars($meta_url) ?>">
+  <meta property="og:image" content="<?= htmlspecialchars($meta_logo) ?>">
+  <meta property="og:locale" content="id_ID">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<?= $meta_title ?>">
+  <meta name="twitter:description" content="<?= htmlspecialchars($meta_desc) ?>">
+  <meta name="twitter:image" content="<?= htmlspecialchars($meta_logo) ?>">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/images/logo.png">
+  <link rel="apple-touch-icon" href="assets/images/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
