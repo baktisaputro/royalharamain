@@ -117,8 +117,12 @@ function delete_upload(string $rel_path): void
     if ($rel_path === '') return;
     // hanya izinkan di dalam /uploads
     if (strpos($rel_path, 'uploads/') !== 0) return;
-    $abs = __DIR__ . '/../' . $rel_path;
-    if (is_file($abs) && file_exists($abs)) {
+    $base = realpath(__DIR__ . '/../uploads');
+    $abs = realpath(__DIR__ . '/../' . $rel_path);
+    if ($base === false || $abs === false) return;
+    // pastikan hasil resolve benar-benar di dalam folder uploads
+    if (strpos($abs, $base . DIRECTORY_SEPARATOR) !== 0) return;
+    if (is_file($abs)) {
         @unlink($abs);
     }
 }

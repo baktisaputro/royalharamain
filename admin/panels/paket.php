@@ -150,6 +150,7 @@ if (isset($_GET['edit'])) {
                 <a href="?tab=paket&edit=<?= (int)$x['id'] ?>" class="btn btn-sm btn-outline"><i class="fa-solid fa-pen"></i></a>
                 <?php if (!$readonly): ?>
                   <form method="post" action="?tab=paket" onsubmit="return confirm('Hapus paket ini?')" style="display:inline">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= (int)$x['id'] ?>">
                     <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
                   </form>

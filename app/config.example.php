@@ -15,6 +15,15 @@ define('DB_PASS', 'PASSWORD_DATABASE'); // password user database
 define('BASE_URL', 'https://www.domain-anda.com');
 
 // ===== SESI & ERROR =====
+// Cookie sesi aman: tidak bisa dibaca JS (httponly), hanya dikirim via HTTPS (secure, auto-detect), samesite Lax.
+$__https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['SERVER_PORT'] ?? '') == 443);
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path'     => '/',
+    'httponly' => true,
+    'secure'   => $__https,
+    'samesite' => 'Lax',
+]);
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', '0');
