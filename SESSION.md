@@ -67,13 +67,15 @@ Sync konten website Royal Haramain (travel haji/umroh) dengan head office `royal
     - Fix bug: form Hapus artikel & paket tidak punya token CSRF (tombol hapus tidak berfungsi) → ditambahkan
     - `delete_upload()` diperkuat anti path-traversal (realpath di dalam `uploads/`)
     - Session cookie: `httponly`, `samesite=Lax`, `secure` auto (HTTPS)
-- ⚠️ Blocker: commit 1–8 sudah di GitHub tapi **belum di-deploy** — hosting masih versi lama (robots/sitemap 404, `index.php` lama).
+- Step 9 Bersih-bersih & anti brute-force ✔
+    - Hapus 14 file legacy: `admin.html`, `index.html`, `index2.html`, `index3.html`, `erorlogin.png`, `rhi.png`, `css/style.css`, `css/admin.css`, `js/main.js`, `js/data.js`, `js/supabaseClient.js`, `supabase/schema.sql`, `vercel.json`, `.env.example` (memuat anon key Supabase asli)
+    - Login kini ada lockout: maks 5 gagal → terkunci 5 menit (berbasis sesi)
+    - ⚠️ Saran: rotasi anon key Supabase (dulunya pernah ter-push) jika project-nya masih dipakai
+- ⚠️ Blocker: commit 1–9 sudah di GitHub tapi **belum di-deploy** — hosting masih versi lama (robots/sitemap 404, `index.php` lama).
 
-### Temuan Audit (belum ditindak)
-- File legacy masih ada & bisa diakses: `admin.html` (admin lama Supabase), `index.html`, `index2.html`, `index3.html`, `erorlogin.png` → sebaiknya dihapus/blokir.
-- `.env.example` memuat URL + anon key Supabase asli (warisan Vercel) → sebaiknya dihapus/rotasi.
-- Login admin belum ada pembatas percobaan (rate limit / lockout).
+### Sisa
 - `app/config.php` di hosting wajib di-update manual (session hardening + display_errors).
+- Deploy: `git pull` di cPanel.
 
 ## Next Move
 1. Go-live cPanel (tunggu DNS propagate)

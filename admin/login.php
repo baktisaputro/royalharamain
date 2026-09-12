@@ -9,8 +9,16 @@ if (is_logged_in()) {
 }
 
 $error = '';
+
+// Pembatas percobaan login (anti brute-force sederhana, berbasis sesi)
+$MAX_FAILS = 5;
+$LOCK_SECONDS = 300;
+$locked_now = !empty($_SESSION['login_lock_until']) && $_SESSION['login_lock_until'] > time();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!csrf_validate($_POST['csrf_token'] ?? '')) {
+    if ($locked_now) {
+        $error = 'Terlalu banyak percobaan login. Coba lagi dalam ' . ceil(($_SESSION['login_lock_until'] - time()) / 60) . ' menit.';
+    } elseif (!csrf_validate($_POST['csrf_token'] ?? '')) {
         $error = 'Sesi telah berakhir. Silakan muat ulang halaman.';
     } else {
         $username = trim($_POST['username'] ?? '');
@@ -32,6 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ((int)$user['is_active'] !== 1) {
                     $error = 'Akun Anda dinonaktifkan. Hubungi Super Admin.';
                 } else {
+                    // Login sukses: reset penghitung percobaan
+                    unset($_SESSION['login_fail'], $_SESSION['login_lock_until']);
                     // Regenerasi session id keamanan
                     session_regenerate_id(true);
                     $_SESSION['admin_id'] = (int)$user['id'];
@@ -39,7 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit;
                 }
             } else {
-                $error = 'Username atau password salah.';
+                $_SESSION['login_fail'] = ($_SESSION['login_fail'] ?? 0) + 1;
+                if ($_SESSION['login_fail'] >= $MAX_FAILS) {
+                    $_SESSION['login_lock_until'] = time() + $LOCK_SECONDS;
+                    $_SESSION['login_fail'] = 0;
+                    $error = 'Terlalu banyak percobaan login. Coba lagi dalam 5 menit.';
+                } else {
+                    $error = 'Username atau password salah.';
+                }
             }
         }
     }
