@@ -6,6 +6,7 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
 Sync konten website Royal Haramain (travel haji/umroh) dengan head office `royalharamain.id` — kontak, paket, branding, warna, CTA.
 
 ## Status Terakhir (saat sesi berakhir)
+- **Commit & push sukses:** `9186cff` Sync konten dengan royalharamain.id (master → origin/master)
 - **File renamed:** `index.php` (coming soon) → `index_soon.php`; `index_main.php` → `index.php` (halaman utama)
 - **Paket diupdate** sesuai royalharamain.id: Umrah Hemat 2026 (Rp 29,9 Jt/9Hr), Umrah Premium 2026 (Rp 39,9 Jt/12Hr), Program Umrah 10 Hari (Rp 33,9 Jt), Haji Khusus 2027 (USD 13.400/23Hr)
 - **Fasilitas lengkap** sesuai website pusat (11 fasilitas Umrah, 9 fasilitas Program 10 Hari, 10 fasilitas Haji)
@@ -36,14 +37,15 @@ Sync konten website Royal Haramain (travel haji/umroh) dengan head office `royal
 - Features: Berpengalaman, Berizin, Bimbingan, Fleksibel (4 saja, sesuai website)
 - Database diupdate via `update_packages.sql` (sukses)
 - File renamed: `index.php` → `index_soon.php`, `index_main.php` → `index.php`
+- Commit & push ke GitHub master (commit `9186cff`)
 
 ### Active
 - (empty)
 
 ### Next Move
-1. Visual check `index.php` di browser (halaman utama sudah benar)
-2. Commit & push perubahan ke GitHub
-3. Go-live cPanel (tunggu DNS propagate)
+1. Go-live cPanel (tunggu DNS propagate)
+2. Visual check `index.php` di browser setelah deploy
+3. Pull di hosting cPanel via Git untuk update live site
 
 ### Blocked
 - Go-live cPanel: DNS domain belum aktif
