@@ -63,7 +63,17 @@ Sync konten website Royal Haramain (travel haji/umroh) dengan head office `royal
     - `rel="noopener noreferrer"` di 16 link `target="_blank"`
     - `aria-label` tombol menu mobile
     - `theme-color` + structured data JSON-LD `TravelAgency`
-- ⚠️ Blocker: commit 1–7 sudah di GitHub tapi **belum di-deploy** — hosting masih versi lama (robots/sitemap 404, `index.php` lama).
+- Step 8 Audit keamanan (`dbc59c0`) ✔
+    - Fix bug: form Hapus artikel & paket tidak punya token CSRF (tombol hapus tidak berfungsi) → ditambahkan
+    - `delete_upload()` diperkuat anti path-traversal (realpath di dalam `uploads/`)
+    - Session cookie: `httponly`, `samesite=Lax`, `secure` auto (HTTPS)
+- ⚠️ Blocker: commit 1–8 sudah di GitHub tapi **belum di-deploy** — hosting masih versi lama (robots/sitemap 404, `index.php` lama).
+
+### Temuan Audit (belum ditindak)
+- File legacy masih ada & bisa diakses: `admin.html` (admin lama Supabase), `index.html`, `index2.html`, `index3.html`, `erorlogin.png` → sebaiknya dihapus/blokir.
+- `.env.example` memuat URL + anon key Supabase asli (warisan Vercel) → sebaiknya dihapus/rotasi.
+- Login admin belum ada pembatas percobaan (rate limit / lockout).
+- `app/config.php` di hosting wajib di-update manual (session hardening + display_errors).
 
 ## Next Move
 1. Go-live cPanel (tunggu DNS propagate)
