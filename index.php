@@ -160,6 +160,9 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="assets/images/logo.png">
   <link rel="apple-touch-icon" href="assets/images/logo.png">
+  <?php if (!empty($hero_slides)): ?>
+  <link rel="preload" as="image" href="<?= htmlspecialchars($hero_slides[0]) ?>" fetchpriority="high">
+  <?php endif; ?>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -214,7 +217,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
   <header class="site">
     <div class="header-inner">
       <a href="#" class="brand">
-        <img src="assets/images/logo.png" alt="Logo">
+        <img src="assets/images/logo.png" alt="Logo Royal Haramain" width="46" height="46" decoding="async">
         <div><strong>Royal Haramain</strong></div>
       </a>
       <nav class="main-nav">
@@ -338,7 +341,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
     <section id="tentang" style="background:var(--white)">
       <div class="container about-grid">
         <?php if ($about_image): ?>
-          <img src="<?= htmlspecialchars($about_image) ?>" alt="Tentang PT Royal Haramain Internasional" onerror="this.src='assets/images/logo.png'">
+          <img src="<?= htmlspecialchars($about_image) ?>" alt="Tentang PT Royal Haramain Internasional" loading="lazy" decoding="async" onerror="this.src='assets/images/logo.png'">
         <?php endif; ?>
         <div>
           <span class="eyebrow" style="background:rgba(4,106,56,.08);color:var(--emerald-dark)">Tentang Kami</span>
@@ -366,7 +369,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
         <div class="news">
           <?php foreach ($articles as $a): ?>
             <article>
-              <img src="<?= htmlspecialchars($a['image_url'] ?? '') ?>" alt="<?= htmlspecialchars($a['title']) ?>" onerror="this.style.display='none'">
+              <img src="<?= htmlspecialchars($a['image_url'] ?? '') ?>" alt="<?= htmlspecialchars($a['title']) ?>" loading="lazy" decoding="async" onerror="this.style.display='none'">
               <div class="news-body">
                 <?php if ($a['date']): ?><div class="news-date"><?= htmlspecialchars($a['date']) ?></div><?php endif; ?>
                 <h3><?= htmlspecialchars($a['title']) ?></h3>
@@ -392,7 +395,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
           <div class="gallery-grid" id="galleryGrid">
             <?php foreach ($gallery as $i => $g): ?>
               <figure>
-                <img src="<?= BASE_URL.'/'.htmlspecialchars($g['image_path']) ?>" alt="<?= htmlspecialchars($g['caption']) ?>" loading="lazy" onclick="openLB(<?= (int)$i ?>)" title="<?= htmlspecialchars($g['caption']) ?>">
+                <img src="<?= BASE_URL.'/'.htmlspecialchars($g['image_path']) ?>" alt="<?= htmlspecialchars($g['caption']) ?>" loading="lazy" decoding="async" onclick="openLB(<?= (int)$i ?>)" title="<?= htmlspecialchars($g['caption']) ?>">
                 <?php if ($g['caption']): ?><figcaption><?= htmlspecialchars($g['caption']) ?></figcaption><?php endif; ?>
               </figure>
             <?php endforeach; ?>
@@ -542,7 +545,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
   <div class="modal-overlay" id="promoModal">
     <div class="modal-card">
       <button class="modal-close" onclick="closePromo()">✕</button>
-      <?php if ($promo['image_url']): ?><img src="<?= htmlspecialchars($promo['image_url']) ?>" alt="Promo"><?php endif; ?>
+      <?php if ($promo['image_url']): ?><img src="<?= htmlspecialchars($promo['image_url']) ?>" alt="Promo" loading="lazy" decoding="async"><?php endif; ?>
       <div class="modal-body">
         <?php if ($promo['badge']): ?><span class="eyebrow" style="background:rgba(212,175,55,.2);color:#8a6d1f"><?= htmlspecialchars($promo['badge']) ?></span><?php endif; ?>
         <h3 style="margin-top:8px"><?= htmlspecialchars($promo['title']) ?></h3>

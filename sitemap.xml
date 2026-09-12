@@ -26,6 +26,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.royalharamain.com/#berita</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.royalharamain.com/#galeri</loc>
     <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
