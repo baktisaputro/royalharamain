@@ -1,4 +1,4 @@
-# Royal Haramain - Apache config untuk shared hosting (cPanel)
+# Royal Haramain - Apache/LiteSpeed config untuk shared hosting (cPanel)
 # Pastikan index.php diprioritaskan dibanding index.html (situs dinamis)
 
 DirectoryIndex index.php index.html
@@ -7,20 +7,53 @@ DirectoryIndex index.php index.html
 Options -Indexes
 ServerSignature Off
 
+# --- Redirect HTTP -> HTTPS + canonical www (SEO + keamanan) ---
+# Hanya berlaku untuk domain produksi; localhost (dev XAMPP) dibiarkan normal.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off [OR]
+  RewriteCond %{HTTP_HOST} !^www\.royalharamain\.com$ [NC]
+  RewriteCond %{HTTP_HOST} ^(www\.)?royalharamain\.com$ [NC]
+  RewriteRule ^(.*)$ https://www.royalharamain.com/$1 [R=301,L]
+</IfModule>
+
 # Cegah akses langsung ke file konfigurasi / file sensitif
-<FilesMatch "^(config\.php|setup_|database\.sql|\.env)">
+<FilesMatch "^(config\.php|setup_|database\.sql|update_packages\.sql|\.env|\.credentials\.local)">
   Require all denied
 </FilesMatch>
 
 # Blokir akses ke file .git di server (keamanan)
 RedirectMatch 404 /\.git
 
+# --- Security Headers ---
+<IfModule mod_headers.c>
+  # Cegah clickjacking (website tidak pernah boleh di-frame)
+  Header always set X-Frame-Options "SAMEORIGIN"
+  # Paksa browser memakai tipe MIME yang benar
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-XSS-Protection "1; mode=block"
+  # Kirim referrer minimal (privasi) - API key/token tidak bocor ke pihak lain
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # Batasi fitur browser yang tidak dipakai website
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+  # HSTS: paksa koneksi HTTPS untuk domain utama (tanpa includeSubDomains agar aman)
+  Header always set Strict-Transport-Security "max-age=31536000"
+  # CSP kompatibel: halaman banyak pakai inline style/script + Font Awesome + Google Fonts
+  # Admin (admin.html) butuh Supabase -> diperbolehkan di script-src & connect-src
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://www.supabase.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: http:; connect-src 'self' https: http:; frame-ancestors 'self'; frame-src 'self' https:; base-uri 'self'; form-action 'self' https: http:"
+</IfModule>
+
 # --- Aturan dasar ---
 <IfModule mod_rewrite.c>
-  RewriteEngine On
   # Tidak perlu halaman index di URL
   RewriteCond %{THE_REQUEST} \s/+index\.php [NC]
   RewriteRule ^index\.php$ / [R=301,L]
+
+  # Blokir eksekusi PHP di folder upload (cegah upload shell berbahaya)
+  RewriteRule ^uploads/.*\.(php|phtml|php[0-9]|phar|cgi|pl)$ - [F,L,NC]
+
+  # Blokir akses langsung ke folder app (internal: config, csrf, helper)
+  RewriteRule ^app/ - [F,L,NC]
 </IfModule>
 
 # --- Cache statis ---
@@ -28,6 +61,7 @@ RedirectMatch 404 /\.git
   ExpiresActive On
   ExpiresByType image/jpeg "access plus 1 month"
   ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
 </IfModule>
@@ -36,4 +70,5 @@ RedirectMatch 404 /\.git
 <IfModule mod_php.c>
   php_flag display_errors Off
   php_flag log_errors On
+  php_flag expose_php Off
 </IfModule>
