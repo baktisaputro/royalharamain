@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Area admin tidak boleh di-index
+Disallow: /admin/
+
+# File sensitif & sumber data
+Disallow: /app/
+Disallow: /*.sql
+Disallow: /*.env
+Disallow: /.git/
+
+# Halaman sementara / sistem
+Disallow: /erorlogin.png
+
+Sitemap: https://www.royalharamain.com/sitemap.xml
