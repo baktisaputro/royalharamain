@@ -8,7 +8,17 @@ admin/_reset.php
 
 # Kredensial & konfigurasi DB asli (jangan commit - jaga kerahasiaan)
 app/config.php
+app/config.php.bak
 .credentials.local
 
 # Gambar asli upload pengguna (besar) - hanya versi ringan (slide_*) yang di-commit
 uploads/hero/1*.webp
+
+# Upload folder (user-generated content)
+uploads/artikel/*
+uploads/paket/*
+uploads/tentang/*
+uploads/galeri/*
+uploads/hero/*
+!uploads/hero/slide_*.webp
+!uploads/**/.gitkeep
