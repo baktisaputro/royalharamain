@@ -20,5 +20,6 @@ uploads/paket/*
 uploads/tentang/*
 uploads/galeri/*
 uploads/hero/*
+uploads/promo/*
 !uploads/hero/slide_*.webp
 !uploads/**/.gitkeep

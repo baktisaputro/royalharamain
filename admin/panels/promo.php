@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../app/csrf.php';
+require_once __DIR__ . '/../../app/upload.php';
 
 $readonly = ($role === 'viewer');
 $msg = '';
@@ -16,6 +17,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$readonly) {
             $title = trim($_POST['title'] ?? '');
             $message = trim($_POST['message'] ?? '');
             $image = trim($_POST['image_url'] ?? '');
+            // Upload gambar promo (opsional): otomatis resize + kompres ke WebP
+            $has_file = isset($_FILES['image_file']) && isset($_FILES['image_file']['name']) && $_FILES['image_file']['name'] !== '';
+            if ($has_file) {
+                $up = handle_image_upload($_FILES['image_file'], 'promo');
+                if (!$up['ok']) throw new Exception($up['error']);
+                // Hapus gambar lama bila hasil upload lokal, agar tidak menumpuk
+                $old = db()->query('SELECT image_url FROM promos WHERE id=1')->fetch();
+                if ($old && !empty($old['image_url']) && strpos($old['image_url'], 'uploads/promo/') === 0) {
+                    delete_upload($old['image_url']);
+                }
+                $image = $up['path'];
+            }
             $link = trim($_POST['link'] ?? '#');
             $delay = (int)($_POST['delay'] ?? 3);
             $show_once = isset($_POST['show_once']) ? 1 : 0;
@@ -38,7 +51,7 @@ $p = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
 <div class="card">
   <h2><i class="fa-solid fa-bullhorn"></i> Popup Promo</h2>
   <p class="hint" style="margin-top:-8px;margin-bottom:16px">Popup yang muncul di halaman depan website.</p>
-  <form method="post" action="?tab=promo">
+  <form method="post" action="?tab=promo" enctype="multipart/form-data">
     <input type="hidden" name="action" value="save">
     <?= csrf_field() ?>
     <div class="field checkbox-row mt">
@@ -50,7 +63,14 @@ $p = db()->query('SELECT * FROM promos WHERE id=1')->fetch() ?: [];
       <div class="field"><label>Judul</label><input type="text" name="title" value="<?= htmlspecialchars($p['title'] ?? '') ?>"></div>
       <div class="field"><label>Link / URL</label><input type="text" name="link" value="<?= htmlspecialchars($p['link'] ?? '#') ?>"></div>
       <div class="field"><label>Delay (detik)</label><input type="number" name="delay" value="<?= (int)($p['delay'] ?? 3) ?>" min="0"></div>
-      <div class="field" style="grid-column:1/-1"><label>URL Gambar</label><input type="text" name="image_url" value="<?= htmlspecialchars($p['image_url'] ?? '') ?>"></div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Gambar Promo <span class="hint">(upload otomatis dikompres ke WebP, max 5MB)</span></label>
+        <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp,image/gif" <?= $readonly?'disabled':'' ?>>
+        <?php if (!empty($p['image_url'])): ?>
+          <img src="<?= htmlspecialchars($p['image_url']) ?>" alt="Preview gambar promo" style="max-width:260px;width:100%;margin-top:8px;border:1px solid var(--border);border-radius:8px;display:block">
+        <?php endif; ?>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>URL Gambar <span class="hint">(opsional, jika memakai tautan eksternal; akan tergantikan dengan upload)</span></label><input type="text" name="image_url" value="<?= htmlspecialchars($p['image_url'] ?? '') ?>" <?= $readonly?'disabled':'' ?>></div>
     </div>
     <div class="field"><label>Pesan</label><textarea name="message" rows="3"><?= htmlspecialchars($p['message'] ?? '') ?></textarea></div>
     <div class="field checkbox-row mt">
