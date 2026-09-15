@@ -197,6 +197,14 @@ footer.site .brand-text { color:#fff; font-family:'Cinzel',serif; margin-bottom:
 #promoModal .modal-card { max-height:90vh; overflow-y:auto; overflow-x:hidden; }
 #promoModal .modal-card:has(img) .modal-close { position:sticky; right:auto; top:12px; display:block; width:30px; height:30px; margin:12px 12px -42px auto; z-index:5; }
 
+/* Popup booking: kartu dibuat flex column, lalu .modal-body yang scroll sendiri.
+   Ini mengalahkan .modal-card{overflow:hidden} (baris 186) tanpa mengubahnya, sehingga
+   tinggi kartu tetap dibatasi 92vh (.modal-card-lg) tapi isi form tidak pernah terpotong.
+   Tombol ✕ (absolute, relatif ke kartu) tetap terlihat & bisa diklik saat form di-scroll.
+   Khusus #bookModal — aturan popup promo di atas tidak diubah. */
+#bookModal .modal-card { display:flex; flex-direction:column; }
+#bookModal .modal-card .modal-body { overflow-y:auto; min-height:0; -webkit-overflow-scrolling:touch; }
+
 /* responsive */
 @media (max-width:900px) {
   nav.main-nav { display:none; flex-direction:column; position:absolute; top:100%; left:0; right:0; background:#fff; padding:14px 22px; gap:14px; border-bottom:1px solid var(--border); }
