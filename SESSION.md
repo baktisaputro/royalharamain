@@ -8,10 +8,10 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
 - (Sampingan, sudah tuntas) Perbaikan routing model AI di 9router → pakai `ds/deepseek-v4-flash`.
 
 ## Status Terakhir (saat sesi berakhir)
-- **Semua pekerjaan kode Step 1–10 SUDAH di-commit & push ke GitHub `master`.**
-- Commit terakhir: `4456f88` (Step 10: hapus link admin footer + section FAQ & Testimoni + optimasi gambar hero).
-- **BELUM di-deploy ke hosting.** Website live masih versi lama.
-- Sisa pekerjaan hanya **aksi manual oleh user di cPanel** (lihat "Next Move"): `git pull`, update `app/config.php`, opsional rotasi anon key Supabase.
+- **Semua pekerjaan kode Step 1–10 SUDAH di-commit & push ke GitHub `master`** (HEAD `0dfba98`).
+- **SUDAH DI-DEPLOY ke hosting cPanel** (Terminal: `git remote add origin` + `git fetch` + `git reset --hard origin/master`) → server kini di HEAD `0dfba98`.
+- **`app/config.php` di server sudah di-hardening** (session cookie httponly/samesite/secure + `display_errors` off) dan lolos `php -l`.
+- Verifikasi live sukses: `robots.txt`/`sitemap.xml` 200, homepage + admin login 200, FAQ & Testimoni tampil, hero `slide_1.webp` 144KB (teroptimasi), semua security header terkirim.
 
 ## Important Details
 - Teknologi: PHP 8.0.30 + MariaDB (XAMPP lokal). Target: shared hosting cPanel (LiteSpeed).
@@ -61,65 +61,16 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
     - Optimasi 5 gambar hero `slide_*.webp` → <180KB (backup di `%TEMP%\opencode\webp-opt\backup`)
 
 ### Active
-- Menunggu user melakukan deploy manual di cPanel (git pull + update config.php) — lihat Next Move.
-- Testimoni di halaman publik masih **placeholder** — user wajib mengisi foto (`uploads/testimoni/`) + teks asli di array `$testimonials` (`index.php`) sebelum go-live; jawaban FAQ refund/pembatalan juga perlu konfirmasi kebijakan user.
+- Testimoni di halaman publik masih **placeholder** — user wajib mengisi foto (`uploads/testimoni/`) + teks asli di array `$testimonials` (`index.php`) sebelum go-live penuh; jawaban FAQ refund/pembatalan juga perlu konfirmasi kebijakan user.
 
 ### Blocked
-- **Deploy cPanel belum dilakukan** → live masih versi lama: `robots.txt`/`sitemap.xml` 404, homepage 29210 byte judul "Travel Haji, Umroh dan Halal Tours", tanpa security header. Commit 1–10 sudah di GitHub tapi belum di-pull.
-- `app/config.php` di hosting wajib di-update manual (tidak ikut git pull).
 - Saran (opsional): rotasi anon key Supabase lama bila project-nya masih dipakai (pernah ter-push publik).
 
-## Next Move (aksi manual user di cPanel)
-
-### TUGAS 1 — `git pull` di hosting
-cPanel → **Advanced → Terminal**:
-```bash
-cd public_html/royalharamain.com
-git pull origin master
-```
-Bila muncul `config.php differs` / `would be overwritten by merge` (normal, karena config di-skip):
-```bash
-git update-index --skip-worktree app/config.php
-git pull origin master
-```
-
-### TUGAS 2 — Update `app/config.php` di hosting (manual)
-File Manager → `public_html/royalharamain.com/app/` → Edit `config.php`.
-Ganti baris berikut:
-```php
-session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-```
-menjadi:
-```php
-$__https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['SERVER_PORT'] ?? '') == 443);
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path'     => '/',
-    'httponly' => true,
-    'secure'   => $__https,
-    'samesite' => 'Lax',
-]);
-session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', '0');
-ini_set('log_errors', '1');
-```
-Jangan sentuh `DB_HOST/DB_NAME/DB_USER/DB_PASS` dan `BASE_URL`. Save.
-
-### TUGAS 3 — (Opsional) Rotasi anon key Supabase
-Hanya jika project Supabase masih dipakai: dashboard Supabase → Settings → API → Reset/Rotate anon key → update di semua tempat pemakaian.
-
-### Verifikasi live (setelah Tugas 1 & 2)
-- `https://www.royalharamain.com/robots.txt` → bukan 404
-- `https://www.royalharamain.com/sitemap.xml` → XML tampil
-- `https://www.royalharamain.com/` → halaman utama, logo lebih cepat
-- `https://www.royalharamain.com/admin/login.php` → form login normal
-
-### Update ke depan (setelah semua kelar)
-Dari lokal: `git add -A` → `git commit -m "..."` → `git push origin master`.
-Di cPanel: `cd public_html/royalharamain.com` → `git pull origin master`.
+## Next Move (update ke depan — SEMUA deploy manual SUDAH selesai)
+Cara update berikutnya jika ada perubahan kode:
+- Dari lokal: `git add -A` → `git commit -m "..."` → `git push origin master`.
+- Di cPanel: `cd public_html/royalharamain.com` → `git pull origin master` (folder sudah jadi repo git, remote `origin` sudah mengarah ke GitHub).
+- `app/config.php` tidak ikut repo (gitignored + skip-worktree) — tidak perlu disentuh lagi kecuali ganti kredensial DB.
 
 ## Relevant Files
 - `C:\Users\IESPA 000\royalharamain\index.php`: halaman publik utama (Step 3/6/7 diedit)
