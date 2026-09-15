@@ -8,8 +8,8 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
 - (Sampingan, sudah tuntas) Perbaikan routing model AI di 9router → pakai `ds/deepseek-v4-flash`.
 
 ## Status Terakhir (saat sesi berakhir)
-- **Semua pekerjaan kode Step 1–9 SUDAH di-commit & push ke GitHub `master`.**
-- Commit terakhir: `93e7674` (Step 9: bersih-bersih 14 file legacy + login lockout).
+- **Semua pekerjaan kode Step 1–10 SUDAH di-commit & push ke GitHub `master`.**
+- Commit terakhir: `4456f88` (Step 10: hapus link admin footer + section FAQ & Testimoni + optimasi gambar hero).
 - **BELUM di-deploy ke hosting.** Website live masih versi lama.
 - Sisa pekerjaan hanya **aksi manual oleh user di cPanel** (lihat "Next Move"): `git pull`, update `app/config.php`, opsional rotasi anon key Supabase.
 
@@ -54,12 +54,18 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
     - Hapus 14 file legacy: `admin.html`, `index.html`, `index2.html`, `index3.html`, `erorlogin.png`, `rhi.png`, `css/style.css`, `css/admin.css`, `js/main.js`, `js/data.js`, `js/supabaseClient.js`, `supabase/schema.sql`, `vercel.json`, `.env.example` (memuat anon key Supabase asli)
     - Login kini ada lockout: maks 5 gagal → terkunci 5 menit (berbasis sesi)
     - Semua 20 file PHP lolos `php -l`
+- **Step 10** Footer & kredibilitas (`4456f88`) ✔
+    - Hapus link `admin/login.php` dari footer publik (satu-satunya temuan risiko keamanan nyata)
+    - Section FAQ expandable (native `<details>`, tanpa JS): cicilan/tabungan, dokumen, refund, isi paket, pendampingan
+    - Section Testimoni khusus, siap diisi foto (`uploads/testimoni/`) + teks via array `$testimonials` di `index.php`; fallback monogram inisial jika foto belum ada
+    - Optimasi 5 gambar hero `slide_*.webp` → <180KB (backup di `%TEMP%\opencode\webp-opt\backup`)
 
 ### Active
 - Menunggu user melakukan deploy manual di cPanel (git pull + update config.php) — lihat Next Move.
+- Testimoni di halaman publik masih **placeholder** — user wajib mengisi foto (`uploads/testimoni/`) + teks asli di array `$testimonials` (`index.php`) sebelum go-live; jawaban FAQ refund/pembatalan juga perlu konfirmasi kebijakan user.
 
 ### Blocked
-- **Deploy cPanel belum dilakukan** → live masih versi lama: `robots.txt`/`sitemap.xml` 404, homepage 29210 byte judul "Travel Haji, Umroh dan Halal Tours", tanpa security header. Commit 1–9 sudah di GitHub tapi belum di-pull.
+- **Deploy cPanel belum dilakukan** → live masih versi lama: `robots.txt`/`sitemap.xml` 404, homepage 29210 byte judul "Travel Haji, Umroh dan Halal Tours", tanpa security header. Commit 1–10 sudah di GitHub tapi belum di-pull.
 - `app/config.php` di hosting wajib di-update manual (tidak ikut git pull).
 - Saran (opsional): rotasi anon key Supabase lama bila project-nya masih dipakai (pernah ter-push publik).
 
