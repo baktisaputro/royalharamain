@@ -8,10 +8,10 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
 - (Sampingan, sudah tuntas) Perbaikan routing model AI di 9router → pakai `ds/deepseek-v4-flash`.
 
 ## Status Terakhir (saat sesi berakhir)
-- **Semua pekerjaan kode Step 1–10 SUDAH di-commit & push ke GitHub `master`** (HEAD `0dfba98`).
-- **SUDAH DI-DEPLOY ke hosting cPanel** (Terminal: `git remote add origin` + `git fetch` + `git reset --hard origin/master`) → server kini di HEAD `0dfba98`.
+- **Semua pekerjaan kode Step 1–11 SUDAH di-commit & push ke GitHub `master`** (HEAD `32d7005`).
+- **SUDAH DI-DEPLOY ke hosting cPanel** → server kini di HEAD `32d7005` (deploy via `git fetch` + `git reset --hard origin/master`, update berikutnya cukup `git pull origin master`).
 - **`app/config.php` di server sudah di-hardening** (session cookie httponly/samesite/secure + `display_errors` off) dan lolos `php -l`.
-- Verifikasi live sukses: `robots.txt`/`sitemap.xml` 200, homepage + admin login 200, FAQ & Testimoni tampil, hero `slide_1.webp` 144KB (teroptimasi), semua security header terkirim.
+- Verifikasi live sukses: `robots.txt`/`sitemap.xml` 200, homepage + admin login 200, FAQ & Testimoni tampil, hero `slide_1.webp` 144KB (teroptimasi), semua security header terkirim, popup promo + modal booking fix sudah dikonfirmasi user "good".
 
 ## Important Details
 - Teknologi: PHP 8.0.30 + MariaDB (XAMPP lokal). Target: shared hosting cPanel (LiteSpeed).
@@ -59,6 +59,12 @@ File ini adalah catatan sesi. Bacalah untuk melanjutkan pekerjaan dari titik ter
     - Section FAQ expandable (native `<details>`, tanpa JS): cicilan/tabungan, dokumen, refund, isi paket, pendampingan
     - Section Testimoni khusus, siap diisi foto (`uploads/testimoni/`) + teks via array `$testimonials` di `index.php`; fallback monogram inisial jika foto belum ada
     - Optimasi 5 gambar hero `slide_*.webp` → <180KB (backup di `%TEMP%\opencode\webp-opt\backup`)
+- **Step 11** Popup promo — upload gambar & fix tampilan (`5d88477`, `58dc908`, `32d7005`) ✔
+    - Panel admin Promo kini bisa **upload gambar** (otomatis resize max 1600px + kompres WebP q78 via `app/upload.php`), hapus gambar lama saat diganti, preview gambar tampil
+    - `uploads/promo/*` masuk `.gitignore`
+    - Popup promo menampilkan gambar **sesuai rasio asli** (tanpa crop); card max-height 90vh + scroll; tombol ✕ sticky (`#promoModal` rules, aman untuk browser lama via `:has()` fallback)
+    - Fix modal booking terpotong: body form bisa scroll (max-height 92vh + `#bookModal` flex rules), tombol "Kirim & Konsultasi Gratis" selalu terjangkau, ✕ tetap terlihat
+    - Catatan: `.htaccess` cache `text/css` 1 bulan → setelah deploy CSS, gunakan hard refresh/incognito untuk lihat perubahan (opsional ke depan: cache-busting `style_pub.css?v=...`)
 
 ### Active
 - Testimoni di halaman publik masih **placeholder** — user wajib mengisi foto (`uploads/testimoni/`) + teks asli di array `$testimonials` (`index.php`) sebelum go-live penuh; jawaban FAQ refund/pembatalan juga perlu konfirmasi kebijakan user.
