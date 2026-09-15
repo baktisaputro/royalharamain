@@ -250,6 +250,8 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
         <a href="#beranda">Beranda</a>
         <a href="#paket">Paket</a>
         <a href="#keunggulan">Keunggulan</a>
+        <a href="#testimoni">Testimoni</a>
+        <a href="#faq">FAQ</a>
         <a href="#kontak">Kontak</a>
         <a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer" class="gold-button" style="padding:10px 20px;font-size:13px;">Hubungi Kami</a>
       </nav>
@@ -363,6 +365,70 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
     </section>
     <?php endif; ?>
 
+    <!-- ============ TESTIMONI ============ -->
+    <section id="testimoni" class="section-cream">
+      <?php
+      // GANTI: isi foto (upload ke uploads/testimoni/) + nama, kota, dan teks testimoni asli jamaah.
+      // Folder foto jamaah: uploads/testimoni/ (contoh nama file: jamaah-1.webp).
+      $testimonials = [
+        [
+          'photo'  => 'uploads/testimoni/jamaah-1.webp',
+          'name'   => 'Nama Jamaah',
+          'city'   => 'Kota',
+          'quote'  => 'Pelayanan ramah dan kekeluargaan. Dari pendaftaran sampai kembali ke rumah semuanya dipandu dengan jelas.',
+          'rating' => 5,
+        ],
+        [
+          'photo'  => 'uploads/testimoni/jamaah-2.webp',
+          'name'   => 'Nama Jamaah',
+          'city'   => 'Kota',
+          'quote'  => 'Pembimbingnya sabar dan berpengalaman. Ibadah jadi lebih tenang karena semua kebutuhan sudah diurus.',
+          'rating' => 5,
+        ],
+        [
+          'photo'  => 'uploads/testimoni/jamaah-3.webp',
+          'name'   => 'Nama Jamaah',
+          'city'   => 'Kota',
+          'quote'  => 'Alhamdulillah, jadwal dan fasilitas sesuai yang dijanjikan. Terima kasih Royal Haramain.',
+          'rating' => 5,
+        ],
+      ];
+      ?>
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow" style="background:rgba(4,106,56,.08);color:var(--emerald-dark)">Kata Jamaah</span>
+          <h2>Cerita Jamaah Kami</h2>
+          <p>Pengalaman jamaah yang telah berangkat bersama Royal Haramain.</p>
+        </div>
+        <!-- GANTI: testimoni contoh — ganti dengan ulasan asli jamaah sebelum go-live -->
+        <div class="testimonials">
+          <?php foreach ($testimonials as $t): ?>
+            <?php
+              $t_name    = (string)($t['name'] ?? '');
+              $t_city    = (string)($t['city'] ?? '');
+              $t_quote   = (string)($t['quote'] ?? '');
+              $t_photo   = trim((string)($t['photo'] ?? ''));
+              $t_rating  = max(0, min(5, (int)($t['rating'] ?? 5)));
+              $t_initial = mb_strtoupper(mb_substr($t_name !== '' ? $t_name : 'Jamaah', 0, 1));
+            ?>
+            <article class="testimonial">
+              <div class="stars" aria-label="Rating <?= $t_rating ?> dari 5"><?= str_repeat('★', $t_rating) ?></div>
+              <p>"<?= htmlspecialchars($t_quote) ?>"</p>
+              <div class="person">
+                <span class="avatar">
+                  <span class="avatar-mono" aria-hidden="true"><?= htmlspecialchars($t_initial) ?></span>
+                  <?php if ($t_photo !== ''): ?>
+                    <img src="<?= htmlspecialchars($t_photo) ?>" alt="Foto <?= htmlspecialchars($t_name) ?>" loading="lazy" decoding="async" onerror="this.style.display='none'">
+                  <?php endif; ?>
+                </span>
+                <div><strong><?= htmlspecialchars($t_name) ?></strong><span><?= htmlspecialchars($t_city) ?></span></div>
+              </div>
+            </article>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ TENTANG ============ -->
     <section id="tentang" style="background:var(--white)">
       <div class="container about-grid">
@@ -379,6 +445,42 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
             <li>Memudahkan program pembayaran biaya haji dan umrah</li>
             <li>Menjaga kualitas syariat dalam setiap ibadah</li>
           </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section id="faq" style="background:var(--white)">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow" style="background:rgba(4,106,56,.08);color:var(--emerald-dark)">Pertanyaan Umum</span>
+          <h2>Pertanyaan yang Sering Diajukan</h2>
+          <p>Belum menemukan jawabannya? Tim kami siap membantu melalui WhatsApp.</p>
+        </div>
+        <div class="faq">
+          <details open>
+            <summary>Apakah biaya umrah bisa dicicil atau ditabung lebih dulu?</summary>
+            <div class="faq-a">Bisa. Kami menyediakan skema pembayaran bertahap (cicilan) serta program tabungan umrah. Silakan hubungi admin untuk simulasi cicilan sesuai paket dan jadwal keberangkatan pilihan Anda.</div>
+          </details>
+          <details>
+            <summary>Dokumen apa saja yang perlu saya siapkan?</summary>
+            <div class="faq-a">Umumnya KTP, Kartu Keluarga, akta kelahiran, paspor dengan masa berlaku minimal 8 bulan, buku nikah (untuk pasangan), pas foto, dan bukti vaksin meningitis. Tim kami akan memandu Anda melengkapi seluruh dokumen.</div>
+          </details>
+          <details>
+            <summary>Apa yang terjadi jika saya membatalkan keberangkatan?</summary>
+            <div class="faq-a">Pembatalan mengikuti ketentuan paket yang Anda ambil. Besaran pengembalian dana bergantung pada waktu pembatalan dan biaya yang telah dibayarkan ke pihak ketiga seperti tiket, hotel, dan visa. Hubungi admin untuk perhitungannya.</div>
+          </details>
+          <details>
+            <summary>Apakah harga paket sudah termasuk tiket, hotel, dan visa?</summary>
+            <div class="faq-a">Komponen yang termasuk berbeda untuk setiap paket. Rincian lengkap tercantum pada detail paket, dan tim kami siap menjelaskannya sebelum Anda mendaftar.</div>
+          </details>
+          <details>
+            <summary>Apakah jamaah didampingi selama ibadah?</summary>
+            <div class="faq-a">Ya. Setiap rombongan didampingi pembimbing ibadah dan petugas yang membantu mulai dari persiapan, selama di Tanah Suci, hingga kembali ke Indonesia.</div>
+          </details>
+        </div>
+        <div class="faq-cta">
+          <a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer" class="gold-button">Tanya via WhatsApp</a>
         </div>
       </div>
     </section>
@@ -551,7 +653,7 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
       </div>
       <div>
         <h4>Navigasi</h4>
-        <a href="#beranda">Beranda</a><a href="#paket">Paket</a><a href="#galeri">Galeri</a><a href="#kontak">Kontak</a><a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer">Hubungi Kami</a>
+        <a href="#beranda">Beranda</a><a href="#paket">Paket</a><a href="#testimoni">Testimoni</a><a href="#faq">FAQ</a><a href="#galeri">Galeri</a><a href="#kontak">Kontak</a><a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer">Hubungi Kami</a>
       </div>
       <div>
         <h4>Layanan</h4>
@@ -561,7 +663,6 @@ $meta_url   = rtrim(BASE_URL, '/') . '/';
         <h4>Kontak</h4>
         <a href="https://wa.me/6281215151552" target="_blank" rel="noopener noreferrer">WhatsApp: 0812 1515 1552</a>
         <a href="tel:081215151552">Telepon: 0812 1515 1552</a>
-        <a href="admin/login.php">Login Admin</a>
       </div>
     </div>
     <div class="footer-bottom"><div class="container">© <?= date('Y') ?> PT. Royal Haramain International. Seluruh hak cipta dilindungi. | Jl. Magelang KM. 12, Tridadi, Sleman, Yogyakarta</div></div>
